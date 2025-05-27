@@ -1,62 +1,108 @@
 export default function HomePage() {
     return (
-        <main className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-            {/* Hero */}
-            <section className="bg-gradient-to-br from-blue-900 to-blue-600 text-white py-16 text-center">
-                <div className="max-w-3xl mx-auto px-4">
-                    <h1 className="text-5xl font-bold mb-4 drop-shadow">OneNil Football Club</h1>
-                    <p className="text-lg opacity-90">Pride of the city. Fueled by passion. Driven by fans.</p>
+        <div className="min-h-screen bg-white text-gray-900 font-sans">
+            {/* Header */}
+            <header className="bg-red-700 text-white">
+                <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                    {/* Crest + Name */}
+                    <div className="flex items-center space-x-3">
+                        <img
+                            src="/images/onenil-crest.png"
+                            alt="OneNil FC Crest"
+                            className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+                        />
+                        <span className="text-xl font-bold tracking-wide">OneNil FC</span>
+                    </div>
+
+                    {/* Navigation Menu */}
+                    <ul className="hidden md:flex space-x-6 text-sm font-medium">
+                        <li><a href="#" className="hover:text-red-300">Home</a></li>
+                        <li><a href="#" className="hover:text-red-300">News</a></li>
+                        <li><a href="#" className="hover:text-red-300">Matches</a></li>
+                        <li><a href="#" className="hover:text-red-300">Team</a></li>
+                        <li><a href="#" className="hover:text-red-300">Tickets</a></li>
+                        <li><a href="#" className="hover:text-red-300">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+
+            {/* Hero Section */}
+            <section className="bg-gray-100 py-12">
+                <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h1 className="text-4xl font-bold text-red-700 mb-4">Welcome to OneNil FC</h1>
+                        <p className="text-lg text-gray-700 mb-6">
+                            Experience the passion and pride of our club. Stay updated with the latest news, match highlights, and exclusive content.
+                        </p>
+                        <a href="#" className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
+                            Explore More
+                        </a>
+                    </div>
+                    <div>
+                        <img src="/images/hero-image.jpg" alt="OneNil FC" className="w-full rounded shadow" />
+                    </div>
                 </div>
             </section>
 
-            {/* Latest News */}
-            <section className="py-12 px-4 max-w-6xl mx-auto">
-                <h2 className="text-3xl font-semibold mb-6 text-blue-800">Latest News</h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                    {[1, 2, 3].map((id) => (
-                        <div
-                            key={id}
-                            className="bg-gradient-to-br from-white via-slate-50 to-slate-100 border rounded-lg shadow-lg p-5 hover:shadow-xl transition"
-                        >
-                            <h3 className="font-bold text-xl mb-2 text-blue-900">Matchday Recap {id}</h3>
-                            <p className="text-sm text-slate-500 mb-3">May 25, 2025</p>
-                            <p className="text-slate-700 mb-4">The boys gave their all in a thrilling 2–2 draw at home...</p>
-                            <a href="#" className="text-blue-600 hover:underline text-sm font-medium">Read more →</a>
-                        </div>
-                    ))}
+            {/* News Section */}
+            <section className="py-12 bg-white">
+                <div className="max-w-7xl mx-auto px-4">
+                    <h2 className="text-3xl font-semibold text-red-700 mb-6">Latest News</h2>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[1, 2, 3].map((id) => (
+                            <div key={id} className="bg-gray-100 rounded shadow p-5 hover:shadow-lg transition">
+                                <img src={`/images/news-${id}.jpg`} alt={`News ${id}`} className="w-full h-48 object-cover rounded mb-4" />
+                                <h3 className="font-bold text-xl mb-2">Matchday Highlights {id}</h3>
+                                <p className="text-sm text-gray-600 mb-3">June 1, 2025</p>
+                                <p className="text-gray-700 mb-4">An exciting match with stunning goals and incredible teamwork.</p>
+                                <a href="#" className="text-red-700 hover:underline text-sm font-medium">Read more →</a>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
             {/* Upcoming Match */}
-            <section className="bg-gradient-to-br from-white to-blue-50 py-12 px-4 border-t border-slate-200">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl font-semibold mb-2 text-blue-800">Next Match</h2>
-                    <p className="text-xl font-bold text-blue-900">OneNil FC vs Rival Town</p>
-                    <p className="text-slate-600">Saturday · June 1 · 18:00 · City Stadium</p>
-                    <button className="mt-4 px-6 py-2 bg-gradient-to-r from-blue-700 to-blue-500 text-white font-medium rounded shadow hover:from-blue-800 hover:to-blue-600 transition">
+            <section className="bg-gray-100 py-12">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <h2 className="text-3xl font-semibold text-red-700 mb-4">Next Match</h2>
+                    <p className="text-xl font-bold text-gray-900 mb-2">OneNil FC vs Rival Town</p>
+                    <p className="text-gray-700 mb-4">Saturday · June 8 · 18:00 · City Stadium</p>
+                    <a href="#" className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
                         Buy Tickets
-                    </button>
+                    </a>
                 </div>
             </section>
 
             {/* Featured Player */}
-            <section className="py-12 px-4 max-w-4xl mx-auto">
-                <h2 className="text-3xl font-semibold mb-6 text-blue-800">Featured Player</h2>
-                <div className="flex flex-col sm:flex-row bg-white border shadow-lg rounded-lg p-6 items-center">
-                    <img
-                        src="/player.jpg"
-                        alt="Featured Player"
-                        className="w-40 h-40 rounded-full object-cover mb-4 sm:mb-0 sm:mr-6 border-4 border-blue-500"
-                    />
-                    <div>
-                        <h3 className="text-xl font-bold text-blue-900">John Doe</h3>
-                        <p className="text-slate-600 mb-2">Midfielder · #10</p>
-                        <p className="text-slate-700 text-sm">
-                            Known for his vision, precision passing, and on-field leadership, John has been a key player this season.
-                        </p>
+            <section className="py-12 bg-white">
+                <div className="max-w-7xl mx-auto px-4">
+                    <h2 className="text-3xl font-semibold text-red-700 mb-6">Featured Player</h2>
+                    <div className="flex flex-col md:flex-row items-center bg-gray-100 rounded shadow p-6">
+                        <img
+                            src="/images/player.jpg"
+                            alt="Featured Player"
+                            className="w-40 h-40 rounded-full object-cover mb-4 md:mb-0 md:mr-6 border-4 border-red-700"
+                        />
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900">John Doe</h3>
+                            <p className="text-gray-600 mb-2">Midfielder · #10</p>
+                            <p className="text-gray-700 text-sm">
+                                Known for his vision and leadership, John has been instrumental in our recent victories.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
-        </main>
+
+            {/* Footer */}
+            <footer className="bg-red-700 text-white text-sm text-center py-6">
+                <div className="max-w-7xl mx-auto px-4">
+                    &copy; {new Date().getFullYear()} OneNil FC · All rights reserved.
+                </div>
+            </footer>
+        </div>
     );
 }
+
