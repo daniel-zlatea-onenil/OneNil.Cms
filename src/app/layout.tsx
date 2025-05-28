@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: 'OneNil FC',
@@ -26,12 +27,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <span className="text-xl font-bold tracking-wide">OneNil FC</span>
                 </div>
                 <ul className="hidden md:flex space-x-6 text-sm font-medium">
-                    <li><a href="/" className="hover:text-red-300">Home</a></li>
-                    <li><a href="/league-table" className="hover:text-red-300">League Table</a></li>
-                    <li><a href="#" className="hover:text-red-300">News</a></li>
-                    <li><a href="#" className="hover:text-red-300">Team</a></li>
-                    <li><a href="#" className="hover:text-red-300">Tickets</a></li>
-                    <li><a href="#" className="hover:text-red-300">Contact</a></li>
+                    <li>
+                        <Link href="/" className="hover:text-red-300">
+                            Home
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/league-table" className="hover:text-red-300">
+                            League Table
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/news" className="hover:text-red-300">
+                            News
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/team" className="hover:text-red-300">
+                            Team
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/tickets" className="hover:text-red-300">
+                            Tickets
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/contact" className="hover:text-red-300">
+                            Contact
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </header>
