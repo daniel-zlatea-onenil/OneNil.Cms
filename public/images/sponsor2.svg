@@ -1,0 +1,6 @@
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="40" rx="8" fill="white" opacity="0.05" />
+    <path d="M22 28C26 24 26 16 22 12C18 16 18 24 22 28Z" fill="white" opacity="0.2"/>
+    <path d="M22 28C26 24 26 16 22 12C18 16 18 24 22 28Z" fill="white"/>
+    <text x="50" y="24" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">ECODRIVE</text>
+</svg>

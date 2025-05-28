@@ -1,0 +1,11 @@
+<svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+    <rect width="160" height="40" rx="8" fill="white" opacity="0.05" />
+    <!-- Icon: Simple circle + lightning bolt -->
+    <circle cx="24" cy="20" r="10" fill="white" opacity="0.2"/>
+    <path d="M22 14 L26 18 H23 L25 24 L21 20 H24 Z" fill="white" />
+
+    <!-- Sponsor Name -->
+    <text x="50" y="24" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">
+        POWER TECH
+    </text>
+</svg>

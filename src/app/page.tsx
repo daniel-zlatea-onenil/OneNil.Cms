@@ -1,32 +1,6 @@
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
-            {/* Header */}
-            <header className="bg-red-700 text-white">
-                <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-                    {/* Crest + Name */}
-                    <div className="flex items-center space-x-3">
-                        <img
-                            src="/images/onenil-crest.png"
-                            alt="OneNil FC Crest"
-                            className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-                        />
-                        <span className="text-xl font-bold tracking-wide">OneNil FC</span>
-                    </div>
-
-                    {/* Navigation Menu */}
-                    <ul className="hidden md:flex space-x-6 text-sm font-medium">
-                        <li><a href="#" className="hover:text-red-300">Home</a></li>
-                        <li><a href="#" className="hover:text-red-300">News</a></li>
-                        <li><a href="#" className="hover:text-red-300">Matches</a></li>
-                        <li><a href="#" className="hover:text-red-300">Team</a></li>
-                        <li><a href="#" className="hover:text-red-300">Tickets</a></li>
-                        <li><a href="#" className="hover:text-red-300">Contact</a></li>
-                    </ul>
-                </nav>
-            </header>
-
-
             {/* Hero Section */}
             <section className="bg-gray-100 py-12">
                 <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-8 items-center">
@@ -95,13 +69,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="bg-red-700 text-white text-sm text-center py-6">
-                <div className="max-w-7xl mx-auto px-4">
-                    &copy; {new Date().getFullYear()} OneNil FC · All rights reserved.
-                </div>
-            </footer>
         </div>
     );
 }
