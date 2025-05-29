@@ -1,5 +1,21 @@
 import { contentfulClient } from '@/lib/contentful';
+import { EntrySkeletonType } from 'contentful';
 import Image from 'next/image';
+
+type PlayerFields = {
+    name: string;
+    shirtNumber: number;
+    position: string;
+    photo: {
+        fields: {
+            file: {
+                url: string;
+            };
+        };
+    };
+};
+
+type PlayerSkeleton = EntrySkeletonType<PlayerFields>;
 
 type Player = {
     name: string;
@@ -9,27 +25,33 @@ type Player = {
 };
 
 async function getPlayers(): Promise<Record<string, Player[]>> {
-    const res = await contentfulClient.getEntries({ content_type: 'player' });
+    const res = await contentfulClient.getEntries<PlayerSkeleton>({
+        content_type: 'player',
+    });
 
     const grouped: Record<string, Player[]> = {};
 
-    for (const item of res.items) {
-        const fields = item.fields as any;
-        const position = fields.position || 'Unassigned';
+    res.items.forEach((item) => {
+        // Ensure TS knows item.fields is PlayerFields
+        const fields = item.fields as PlayerFields;
 
         const player: Player = {
             name: fields.name,
             number: fields.shirtNumber,
-            position,
+            position: fields.position || 'Unassigned',
             imageUrl: 'https:' + fields.photo.fields.file.url,
         };
 
-        if (!grouped[position]) grouped[position] = [];
-        grouped[position].push(player);
-    }
+        if (!grouped[player.position]) {
+            grouped[player.position] = [];
+        }
+
+        grouped[player.position].push(player);
+    });
 
     return grouped;
 }
+
 
 export default async function TeamPage() {
     const players = await getPlayers();
@@ -43,7 +65,7 @@ export default async function TeamPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         {group.map((player) => (
                             <div
-                                key={player.name}
+                                key={`${player.number}-${player.name}`}
                                 className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden text-center"
                             >
                                 <Image
