@@ -1,14 +1,15 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type {Metadata} from 'next';
 import Image from 'next/image';
 import Link from "next/link";
+import React from "react";
 
 export const metadata: Metadata = {
     title: 'OneNil FC',
     description: 'Official website of OneNil Football Club',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-slate-900 font-sans">
@@ -38,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </Link>
                     </li>
                     <li>
-                        <Link href="/news" className="hover:text-red-300">
+                        <Link href="#" className="hover:text-red-300">
                             News
                         </Link>
                     </li>
@@ -48,12 +49,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </Link>
                     </li>
                     <li>
-                        <Link href="/tickets" className="hover:text-red-300">
+                        <Link href="#" className="hover:text-red-300">
                             Tickets
                         </Link>
                     </li>
                     <li>
-                        <Link href="/contact" className="hover:text-red-300">
+                        <Link href="#" className="hover:text-red-300">
                             Contact
                         </Link>
                     </li>
@@ -73,10 +74,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="max-w-7xl mx-auto px-4">
                     <h3 className="text-lg font-semibold mb-4">Proudly Sponsored By</h3>
                     <div className="flex flex-wrap justify-center items-center gap-6">
-                        <img src="/images/sponsor1.svg" alt="Power Tech sponsor logo" className="h-10" />
-                        <img src="/images/sponsor2.svg" alt="Sponsor 2" className="h-10" />
-                        <img src="/images/sponsor3.svg" alt="Sponsor 3" className="h-10" />
-                        <img src="/images/sponsor4.svg" alt="Sponsor 4" className="h-10" />
+                        <img src="/images/sponsor1.svg" alt="Power Tech sponsor logo" className="h-10"/>
+                        <img src="/images/sponsor2.svg" alt="Sponsor 2" className="h-10"/>
+                        <img src="/images/sponsor3.svg" alt="Sponsor 3" className="h-10"/>
+                        <img src="/images/sponsor4.svg" alt="Sponsor 4" className="h-10"/>
                     </div>
                 </div>
             </div>
@@ -88,9 +89,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </div>
             </div>
         </footer>
-
-
-
         </body>
         </html>
     );
