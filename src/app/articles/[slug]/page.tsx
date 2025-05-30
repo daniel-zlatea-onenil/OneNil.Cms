@@ -22,7 +22,7 @@ type ArticlePageProps = {
     };
 };
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params : _params }: ArticlePageProps) {
 
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
