@@ -19,10 +19,11 @@ type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
-        'fields.slug': params.slug,
         limit: 1,
-    } as any); // 👈 suppress type warning
-
+        // @ts-expect-error: Field filters are not fully typed in SDK
+        'fields.slug': params.slug,
+    });
+    
     const article = res.items[0];
     if (!article) return notFound();
 

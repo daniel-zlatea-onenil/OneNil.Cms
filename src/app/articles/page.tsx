@@ -30,8 +30,10 @@ type Article = {
 async function getArticles(): Promise<Article[]> {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
         order: ['-fields.publishDate'],
-    } as any);
+    });
+
 
     return res.items.map((item) => {
         const fields = item.fields as ArticleFields;
@@ -45,7 +47,6 @@ async function getArticles(): Promise<Article[]> {
             imageUrl: 'https:' + coverImage.fields.file.url,
         };
     });
-
 }
 
 export default async function ArticlesPage() {
