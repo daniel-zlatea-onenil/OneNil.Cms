@@ -39,7 +39,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
                         </Link>
                     </li>
                     <li>
-                        <Link href="#" className="hover:text-red-300">
+                        <Link href="/articles" className="hover:text-red-300">
                             News
                         </Link>
                     </li>
