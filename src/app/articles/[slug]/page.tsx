@@ -1,8 +1,8 @@
-import { contentfulClient } from '@/lib/contentful';
-import { notFound } from 'next/navigation';
+import {contentfulClient} from '@/lib/contentful';
+import {notFound} from 'next/navigation';
 import Image from 'next/image';
-import type { EntrySkeletonType } from 'contentful';
-import { Asset } from 'contentful';
+import type {EntrySkeletonType} from 'contentful';
+import {Asset} from 'contentful';
 
 type ArticleFields = {
     title: string;
@@ -20,20 +20,17 @@ export default async function ArticlePage({
                                           }: {
     params: { slug: string };
 }) {
-    // ✅ `params.slug` is available here
-    
-
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
-        limit: 1,
-        // @ts-expect-error: Field filters are not fully typed in SDK
+        // @ts-expect-error: contentful typing doesn't allow field-based filtering
         'fields.slug': params.slug,
+        limit: 1,
     });
-    
+
     const article = res.items[0];
     if (!article) return notFound();
 
-    const { title, summary, publishDate, content } = article.fields;
+    const {title, summary, publishDate, content} = article.fields;
     const coverImage = article.fields.coverImage as Asset; // ✅ Type assertion
 
     return (
