@@ -15,11 +15,11 @@ type ArticleFields = {
 
 
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
-export default async function ArticlePage({
-                                              params,
-                                          }: {
+interface ArticlePageProps {
     params: { slug: string };
-}) {
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
         // @ts-expect-error: contentful typing doesn't allow field-based filtering
