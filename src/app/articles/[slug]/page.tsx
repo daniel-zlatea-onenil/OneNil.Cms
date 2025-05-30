@@ -15,14 +15,13 @@ type ArticleFields = {
 
 
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
-
-type ArticlePageProps = {
-    params: {
-        slug: string;
-    };
-};
-
-export default async function ArticlePage({params}: ArticlePageProps) {
+export default async function ArticlePage({
+                                              params,
+                                          }: {
+    params: { slug: string };
+}) {
+    // ✅ `params.slug` is available here
+    
 
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
