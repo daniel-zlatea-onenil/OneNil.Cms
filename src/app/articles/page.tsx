@@ -49,7 +49,13 @@ async function getArticles(): Promise<Article[]> {
     });
 }
 
-export default async function ArticlesPage() {
+type ArticlePageParams = {
+    params: {
+        slug: string;
+    };
+};
+
+export default async function ArticlePage({ params : _params }: ArticlePageParams) {
     const articles = await getArticles();
 
     return (
