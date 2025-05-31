@@ -3,7 +3,7 @@ import {notFound} from 'next/navigation';
 import Image from 'next/image';
 import type {EntrySkeletonType} from 'contentful';
 import {Asset} from 'contentful';
-import { PageProps } from '@/app/types'; // adjust the path if needed
+import { RouteParams } from '@/app/types'; // adjust the path if needed
 
 
 type ArticleFields = {
@@ -17,7 +17,7 @@ type ArticleFields = {
 
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 
-export default async function ArticlePage({ params }: PageProps<{ slug: string }>) {
+export default async function ArticlePage({ params }: RouteParams<{ slug: string }>) {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
         // @ts-expect-error: valid but unsupported typing
