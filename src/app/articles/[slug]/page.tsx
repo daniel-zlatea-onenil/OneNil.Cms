@@ -3,6 +3,7 @@ import {notFound} from 'next/navigation';
 import Image from 'next/image';
 import type {EntrySkeletonType} from 'contentful';
 import {Asset} from 'contentful';
+import { Metadata } from 'next';
 
 type ArticleFields = {
     title: string;
@@ -15,11 +16,20 @@ type ArticleFields = {
 
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 
-export default async function ArticlePage({
-                                              params,
-                                          }: {
-    params: { slug: string };
-}) {
+type Props = {
+    params: {
+        slug: string;
+    };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    return {
+        title: `Article: ${params.slug}`,
+    };
+}
+
+export default async function ArticlePage({ params }: Props)
+{
     // ✅ This works consistently both locally and on Vercel
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
