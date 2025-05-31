@@ -1,11 +1,5 @@
-// components/NextMatchBlock.tsx
-
 import { contentfulClient } from '@/lib/contentful';
-import type { EntrySkeletonType } from 'contentful';
-import { Asset } from 'contentful';
-import Image from 'next/image';
 import { NextMatchBlockFields, NextMatchBlockSkeleton } from '@/lib/types';
-
 
 export default async function NextMatchBlock() {
     const res = await contentfulClient.getEntries<NextMatchBlockSkeleton>({
