@@ -8,7 +8,12 @@ export async function generateStaticParams() {
     return res.items.map((item) => ({ slug: item.fields.slug }));
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(    props: {
+    params: Promise<{ slug: string }>
+}) 
+{
+    const params = await props.params;
+
     const res = await contentfulClient.getEntries({
         content_type: 'page',
         'fields.slug': params.slug,
