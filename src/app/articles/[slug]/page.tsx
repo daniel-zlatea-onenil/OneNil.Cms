@@ -3,8 +3,6 @@ import {notFound} from 'next/navigation';
 import Image from 'next/image';
 import type {EntrySkeletonType} from 'contentful';
 import {Asset} from 'contentful';
-import { RouteParams } from '@/app/types'; // adjust the path if needed
-
 
 type ArticleFields = {
     title: string;
@@ -17,7 +15,12 @@ type ArticleFields = {
 
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 
-export default async function ArticlePage({ params }: RouteParams<{ slug: string }>) {
+export default async function ArticlePage({
+                                              params,
+                                          }: {
+    params: { slug: string };
+}) {
+    // ✅ This works consistently both locally and on Vercel
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
         // @ts-expect-error: valid but unsupported typing
