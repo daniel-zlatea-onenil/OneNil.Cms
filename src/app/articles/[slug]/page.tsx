@@ -15,11 +15,7 @@ type ArticleFields = {
     coverImage: Asset; // ✅ Use Contentful's Asset type
 };
 
-
 type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
-interface SlugParams {
-    params: { slug: string };
-}
 
 export default async function ArticlePage({ params }: PageProps<{ slug: string }>) {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
