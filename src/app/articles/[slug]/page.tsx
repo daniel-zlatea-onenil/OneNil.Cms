@@ -3,6 +3,8 @@ import {notFound} from 'next/navigation';
 import Image from 'next/image';
 import type {EntrySkeletonType} from 'contentful';
 import {Asset} from 'contentful';
+import { PageProps } from '@/app/types'; // adjust the path if needed
+
 
 type ArticleFields = {
     title: string;
@@ -19,10 +21,10 @@ interface SlugParams {
     params: { slug: string };
 }
 
-export default async function ArticlePage({ params }: SlugParams) {
+export default async function ArticlePage({ params }: PageProps<{ slug: string }>) {
     const res = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
-        // @ts-expect-error: contentful typing doesn't allow field-based filtering
+        // @ts-expect-error: valid but unsupported typing
         'fields.slug': params.slug,
         limit: 1,
     });
