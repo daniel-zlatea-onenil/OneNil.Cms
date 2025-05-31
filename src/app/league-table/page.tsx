@@ -1,10 +1,10 @@
 export default function LeagueTablePage() {
     const standings = [
-        { pos: 1, team: 'OneNil FC', played: 34, won: 24, drawn: 6, lost: 4, gf: 65, ga: 28, pts: 78 },
-        { pos: 2, team: 'Rival Town', played: 34, won: 22, drawn: 7, lost: 5, gf: 59, ga: 30, pts: 73 },
-        { pos: 3, team: 'Kingsport United', played: 34, won: 20, drawn: 10, lost: 4, gf: 55, ga: 32, pts: 70 },
-        { pos: 4, team: 'Redbridge FC', played: 34, won: 18, drawn: 9, lost: 7, gf: 52, ga: 36, pts: 63 },
-        { pos: 5, team: 'Southvale Rangers', played: 34, won: 17, drawn: 8, lost: 9, gf: 47, ga: 40, pts: 59 },
+        {pos: 1, team: 'OneNil FC', played: 34, won: 24, drawn: 6, lost: 4, gf: 65, ga: 28, pts: 78},
+        {pos: 2, team: 'Rival Town', played: 34, won: 22, drawn: 7, lost: 5, gf: 59, ga: 30, pts: 73},
+        {pos: 3, team: 'Kingsport United', played: 34, won: 20, drawn: 10, lost: 4, gf: 55, ga: 32, pts: 70},
+        {pos: 4, team: 'Redbridge FC', played: 34, won: 18, drawn: 9, lost: 7, gf: 52, ga: 36, pts: 63},
+        {pos: 5, team: 'Southvale Rangers', played: 34, won: 17, drawn: 8, lost: 9, gf: 47, ga: 40, pts: 59},
     ];
 
     return (

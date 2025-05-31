@@ -1,6 +1,6 @@
 <svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
-    <rect width="160" height="40" rx="8" fill="white" opacity="0.05" />
-    <circle cx="24" cy="20" r="8" fill="white" opacity="0.2" />
+    <rect width="160" height="40" rx="8" fill="white" opacity="0.05"/>
+    <circle cx="24" cy="20" r="8" fill="white" opacity="0.2"/>
     <circle cx="24" cy="20" r="8" fill="none" stroke="white" stroke-width="1.5"/>
     <path d="M24 12C27 12 29 20 24 28C19 20 21 12 24 12Z" fill="none" stroke="white" stroke-width="1"/>
     <text x="50" y="24" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">GLOBALNET</text>

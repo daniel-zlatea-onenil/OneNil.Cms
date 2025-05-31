@@ -7,14 +7,16 @@ export default function HomePage() {
                     <div>
                         <h1 className="text-4xl font-bold text-red-700 mb-4">Welcome to OneNil FC</h1>
                         <p className="text-lg text-gray-700 mb-6">
-                            Experience the passion and pride of our club. Stay updated with the latest news, match highlights, and exclusive content.
+                            Experience the passion and pride of our club. Stay updated with the latest news, match
+                            highlights, and exclusive content.
                         </p>
-                        <a href="#" className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
+                        <a href="#"
+                           className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
                             Explore More
                         </a>
                     </div>
                     <div>
-                        <img src="/images/hero-image.jpg" alt="OneNil FC" className="w-full rounded shadow" />
+                        <img src="/images/hero-image.jpg" alt="OneNil FC" className="w-full rounded shadow"/>
                     </div>
                 </div>
             </section>
@@ -26,10 +28,12 @@ export default function HomePage() {
                     <div className="grid md:grid-cols-3 gap-6">
                         {[1, 2, 3].map((id) => (
                             <div key={id} className="bg-gray-100 rounded shadow p-5 hover:shadow-lg transition">
-                                <img src={`/images/news-${id}.jpg`} alt={`News ${id}`} className="w-full h-48 object-cover rounded mb-4" />
+                                <img src={`/images/news-${id}.jpg`} alt={`News ${id}`}
+                                     className="w-full h-48 object-cover rounded mb-4"/>
                                 <h3 className="font-bold text-xl mb-2">Matchday Highlights {id}</h3>
                                 <p className="text-sm text-gray-600 mb-3">June 1, 2025</p>
-                                <p className="text-gray-700 mb-4">An exciting match with stunning goals and incredible teamwork.</p>
+                                <p className="text-gray-700 mb-4">An exciting match with stunning goals and incredible
+                                    teamwork.</p>
                                 <a href="#" className="text-red-700 hover:underline text-sm font-medium">Read more →</a>
                             </div>
                         ))}
@@ -43,7 +47,8 @@ export default function HomePage() {
                     <h2 className="text-3xl font-semibold text-red-700 mb-4">Next Match</h2>
                     <p className="text-xl font-bold text-gray-900 mb-2">OneNil FC vs Rival Town</p>
                     <p className="text-gray-700 mb-4">Saturday · June 8 · 18:00 · City Stadium</p>
-                    <a href="#" className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
+                    <a href="#"
+                       className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition">
                         Buy Tickets
                     </a>
                 </div>

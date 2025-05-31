@@ -1,5 +1,5 @@
 <svg width="160" height="40" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
-    <rect width="160" height="40" rx="8" fill="white" opacity="0.05" />
+    <rect width="160" height="40" rx="8" fill="white" opacity="0.05"/>
     <path d="M22 12 L28 14 L28 22 C28 26 22 28 22 28 C22 28 16 26 16 22 L16 14 Z" fill="white" opacity="0.2"/>
     <path d="M22 12 L28 14 L28 22 C28 26 22 28 22 28 C22 28 16 26 16 22 L16 14 Z" fill="white"/>
     <text x="50" y="24" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="bold">SHIELDCORE</text>

@@ -1,5 +1,5 @@
-import { contentfulClient } from '@/lib/contentful';
-import { EntrySkeletonType } from 'contentful';
+import {contentfulClient} from '@/lib/contentful';
+import {EntrySkeletonType} from 'contentful';
 import Image from 'next/image';
 
 type PlayerFields = {

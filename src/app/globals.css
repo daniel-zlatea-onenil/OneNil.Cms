@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  :root {
-    --color-primary: 185 28 28;          /* #b91c1c */
-    --color-primary-dark: 127 29 29;     /* #7f1d1d */
-    --color-accent-bg: 243 244 246;      /* #f3f4f6 */
-    --color-slate-text: 55 65 81;        /* #374151 */
-    --color-slate-muted: 107 114 128;    /* #6b7280 */
-  }
+    :root {
+        --color-primary: 185 28 28; /* #b91c1c */
+        --color-primary-dark: 127 29 29; /* #7f1d1d */
+        --color-accent-bg: 243 244 246; /* #f3f4f6 */
+        --color-slate-text: 55 65 81; /* #374151 */
+        --color-slate-muted: 107 114 128; /* #6b7280 */
+    }
 }
