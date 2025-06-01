@@ -19,4 +19,6 @@ export type ComponentEntry = NextMatchBlockEntry;
 export type NavigationLinkSkeleton = EntrySkeletonType<NavigationLinkFields>;
 export type GlobalLayoutFields = { headerLinks: Entry<NavigationLinkSkeleton>[]; };
 export type GlobalLayoutSkeleton = EntrySkeletonType<GlobalLayoutFields>;
+export type NavigationLinkEntry = Entry<NavigationLinkSkeleton>;
+
 

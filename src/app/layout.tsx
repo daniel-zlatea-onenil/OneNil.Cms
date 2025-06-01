@@ -3,9 +3,8 @@ import type {Metadata} from 'next';
 import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
-import { GlobalLayoutSkeleton, NavigationLinkSkeleton } from '@/lib/types';
+import { GlobalLayoutSkeleton, NavigationLinkEntry } from '@/lib/types';
 import {contentfulClient} from "@/lib/contentful";
-import {Entry} from "contentful";
 
 export const metadata: Metadata = {
     title: 'OneNil FC',
@@ -19,7 +18,7 @@ export default async function RootLayout({children}: { children: React.ReactNode
     });
 
     const global = globalRes.items[0];
-    const headerLinks: Entry<NavigationLinkSkeleton>[] = global?.fields?.headerLinks ?? [];
+    const headerLinks = global?.fields.headerLinks as NavigationLinkEntry[] || [];
     
     return (
         <html lang="en">
@@ -38,15 +37,13 @@ export default async function RootLayout({children}: { children: React.ReactNode
                     />
                     <span className="text-xl font-bold tracking-wide">OneNil FC</span>
                 </div>
-                <h1>{headerLinks.length}</h1>
                 <ul className="hidden md:flex space-x-6 text-sm font-medium">
-                    {headerLinks.map((link) => {
+                    {headerLinks?.map((link) => {
                         const { displayText, url } = link.fields;
-
                         return (
                             <li key={link.sys.id}>
                                 <Link href={url} className="flex items-center space-x-1 hover:text-red-300">
-                                    <span>{displayText}</span>
+                                    <span>{displayText.toString()}</span>
                                 </Link>
                             </li>
                         );
