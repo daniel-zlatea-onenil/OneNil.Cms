@@ -1,4 +1,4 @@
-import { Entry, EntrySkeletonType, Asset } from 'contentful';
+import { Entry, EntrySkeletonType } from 'contentful';
 
 export type NextMatchBlockFields = {
     title: string;
