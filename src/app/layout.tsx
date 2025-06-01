@@ -3,13 +3,24 @@ import type {Metadata} from 'next';
 import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
+import { GlobalLayoutSkeleton, NavigationLinkSkeleton } from '@/lib/types';
+import {contentfulClient} from "@/lib/contentful";
+import {Entry} from "contentful";
 
 export const metadata: Metadata = {
     title: 'OneNil FC',
     description: 'Official website of OneNil Football Club',
 };
 
-export default function RootLayout({children}: { children: React.ReactNode }) {
+export default async function RootLayout({children}: { children: React.ReactNode }) {
+    const globalRes = await contentfulClient.getEntries<GlobalLayoutSkeleton>({
+        content_type: 'globalLayout',
+        limit: 1,
+    });
+
+    const global = globalRes.items[0];
+    const headerLinks: Entry<NavigationLinkSkeleton>[] = global?.fields?.headerLinks ?? [];
+    
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-slate-900 font-sans">
@@ -27,37 +38,19 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
                     />
                     <span className="text-xl font-bold tracking-wide">OneNil FC</span>
                 </div>
+                <h1>{headerLinks.length}</h1>
                 <ul className="hidden md:flex space-x-6 text-sm font-medium">
-                    <li>
-                        <Link href="/" className="hover:text-red-300">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/league-table" className="hover:text-red-300">
-                            League Table
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/articles" className="hover:text-red-300">
-                            News
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/team" className="hover:text-red-300">
-                            Team
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="#" className="hover:text-red-300">
-                            Tickets
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="#" className="hover:text-red-300">
-                            Contact
-                        </Link>
-                    </li>
+                    {headerLinks.map((link) => {
+                        const { displayText, url } = link.fields;
+
+                        return (
+                            <li key={link.sys.id}>
+                                <Link href={url} className="flex items-center space-x-1 hover:text-red-300">
+                                    <span>{displayText}</span>
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             </nav>
         </header>
