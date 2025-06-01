@@ -1,3 +1,4 @@
+export const revalidate = 60; // every 60 seconds
 import './globals.css';
 import type {Metadata} from 'next';
 import Image from 'next/image';
