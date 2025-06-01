@@ -29,14 +29,16 @@ export default async function RootLayout({children}: { children: React.ReactNode
         <header className="bg-red-700 text-white">
             <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                    <Image
-                        src="/images/onenil-crest.png"
-                        alt="OneNil FC Crest"
-                        width={48}
-                        height={48}
-                        className="object-contain"
-                    />
-                    <span className="text-xl font-bold tracking-wide">OneNil FC</span>
+                    <Link href="/" className="flex items-center space-x-3">
+                        <Image
+                            src="/images/onenil-crest.png"
+                            alt="OneNil FC Crest"
+                            width={48}
+                            height={48}
+                            className="object-contain"
+                        />
+                        <span className="text-xl font-bold tracking-wide">OneNil FC</span>
+                    </Link>
                 </div>
                 <ul className="hidden md:flex space-x-6 text-sm font-medium">
                     {headerLinks?.map((link) => {
