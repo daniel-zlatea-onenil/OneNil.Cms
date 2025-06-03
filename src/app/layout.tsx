@@ -26,20 +26,20 @@ export default async function RootLayout({children}: { children: React.ReactNode
         <body className="min-h-screen flex flex-col bg-white text-slate-900 font-sans">
 
         {/* Header */}
-        <header className="bg-red-700 text-white">
+        <header className="bg-black text-white sticky top-0 z-50 shadow">
             <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                    <Link href="/" className="flex items-center space-x-3">
-                        <Image
-                            src="/images/onenil-crest.png"
-                            alt="OneNil FC Crest"
-                            width={48}
-                            height={48}
-                            className="object-contain"
-                        />
-                        <span className="text-xl font-bold tracking-wide">OneNil FC</span>
-                    </Link>
-                </div>
+                {/* Logo only, no text */}
+                <Link href="/" className="flex items-center">
+                    <Image
+                        src="/images/onenil-crest.png"
+                        alt="OneNil FC Crest"
+                        width={48}
+                        height={48}
+                        className="object-contain"
+                    />
+                </Link>
+
+                {/* Navigation Links */}
                 <ul className="hidden md:flex space-x-6 text-sm font-medium">
                     {headerLinks?.map((link) => {
                         const { displayText, url } = link.fields;
@@ -54,6 +54,7 @@ export default async function RootLayout({children}: { children: React.ReactNode
                 </ul>
             </nav>
         </header>
+
 
         {/* Page Content */}
         <main className="flex-grow">
