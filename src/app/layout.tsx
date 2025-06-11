@@ -27,14 +27,14 @@ export default async function RootLayout({children}: { children: React.ReactNode
 
         {/* Header */}
         <header className="bg-black text-white sticky top-0 z-50 shadow">
-            <nav className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <nav className="max-w-7xl mx-auto px-4 py-1 flex items-center justify-between">
                 {/* Logo only, no text */}
                 <Link href="/" className="flex items-center">
                     <Image
                         src="/images/onenil-crest.png"
                         alt="OneNil FC Crest"
-                        width={48}
-                        height={48}
+                        width={64}
+                        height={64}
                         className="object-contain"
                     />
                 </Link>
