@@ -1,33 +1,10 @@
+import HeroCarousel from "@/app/components/HeroComponent";
+
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
             {/* Hero Section */}
-            <section className="relative h-[500px] w-full overflow-hidden">
-                <div className="absolute inset-0">
-                    <img
-                        src="/images/hero-image.jpg"
-                        alt="OneNil FC"
-                        className="absolute inset-0 w-full h-full object-cover object-top"
-                    />
-                    <div className="absolute inset-0 bg-black/60"></div> {/* Dark overlay for contrast */}
-                </div>
-                <div className="relative max-w-7xl mx-auto px-4 pt-64 pb-16 z-10 grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h1 className="text-4xl font-bold text-white mb-4">Welcome to OneNil FC</h1>
-                        <p className="text-lg text-white/90 mb-6">
-                            Experience the passion and pride of our club. Stay updated with the latest news,
-                            match highlights, and exclusive content.
-                        </p>
-                        <a
-                            href="#"
-                            className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition"
-                        >
-                            Explore More
-                        </a>
-                    </div>
-                </div>
-            </section>
-
+            <HeroCarousel />
 
             {/* News Section */}
             <section className="py-12 bg-white">
