@@ -73,6 +73,18 @@ export default function HeroCarousel() {
                             </div>
                         </div>
                     </div>
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
+                        {slides.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setCurrent(i)}
+                                className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                                    i === current ? 'bg-white scale-125' : 'bg-white/40'
+                                }`}
+                            />
+                        ))}
+                    </div>
+
                 </div>
             ))}
         </section>
