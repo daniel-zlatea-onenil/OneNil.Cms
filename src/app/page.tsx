@@ -1,34 +1,20 @@
 import HeroCarousel from "@/app/components/HeroComponent";
+import NewsComponent from "@/app/components/NewsComponent";
+
 import { getLatestArticles } from '@/lib/contentHelper';
 
 export default async function HomePage() {
-    const articles = await getLatestArticles(3);
+    const articlesHero = await getLatestArticles(3);
+    const articles = await getLatestArticles(18)
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
             {/* Hero Section */}
-            <HeroCarousel articles={articles} />
+            <HeroCarousel articles={articlesHero} />
 
             {/* News Section */}
-            <section className="py-12 bg-white">
-                <div className="max-w-7xl mx-auto px-4">
-                    <h2 className="text-3xl font-semibold text-red-700 mb-6">Latest News</h2>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {[1, 2, 3].map((id) => (
-                            <div key={id} className="bg-gray-100 rounded shadow p-5 hover:shadow-lg transition">
-                                <img src={`/images/news-${id}.jpg`} alt={`News ${id}`}
-                                     className="w-full h-48 object-cover rounded mb-4"/>
-                                <h3 className="font-bold text-xl mb-2">Matchday Highlights {id}</h3>
-                                <p className="text-sm text-gray-600 mb-3">June 1, 2025</p>
-                                <p className="text-gray-700 mb-4">An exciting match with stunning goals and incredible
-                                    teamwork.</p>
-                                <a href="#" className="text-red-700 hover:underline text-sm font-medium">Read more →</a>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
+            <NewsComponent articles={articles} />
+            
             {/* Upcoming Match */}
             <section className="bg-gray-100 py-12">
                 <div className="max-w-7xl mx-auto px-4 text-center">
