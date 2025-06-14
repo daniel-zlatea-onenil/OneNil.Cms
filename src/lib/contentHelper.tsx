@@ -5,7 +5,8 @@ import {Asset} from 'contentful';
 export async function getLatestArticles(limit = 3): Promise<Article[]> {
     const response = await contentfulClient.getEntries<ArticleSkeleton>({
         content_type: 'article',
-        order: ['fields.publishDate'] as any,
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        order: ['fields.publishDate'],
         limit,
     });
 
