@@ -1,5 +1,28 @@
 import { Entry, EntrySkeletonType } from 'contentful';
 
+export type ArticleSkeleton = EntrySkeletonType<{
+    title: string;
+    slug: string;
+    summary: string;
+    publishDate: string;
+    coverImage: {
+        fields: {
+            file: {
+                url: string;
+            };
+        };
+    };
+}>;
+
+// Optional: simplified version for your app
+export type Article = {
+    title: string;
+    slug: string;
+    summary: string;
+    date: string;
+    imageUrl: string;
+};
+
 export type NextMatchBlockFields = {
     title: string;
     date: string;

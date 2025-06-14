@@ -1,10 +1,13 @@
 import HeroCarousel from "@/app/components/HeroComponent";
+import { getLatestArticles } from '@/lib/contentHelper';
 
-export default function HomePage() {
+export default async function HomePage() {
+    const articles = await getLatestArticles(3);
+
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
             {/* Hero Section */}
-            <HeroCarousel />
+            <HeroCarousel articles={articles} />
 
             {/* News Section */}
             <section className="py-12 bg-white">

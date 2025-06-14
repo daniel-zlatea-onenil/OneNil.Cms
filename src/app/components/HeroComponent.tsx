@@ -1,37 +1,20 @@
 "use client";
-
 import {useState, useEffect} from 'react';
+import {Article} from "@/lib/types";
 
-const slides = [
-    {
-        image: '/images/hero-image.jpg',
-        headline: 'Welcome to OneNil FC',
-        description:
-            'Experience the passion and pride of our club. Stay updated with the latest news, match highlights, and exclusive content.',
-        cta: 'Explore More',
-        ctaLink: '#',
-    },
-    {
-        image: '/images/hero-image.jpg',
-        headline: 'New Signing Announcement',
-        description:
-            'John Doe joins OneNil FC. Discover what makes him a game-changer in our midfield.',
-        cta: 'Meet the Player',
-        ctaLink: '#',
-    },
-    {
-        image: '/images/hero-image.jpg',
-        headline: 'New Season Ahead',
-        description:
-            'John Doe joins OneNil FC. Discover what makes him a game-changer in our midfield.',
-        cta: 'See full schedule',
-        ctaLink: '#',
-    },
-];
+interface HeroCarouselProps {
+    articles: Article[];
+}
 
-export default function HeroCarousel() {
+export default function HeroCarousel({ articles }: HeroCarouselProps) {
+    const slides = articles.map((article) => ({
+        image: article.imageUrl,
+        headline: article.title,
+        description: article.summary,
+        cta: 'Read more',
+        ctaLink: `/articles/${article.slug}`,
+    }));
     const [current, setCurrent] = useState(0);
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrent((prev) => (prev + 1) % slides.length);
@@ -68,7 +51,7 @@ export default function HeroCarousel() {
                                     href={slide.ctaLink}
                                     className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition"
                                 >
-                                    {slide.cta}
+                                    Explore More
                                 </a>
                             </div>
                         </div>

@@ -1,19 +1,8 @@
 import {contentfulClient} from '@/lib/contentful';
 import {notFound} from 'next/navigation';
 import Image from 'next/image';
-import type {EntrySkeletonType} from 'contentful';
 import {Asset} from 'contentful';
-
-type ArticleFields = {
-    title: string;
-    slug: string;
-    summary: string;
-    publishDate: string;
-    content: string;
-    coverImage: Asset; // ✅ Use Contentful's Asset type
-};
-
-type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
+import {ArticleSkeleton } from '@/lib/types';
 
 export default async function ArticlePage(    props: {
     params: Promise<{ slug: string }>
@@ -30,7 +19,7 @@ export default async function ArticlePage(    props: {
     const article = res.items[0];
     if (!article) return notFound();
 
-    const {title, summary, publishDate, content} = article.fields;
+    const {title, summary, publishDate} = article.fields;
     const coverImage = article.fields.coverImage as Asset; // ✅ Type assertion
 
     return (
@@ -50,7 +39,7 @@ export default async function ArticlePage(    props: {
 
             <p className="text-lg text-gray-700 mb-4">{summary}</p>
             <div className="prose prose-slate">
-                <p>{content}</p>
+                <p>More content here</p>
             </div>
         </main>
     );
