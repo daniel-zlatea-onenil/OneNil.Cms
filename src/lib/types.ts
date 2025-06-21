@@ -32,15 +32,13 @@ export type NextMatchBlockFields = {
     team1: string;
     team2: string;
 };
+export type NextMatchBlockSkeleton = EntrySkeletonType<NextMatchBlockFields>;
+export type NextMatchBlockEntry = Entry<NextMatchBlockSkeleton>;
 
 export type NavigationLinkFields = {
     displayText: string;
     url: string;
 };
-
-export type NextMatchBlockSkeleton = EntrySkeletonType<NextMatchBlockFields>;
-export type NextMatchBlockEntry = Entry<NextMatchBlockSkeleton>;
-export type ComponentEntry = NextMatchBlockEntry;
 
 export type NavigationLinkSkeleton = EntrySkeletonType<NavigationLinkFields>;
 export type GlobalLayoutFields = { headerLinks: Entry<NavigationLinkSkeleton>[]; };
@@ -49,6 +47,26 @@ export type NavigationLinkEntry = Entry<NavigationLinkSkeleton>;
 
 
 export type MatchEventSkeleton = EntrySkeletonType<MatchEventFields>;
+export type TeamSkeleton = EntrySkeletonType<TeamFields>;
+export type TeamFields = {
+    name: string;
+    shortName?: string;
+    slug: string;
+    logo: {
+        sys: {
+            id: string;
+            type: string;
+            linkType: string;
+        };
+    };
+    foundationYear?: number;
+    city?: string;
+    stadium?: string;
+    teamColors?: string;
+    website?: string;
+    bio?: string;
+};
+
 
 export type MatchEventFields = {
         title: string;
@@ -61,26 +79,17 @@ export type MatchEventFields = {
         teamHome: {
             sys: {
                 id: string;
-                linkType: string;
                 type: string;
+                linkType: string;
             };
         };
         teamAway: {
             sys: {
                 id: string;
-                linkType: string;
                 type: string;
+                linkType: string;
             };
         };
 };
-
-export type MatchEvent = {
-    sys: {
-        id: string;
-    };
-    title: string;
-    slug: string;
-};
-
 
 

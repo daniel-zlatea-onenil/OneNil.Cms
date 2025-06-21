@@ -1,7 +1,7 @@
 import NextMatchBlock from '@/app/components/NextMatchBlock';
-import {ComponentEntry} from "@/lib/types";
+import {NextMatchBlockEntry} from "@/lib/types";
 
-export default function RenderComponent({ component }: { component: ComponentEntry }) 
+export default function RenderComponent({ component }: { component: NextMatchBlockEntry }) 
 {    
     switch (component.sys.contentType.sys.id) {
         case 'nextMatchBlock':
