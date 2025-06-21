@@ -33,7 +33,7 @@ export type NextMatchBlockFields = {
     team2: string;
 };
 export type NextMatchBlockSkeleton = EntrySkeletonType<NextMatchBlockFields>;
-export type NextMatchBlockEntry = Entry<NextMatchBlockSkeleton>;
+export type ComponentEntry = Entry<NextMatchBlockSkeleton>;
 
 export type NavigationLinkFields = {
     displayText: string;
