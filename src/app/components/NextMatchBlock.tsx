@@ -1,4 +1,4 @@
-import type {Entry, Asset} from 'contentful';
+import type {Entry, Asset, EntriesQueries} from 'contentful';
 import {contentfulClient} from '@/lib/contentful';
 import Link from 'next/link';
 import {
@@ -9,13 +9,14 @@ import {
 } from '@/lib/types';
 
 export default async function NextMatchBlock() {
-    const query: Record<string, any> = {
+    const query = {
         content_type: 'matchEvent',
         limit: 1,
         include: 2,
         order: 'fields.date',
         'fields.date[gte]': new Date().toISOString(),
-    };
+    } as unknown as EntriesQueries<MatchEventSkeleton, undefined>;
+
 
     const res = await contentfulClient.getEntries<MatchEventSkeleton>(query);
 
