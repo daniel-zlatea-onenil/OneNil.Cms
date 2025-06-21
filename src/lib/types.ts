@@ -47,7 +47,7 @@ export type NavigationLinkEntry = Entry<NavigationLinkSkeleton>;
 
 
 export type MatchEventSkeleton = EntrySkeletonType<MatchEventFields>;
-export type TeamSkeleton = EntrySkeletonType<TeamFields>;
+export type TeamSkeleton = EntrySkeletonType<TeamFields, 'team'>;
 export type TeamFields = {
     name: string;
     shortName?: string;

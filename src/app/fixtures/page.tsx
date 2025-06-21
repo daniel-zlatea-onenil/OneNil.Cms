@@ -1,12 +1,12 @@
 import {contentfulClient} from '@/lib/contentful';
 import Link from 'next/link';
-import {MatchEventFields, MatchEventSkeleton, TeamFields} from "@/lib/types";
+import {MatchEventFields, MatchEventSkeleton, TeamFields, TeamSkeleton} from "@/lib/types";
 import {format} from 'date-fns';
 import {Asset, Entry} from "contentful";
 
 async function getEvents(): Promise<{
     events: MatchEventFields[];
-    entries: Entry<any>[];
+    entries: Entry<TeamSkeleton>[];
     assets: Asset[];
 }> {
     const response = await contentfulClient.getEntries<MatchEventSkeleton>({
@@ -16,8 +16,8 @@ async function getEvents(): Promise<{
         include: 2,
     });
 
-    const entries = response.includes?.Entry ?? [];
-    const assets = response.includes?.Asset ?? [];
+    const entries = response.includes?.Entry as unknown as Entry<TeamSkeleton>[];
+    const assets = response.includes?.Asset as unknown as Asset[];
 
     const events = response.items.map((item) => {
         const fields = item.fields as MatchEventFields;
