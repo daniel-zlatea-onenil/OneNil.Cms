@@ -14,7 +14,7 @@ export type ArticleFields = {
             };
         };
     };
-}
+    sections?: ComponentEntry[];}
 
 export type Article =
     {
