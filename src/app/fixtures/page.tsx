@@ -61,8 +61,8 @@ export default async function FixturesPage() {
                 {events.map((match) => {
                     const formattedDate = format(new Date(match.date), 'dd MMM yyyy');
 
-                    const homeTeam = resolveTeam(match.teamHome.sys.id, entries as Entry<any>[]);
-                    const awayTeam = resolveTeam(match.teamAway.sys.id, entries as Entry<any>[]);
+                    const homeTeam = resolveTeam(match.teamHome.sys.id, entries);
+                    const awayTeam = resolveTeam(match.teamAway.sys.id, entries);
 
                     const assetIncludes = assets as Asset[] ?? [];
 
@@ -141,7 +141,7 @@ export default async function FixturesPage() {
     );
 }
 
-function resolveTeam(referenceId: string, includes: Entry<any>[]): TeamFields | undefined {
+function resolveTeam(referenceId: string, includes: Entry<TeamSkeleton>[]): TeamFields | undefined {
     return includes.find(
         (entry) =>
             entry.sys.id === referenceId &&
