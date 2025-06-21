@@ -9,14 +9,13 @@ import {
 } from '@/lib/types';
 
 export default async function NextMatchBlock() {
-    const query = {
+    const query: Record<string, any> = {
         content_type: 'matchEvent',
         limit: 1,
         include: 2,
         order: 'fields.date',
-    } as any;
-
-    query['fields.date[gte]'] = new Date().toISOString();
+        'fields.date[gte]': new Date().toISOString(),
+    };
 
     const res = await contentfulClient.getEntries<MatchEventSkeleton>(query);
 
