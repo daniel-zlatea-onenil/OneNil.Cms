@@ -32,8 +32,13 @@ export type NextMatchBlockFields = {
     team1: string;
     team2: string;
 };
+export type RichTextBlockSkeleton = EntrySkeletonType<RichTextBlockFields>;
+export type RichTextBlockFields = {
+    title: string;
+    text: Document;
+};
 export type NextMatchBlockSkeleton = EntrySkeletonType<NextMatchBlockFields>;
-export type ComponentEntry = Entry<NextMatchBlockSkeleton>;
+export type ComponentEntry = Entry<NextMatchBlockSkeleton> | Entry<RichTextBlockSkeleton>;
 
 export type NavigationLinkFields = {
     displayText: string;
