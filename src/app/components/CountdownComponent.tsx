@@ -18,7 +18,7 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
             const minutes = Math.floor((timeLeftInDay % 3600) / 60);
             const secs = timeLeftInDay % 60;
 
-            let parts: string[] = [];
+            const parts: string[] = [];
 
             if (remainingDays > 0) parts.push(`${remainingDays} ${remainingDays === 1 ? 'day' : 'days'}`);
             if (hours > 0) parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
