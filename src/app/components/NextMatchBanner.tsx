@@ -41,12 +41,12 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
                 <h2 className="text-2xl font-bold mb-2">Next Match</h2>
                 <div className="flex items-center justify-center space-x-4 text-lg mb-2">
                     <div className="flex items-center space-x-2">
-                        <img src={homeLogoUrl} alt={homeTeam?.name} className="h-6 w-6 object-contain" />
+                        <img src={homeLogoUrl} alt={homeTeam?.name} className="h-18 w-18 object-contain" />
                         <span>{homeTeam?.name}</span>
                     </div>
                     <span>vs</span>
                     <div className="flex items-center space-x-2">
-                        <img src={awayLogoUrl} alt={awayTeam?.name} className="h-6 w-6 object-contain" />
+                        <img src={awayLogoUrl} alt={awayTeam?.name} className="h-18 w-18 object-contain" />
                         <span>{awayTeam?.name}</span>
                     </div>
                 </div>

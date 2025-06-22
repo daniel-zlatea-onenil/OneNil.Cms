@@ -16,6 +16,7 @@ async function getEvents(): Promise<{
         // @ts-expect-error – ordering by fields is valid but not in the SDK's types
         order: ['fields.date'],
         include: 2,
+        'fields.date[gte]': new Date().toISOString(),
     });
 
     const entries = response.includes?.Entry as unknown as Entry<TeamSkeleton>[];
@@ -60,7 +61,7 @@ export default async function FixturesPage() {
             <NextMatchBannerWrapper events={events} entries={entries} assets={assets} />
 
             <ul className="space-y-6">
-                {events.map((match) => {
+                {events.length > 1 && events.slice(1).map((match) => {
                     const formattedDate = format(new Date(match.date), 'dd MMM yyyy');
 
                     const homeTeam = resolveTeam(match.teamHome.sys.id, entries);

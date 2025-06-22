@@ -11,20 +11,17 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
             const seconds = Math.max(0, Math.floor((targetDate.getTime() - now.getTime()) / 1000));
 
             const days = Math.floor(seconds / 86400);
-            const remainingDays = days % 30;
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
 
-            const timeLeftInDay = seconds % 86400;
-            const hours = Math.floor(timeLeftInDay / 3600);
-            const minutes = Math.floor((timeLeftInDay % 3600) / 60);
-            const secs = timeLeftInDay % 60;
+            const parts = [
+                `${days} ${days === 1 ? 'day' : 'days'}`,
+                `${hours.toString().padStart(2, '0')} ${hours === 1 ? 'hour' : 'hours'}`,
+                `${minutes.toString().padStart(2, '0')} ${minutes === 1 ? 'minute' : 'minutes'}`,
+                `${secs.toString().padStart(2, '0')} ${secs === 1 ? 'second' : 'seconds'}`,
+            ];
 
-            const parts: string[] = [];
-
-            if (remainingDays > 0) parts.push(`${remainingDays} ${remainingDays === 1 ? 'day' : 'days'}`);
-            if (hours > 0) parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
-            if (minutes > 0) parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
-            if (secs > 0) parts.push(`${secs} ${secs === 1 ? 'second' : 'seconds'}`);
-            
             setCountdownText(`Kick-off in ${parts.join(', ')}`);
         };
 
@@ -34,7 +31,7 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
     }, [targetDate]);
 
     return (
-        <div className="bg-white text-red-700 px-6 py-3 rounded font-semibold text-base shadow inline-block">
+        <div className="bg-white text-red-700 px-6 py-3 rounded font-semibold text-base shadow inline-block min-w-[280px] text-center">
             🕒 {countdownText}
         </div>
     );
