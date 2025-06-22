@@ -1,8 +1,10 @@
 import {contentfulClient} from '@/lib/contentful';
 import Link from 'next/link';
-import {MatchEventFields, MatchEventSkeleton, TeamFields, TeamSkeleton} from "@/lib/types";
+import {MatchEventFields, MatchEventSkeleton, TeamSkeleton} from "@/lib/types";
+import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
 import {format} from 'date-fns';
 import {Asset, Entry} from "contentful";
+import {resolveAsset, resolveTeam} from "@/lib/utils";
 
 async function getEvents(): Promise<{
     events: MatchEventFields[];
@@ -51,11 +53,11 @@ async function getEvents(): Promise<{
 
 export default async function FixturesPage() {
     const { events, entries, assets } = await getEvents();
-    
-    
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-10">
             <h1 className="text-4xl font-bold text-red-700 mb-8">2024/25 Fixtures</h1>
+            <NextMatchBannerWrapper events={events} entries={entries} assets={assets} />
 
             <ul className="space-y-6">
                 {events.map((match) => {
@@ -140,20 +142,3 @@ export default async function FixturesPage() {
         </div>
     );
 }
-
-function resolveTeam(referenceId: string, includes: Entry<TeamSkeleton>[]): TeamFields | undefined {
-    return includes.find(
-        (entry) =>
-            entry.sys.id === referenceId &&
-            entry.sys.contentType?.sys.id === 'team'
-    )?.fields as TeamFields;
-}
-
-
-function resolveAsset(assetId: string, assets: Asset[]): string | undefined {
-    const asset = assets.find(
-        (a) => a.sys.id === assetId && a.fields?.file?.url
-    );
-    return asset ? `https:${asset?.fields.file?.url}` : undefined;
-}
-
