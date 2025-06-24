@@ -1,3 +1,5 @@
+import {Asset} from "contentful";
+
 export const revalidate = 60; // every 60 seconds
 import './globals.css';
 import type {Metadata} from 'next';
@@ -19,13 +21,14 @@ export default async function RootLayout({children}: { children: React.ReactNode
 
     const global = globalRes.items[0];
     const headerLinks = global?.fields.headerLinks as NavigationLinkEntry[] || [];
+    const crest = global?.fields.crest as Asset;
     
     return (
         <html lang="en">
         <body className="min-h-screen flex flex-col bg-white text-slate-900 font-sans">
 
         {/* Header */}
-        <Header headerLinks={headerLinks} />
+        <Header headerLinks={headerLinks} crestSvgUrl={`https:${crest?.fields?.file?.url}`} />
 
         {/* Page Content */}
         <main className="flex-grow">

@@ -33,7 +33,8 @@ async function getEvents(): Promise<{
             competition,
             ticketLink,
             teamHome,
-            teamAway
+            teamAway,
+            heroBanner
         } = fields;
 
         return {
@@ -45,7 +46,8 @@ async function getEvents(): Promise<{
             competition,
             ticketLink,
             teamHome,
-            teamAway
+            teamAway,
+            heroBanner
         };
     });
 
@@ -56,10 +58,10 @@ export default async function FixturesPage() {
     const { events, entries, assets } = await getEvents();
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-10">
-            <h1 className="text-4xl font-bold text-red-700 mb-8">2024/25 Fixtures</h1>
+        <>
             <NextMatchBannerWrapper events={events} entries={entries} assets={assets} />
-
+            <div className="max-w-7xl mx-auto px-4 py-10">
+            <h1 className="text-4xl font-bold text-red-700 mb-8">2024/25 Fixtures</h1>
             <ul className="space-y-6">
                 {events.length > 1 && events.slice(1).map((match) => {
                     const formattedDate = format(new Date(match.date), 'dd MMM yyyy');
@@ -141,5 +143,6 @@ export default async function FixturesPage() {
                 })}
             </ul>
         </div>
+        </>
     );
 }

@@ -8,9 +8,10 @@ import {NavigationLinkEntry} from "@/lib/types";
 
 interface HeaderProps {
     headerLinks: NavigationLinkEntry[];
+    crestSvgUrl?: string;
 }
 
-export default function Header({ headerLinks }: HeaderProps) {
+export default function Header({ headerLinks, crestSvgUrl }: HeaderProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -19,7 +20,7 @@ export default function Header({ headerLinks }: HeaderProps) {
                 {/* Logo */}
                 <Link href="/" className="flex items-center">
                     <Image
-                        src="/images/onenil-crest.png"
+                        src={crestSvgUrl || '/fallback.svg'}
                         alt="OneNil FC Crest"
                         width={64}
                         height={64}

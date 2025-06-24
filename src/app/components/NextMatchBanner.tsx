@@ -36,8 +36,16 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
     }
 
     return (
-        <section className="bg-red-700 text-white py-10 mb-10 shadow-md rounded-lg">
-            <div className="text-center">
+        <section
+            className="relative w-full left-0 right-0 bg-cover bg-center bg-no-repeat text-white py-10 mb-10 overflow-hidden"
+            style={{ backgroundImage: `url('https:${match.heroBanner.fields.file.url}')` }}
+        >
+
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black opacity-60"></div>
+
+            {/* Content */}
+            <div className="relative z-10 text-center max-w-screen-xl mx-auto px-4">
                 <h2 className="text-2xl font-bold mb-2">Next Match</h2>
                 <div className="flex items-center justify-center space-x-4 text-lg mb-2">
                     <div className="flex items-center space-x-2">
@@ -64,5 +72,6 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
                 {targetDate && <Countdown targetDate={targetDate} />}
             </div>
         </section>
+
     );
 }
