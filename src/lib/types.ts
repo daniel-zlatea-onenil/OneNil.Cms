@@ -14,7 +14,8 @@ export type ArticleFields = {
             };
         };
     };
-    sections?: ComponentEntry[];}
+    sections?: ComponentEntry[];
+}
 
 export type Article =
     {
@@ -74,27 +75,34 @@ export type TeamFields = {
 
 
 export type MatchEventFields = {
-        title: string;
-        slug: string;
-        date: string;
-        location: string;
-        kickoffTime: string;
-        competition: string;
-        ticketLink?: string;
-        teamHome: {
-            sys: {
-                id: string;
-                type: string;
-                linkType: string;
+    title: string;
+    slug: string;
+    date: string;
+    location: string;
+    kickoffTime: string;
+    competition: string;
+    ticketLink?: string;
+    teamHome: {
+        sys: {
+            id: string;
+            type: string;
+            linkType: string;
+        };
+    };
+    teamAway: {
+        sys: {
+            id: string;
+            type: string;
+            linkType: string;
+        };
+    };
+    heroBanner: {
+        fields: {
+            file: {
+                url: string;
             };
         };
-        teamAway: {
-            sys: {
-                id: string;
-                type: string;
-                linkType: string;
-            };
-        };
+    };
 };
 
 
