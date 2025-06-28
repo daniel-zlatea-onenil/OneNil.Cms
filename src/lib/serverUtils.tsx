@@ -47,6 +47,7 @@ export async function getMatchViewModel(slug: string): Promise<MatchViewModel | 
         title: match.fields.title,
         slug: match.fields.slug,
         date: formattedDate,
+        targetDate: date,
         location: match.fields.location,
         kickoffTime: formattedTime,
         competition: match.fields.competition,

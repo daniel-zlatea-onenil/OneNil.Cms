@@ -5,11 +5,13 @@ import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
 import {format} from 'date-fns';
 import {Asset, Entry} from "contentful";
 import {resolveAsset} from "@/lib/utils";
+import {getMatchViewModel} from "@/lib/serverUtils";
+import {MatchViewModel} from "@/lib/viewModels";
 
 async function getEvents(): Promise<{
     events: MatchEventFields[];
-    entries: Entry<TeamSkeleton>[];
-    assets: Asset[];
+    nextEventViewModel: MatchViewModel | undefined;
+    assets?: Asset[];
 }> {
     const response = await contentfulClient.getEntries<MatchEventSkeleton>({
         content_type: 'matchEvent',
@@ -18,10 +20,8 @@ async function getEvents(): Promise<{
         include: 2,
         'fields.date[gte]': new Date().toISOString(),
     });
-
-    const entries = response.includes?.Entry as unknown as Entry<TeamSkeleton>[];
     const assets = response.includes?.Asset as unknown as Asset[];
-
+    const nextEventViewModel = await getMatchViewModel(response.items[0].fields.slug);
     const events = response.items.map((item) => {
         const fields = item.fields as MatchEventFields;
         const {
@@ -49,15 +49,15 @@ async function getEvents(): Promise<{
         };
     });
 
-    return { events, entries, assets };
+    return { events, nextEventViewModel, assets };
 }
 
 export default async function FixturesPage() {
-    const { events, entries, assets } = await getEvents();
-
+    const { events, nextEventViewModel, assets } = await getEvents();
+    
     return (
         <>
-            <NextMatchBannerWrapper events={events} entries={entries} assets={assets} />
+            <NextMatchBannerWrapper viewModel={nextEventViewModel} />
             <div className="max-w-7xl mx-auto px-4 py-10">
             <h1 className="text-4xl font-bold text-red-700 mb-8">2024/25 Fixtures</h1>
             <ul className="space-y-6">

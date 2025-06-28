@@ -2,6 +2,7 @@ export type MatchViewModel = {
     title: string;
     slug: string;
     date: string;
+    targetDate: Date;
     location: string;
     kickoffTime: string;
     competition: string;
