@@ -1,9 +1,7 @@
-'use client';
-
-import {MatchEventFields, TeamFields, TeamSkeleton} from '@/lib/types';
+import {MatchEventFields, TeamSkeleton} from '@/lib/types';
 import { Asset, Entry } from 'contentful';
 import Countdown from './CountdownComponent'; // we'll define this below
-import { resolveTeam, resolveAsset } from '@/lib/utils'; // if not modular yet, inline logic
+import { resolveAsset } from '@/lib/utils'; // if not modular yet, inline logic
 
 type Props = {
     match: MatchEventFields;
@@ -11,16 +9,24 @@ type Props = {
     assets: Asset[];
 };
 
-export default function NextMatchBanner({ match, teams, assets }: Props) {
-    const homeTeam = resolveTeam(match.teamHome.sys.id, teams) as TeamFields;
-    const awayTeam = resolveTeam(match.teamAway.sys.id, teams) as TeamFields;
+export default function NextMatchBanner({ match, assets }: Props) {
+    const homeTeam = match.teamHome as Entry<TeamSkeleton>;
+    const awayTeam = match.teamAway as Entry<TeamSkeleton>;
+    let homeLogoUrl: string | undefined = undefined;
+    let awayLogoUrl: string | undefined = undefined;
 
-    const homeLogoUrl = homeTeam?.logo?.sys?.id
-        ? resolveAsset(homeTeam.logo.sys.id, assets)
-        : '';
-    const awayLogoUrl = awayTeam?.logo?.sys?.id
-        ? resolveAsset(awayTeam.logo.sys.id, assets)
-        : '';
+    const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
+    const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
+    const homeTeamName = homeTeam.fields.name! as unknown as string;
+    const awayTeamName = awayTeam.fields.name! as unknown as string;
+
+    if (homeTeamLogo.sys?.id) {
+        homeLogoUrl = resolveAsset(homeTeamLogo.sys?.id, assets);
+    }
+
+    if (awayTeamLogo.sys?.id) {
+        awayLogoUrl = resolveAsset(awayTeamLogo.sys?.id, assets);
+    }
 
     let targetDate: Date | null = null;
 
@@ -38,7 +44,7 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
     return (
         <section
             className="relative w-full left-0 right-0 bg-cover bg-center bg-no-repeat text-white py-10 mb-10 overflow-hidden"
-            style={{ backgroundImage: `url('https:${match.heroBanner.fields.file.url}')` }}
+            style={{ backgroundImage: `url('https:${match.heroBanner?.fields?.file?.url}')` }}
         >
 
             {/* Dark overlay */}
@@ -49,17 +55,17 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
                 <h2 className="text-2xl font-bold mb-2">Next Match</h2>
                 <div className="flex items-center justify-center space-x-4 text-lg mb-2">
                     <div className="flex items-center space-x-2">
-                        <img src={homeLogoUrl} alt={homeTeam?.name} className="h-18 w-18 object-contain" />
-                        <span>{homeTeam?.name}</span>
+                        <img src={homeLogoUrl} alt={homeTeamName} className="h-18 w-18 object-contain" />
+                        <span>{homeTeamName}</span>
                     </div>
                     <span>vs</span>
                     <div className="flex items-center space-x-2">
-                        <img src={awayLogoUrl} alt={awayTeam?.name} className="h-18 w-18 object-contain" />
-                        <span>{awayTeam?.name}</span>
+                        <img src={awayLogoUrl} alt={awayTeamName} className="h-18 w-18 object-contain" />
+                        <span>{awayTeamName}</span>
                     </div>
                 </div>
                 <p className="text-sm mb-2">
-                    {match.location} · {match.kickoffTime} · {match.competition}
+                    {match.location} · match.kickoffTime · {match.competition}
                 </p>
                 <p className="text-sm mb-4">
                     {new Date(match.date).toLocaleDateString('en-US', {
@@ -70,6 +76,14 @@ export default function NextMatchBanner({ match, teams, assets }: Props) {
                     })}
                 </p>
                 {targetDate && <Countdown targetDate={targetDate} />}
+                {match.slug && (
+                    <a
+                        href={`/matches/${match.slug}`}
+                        className="inline-block mt-4 bg-red-700 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 hover:shadow-lg transition-transform transform hover:-translate-y-1"
+                    >
+                        View Details
+                    </a>
+                )}
             </div>
         </section>
 

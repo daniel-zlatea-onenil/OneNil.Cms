@@ -1,4 +1,4 @@
-import {Entry, EntrySkeletonType} from 'contentful';
+import {Asset, Entry, EntryFields, EntrySkeletonType} from 'contentful';
 
 export type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 
@@ -67,13 +67,7 @@ export type TeamFields = {
     name: string;
     shortName?: string;
     slug: string;
-    logo: {
-        sys: {
-            id: string;
-            type: string;
-            linkType: string;
-        };
-    };
+    logo: Asset,
     foundationYear?: number;
     city?: string;
     stadium?: string;
@@ -88,30 +82,11 @@ export type MatchEventFields = {
     slug: string;
     date: string;
     location: string;
-    kickoffTime: string;
     competition: string;
     ticketLink?: string;
-    teamHome: {
-        sys: {
-            id: string;
-            type: string;
-            linkType: string;
-        };
-    };
-    teamAway: {
-        sys: {
-            id: string;
-            type: string;
-            linkType: string;
-        };
-    };
-    heroBanner: {
-        fields: {
-            file: {
-                url: string;
-            };
-        };
-    };
+    teamHome: Entry<TeamSkeleton>;
+    teamAway: Entry<TeamSkeleton>;
+    heroBanner: Asset;
 };
 
 

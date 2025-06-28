@@ -4,7 +4,7 @@ import {MatchEventFields, MatchEventSkeleton, TeamSkeleton} from "@/lib/types";
 import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
 import {format} from 'date-fns';
 import {Asset, Entry} from "contentful";
-import {resolveAsset, resolveTeam} from "@/lib/utils";
+import {resolveAsset} from "@/lib/utils";
 
 async function getEvents(): Promise<{
     events: MatchEventFields[];
@@ -29,7 +29,6 @@ async function getEvents(): Promise<{
             date,
             title,
             location,
-            kickoffTime,
             competition,
             ticketLink,
             teamHome,
@@ -42,7 +41,6 @@ async function getEvents(): Promise<{
             date,
             title,
             location,
-            kickoffTime,
             competition,
             ticketLink,
             teamHome,
@@ -64,23 +62,31 @@ export default async function FixturesPage() {
             <h1 className="text-4xl font-bold text-red-700 mb-8">2024/25 Fixtures</h1>
             <ul className="space-y-6">
                 {events.length > 1 && events.slice(1).map((match) => {
-                    const formattedDate = format(new Date(match.date), 'dd MMM yyyy');
+                    const date = new Date(match.date);
+                    const formattedDate = format(date, 'dd MMM yyyy');
+                    const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-                    const homeTeam = resolveTeam(match.teamHome.sys.id, entries);
-                    const awayTeam = resolveTeam(match.teamAway.sys.id, entries);
+                    const homeTeam = match.teamHome as Entry<TeamSkeleton>;
+                    const awayTeam = match.teamAway as Entry<TeamSkeleton>;
 
                     const assetIncludes = assets as Asset[] ?? [];
 
                     let homeLogoUrl: string | undefined = undefined;
                     let awayLogoUrl: string | undefined = undefined;
 
-                    if (homeTeam?.logo?.sys?.id) {
-                        homeLogoUrl = resolveAsset(homeTeam.logo.sys.id, assetIncludes);
+                    const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
+                    const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
+                    const homeTeamName = homeTeam.fields.name! as unknown as string;
+                    const awayTeamName = awayTeam.fields.name! as unknown as string;
+
+                    if (homeTeamLogo.sys?.id) {
+                        homeLogoUrl = resolveAsset(homeTeamLogo.sys?.id, assetIncludes);
                     }
 
-                    if (awayTeam?.logo?.sys?.id) {
-                        awayLogoUrl = resolveAsset(awayTeam.logo.sys.id, assetIncludes);
+                    if (awayTeamLogo.sys?.id) {
+                        awayLogoUrl = resolveAsset(awayTeamLogo.sys?.id, assetIncludes);
                     }
+                    
                     return (
                         <li key={match.slug} className="border border-gray-200 rounded p-4 shadow-sm">
                             <div className="flex flex-col md:flex-row justify-between md:items-center">
@@ -90,12 +96,12 @@ export default async function FixturesPage() {
                                         <div className="flex items-center space-x-2">
                                             <img
                                                 src={homeLogoUrl}
-                                                alt={homeTeam?.name}
+                                                alt={homeTeamName}
                                                 width={24}
                                                 height={24}
                                                 className="object-contain"
                                             />
-                                            <span>{homeTeam?.name}</span>
+                                            <span>{homeTeamName}</span>
                                         </div>
 
                                         <span className="text-gray-400">vs</span>
@@ -104,17 +110,17 @@ export default async function FixturesPage() {
                                         <div className="flex items-center space-x-2">
                                             <img
                                                 src={awayLogoUrl}
-                                                alt={awayTeam?.name}
+                                                alt={awayTeamName}
                                                 width={24}
                                                 height={24}
                                                 className="object-contain"
                                             />
-                                            <span>{awayTeam?.name}</span>
+                                            <span>{awayTeamName}</span>
                                         </div>
                                     </h2>
 
                                     <p className="text-sm text-gray-600">
-                                        {formattedDate} · {match.kickoffTime} · {match.location}
+                                        {formattedDate} · {formattedTime} · {match.location}
                                     </p>
                                     <p className="text-sm text-gray-500 italic">{match.competition}</p>
                                 </div>
@@ -140,7 +146,7 @@ export default async function FixturesPage() {
                             </div>
                         </li>
                     );
-                })}
+                })}         
             </ul>
         </div>
         </>
