@@ -1,5 +1,5 @@
 import {contentfulClient} from '@/lib/contentful';
-import {LeagueTableEntry, SeasonFields, SeasonSkeleton} from '@/lib/types';
+import {LeagueTableEntry, SeasonSkeleton} from '@/lib/types';
 import {Entry} from 'contentful';
 
 export async function getSeasonBySlug(slug: string): Promise<Entry<SeasonSkeleton>> {
