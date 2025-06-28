@@ -1,12 +1,23 @@
-export default function LeagueTablePage() {
-    const standings = [
-        {pos: 1, team: 'OneNil FC', played: 34, won: 24, drawn: 6, lost: 4, gf: 65, ga: 28, pts: 78},
-        {pos: 2, team: 'Rival Town', played: 34, won: 22, drawn: 7, lost: 5, gf: 59, ga: 30, pts: 73},
-        {pos: 3, team: 'Kingsport United', played: 34, won: 20, drawn: 10, lost: 4, gf: 55, ga: 32, pts: 70},
-        {pos: 4, team: 'Redbridge FC', played: 34, won: 18, drawn: 9, lost: 7, gf: 52, ga: 36, pts: 63},
-        {pos: 5, team: 'Southvale Rangers', played: 34, won: 17, drawn: 8, lost: 9, gf: 47, ga: 40, pts: 59},
-    ];
+import {contentfulClient} from '@/lib/contentful';
+import {LeagueTableEntry, SeasonFields, SeasonSkeleton} from '@/lib/types';
+import {Entry} from 'contentful';
 
+export async function getSeasonBySlug(slug: string): Promise<Entry<SeasonSkeleton>> {
+    const entries = await contentfulClient.getEntries<SeasonSkeleton>({
+        content_type: 'season',
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        'fields.slug': slug,
+    });
+
+    return entries.items[0];
+}
+
+export default async function LeagueTablePage(props: {
+    params: Promise<{ slug: string }>
+}) {
+    const params = await props.params;
+    const standings = await getSeasonBySlug(params.slug);
+    const leagueTable = standings?.fields.leagueTable as unknown as LeagueTableEntry[];
     return (
         <main className="bg-white min-h-screen text-slate-900">
             {/* Page Header */}
@@ -30,22 +41,24 @@ export default function LeagueTablePage() {
                             <th className="px-3 py-2 text-center">D</th>
                             <th className="px-3 py-2 text-center">L</th>
                             <th className="px-3 py-2 text-center">GF</th>
-                            <th className="px-3 py-2 text-center">GA</th>
+                            <th className="px-3 py-2 text-center" >GA</th>
+                            <th className="px-3 py-2 text-center" >GD</th>
                             <th className="px-3 py-2 text-center">PTS</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {standings.map((team) => (
-                            <tr key={team.pos} className="odd:bg-white even:bg-slate-50 hover:bg-red-50 transition">
-                                <td className="px-3 py-2 font-semibold text-red-700">{team.pos}</td>
+                        {leagueTable.map((team) => (
+                            <tr key={team.slug} className="odd:bg-white even:bg-slate-50 hover:bg-red-50 transition">
+                                <td className="px-3 py-2 font-semibold text-red-700">{team.position}</td>
                                 <td className="px-3 py-2">{team.team}</td>
                                 <td className="px-3 py-2 text-center">{team.played}</td>
-                                <td className="px-3 py-2 text-center">{team.won}</td>
-                                <td className="px-3 py-2 text-center">{team.drawn}</td>
-                                <td className="px-3 py-2 text-center">{team.lost}</td>
-                                <td className="px-3 py-2 text-center">{team.gf}</td>
-                                <td className="px-3 py-2 text-center">{team.ga}</td>
-                                <td className="px-3 py-2 text-center font-bold text-slate-900">{team.pts}</td>
+                                <td className="px-3 py-2 text-center">{team.wins}</td>
+                                <td className="px-3 py-2 text-center">{team.draws}</td>
+                                <td className="px-3 py-2 text-center">{team.losses}</td>
+                                <td className="px-3 py-2 text-center">{team.goalsFor}</td>
+                                <td className="px-3 py-2 text-center">{team.goalsAgainst}</td>
+                                <td className="px-3 py-2 text-center">{team.goalDifference}</td>
+                                <td className="px-3 py-2 text-center font-bold text-slate-900">{team.points}</td>
                             </tr>
                         ))}
                         </tbody>

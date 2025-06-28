@@ -89,4 +89,27 @@ export type MatchEventFields = {
     heroBanner: Asset;
 };
 
+export type LeagueTableEntry = {
+    position: number;
+    team: string;
+    slug: string;
+    played: number;
+    wins: number;
+    draws: number;
+    losses: number;
+    goalsFor: number;
+    goalsAgainst: number;
+    goalDifference: number;
+    points: number;
+};
+
+export type SeasonFields = {
+    title: string;
+    slug: string;
+    leagueTable: LeagueTableEntry[];
+};
+
+export type SeasonSkeleton = EntrySkeletonType<SeasonFields>;
+
+
 
