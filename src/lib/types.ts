@@ -1,4 +1,4 @@
-import {Asset, Entry, EntryFields, EntrySkeletonType} from 'contentful';
+import {Asset, Entry, EntrySkeletonType} from 'contentful';
 
 export type ArticleSkeleton = EntrySkeletonType<ArticleFields>;
 
