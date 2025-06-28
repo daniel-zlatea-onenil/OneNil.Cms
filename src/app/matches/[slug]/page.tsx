@@ -1,36 +1,5 @@
 import {notFound} from 'next/navigation';
-import {format} from 'date-fns';
-import Image from 'next/image';
-import {contentfulClient} from '@/lib/contentful';
-import {MatchEventFields, MatchEventSkeleton, TeamSkeleton} from '@/lib/types';
-import {Asset, Entry} from 'contentful';
 import {getMatchViewModel} from "@/lib/serverUtils";
-
-type Props = {
-    params: {
-        slug: string;
-    };
-};
-
-export async function getMatchData(slug: string): Promise<{
-    match: Entry<MatchEventSkeleton>;
-    assets: Asset[];
-}> {
-    const entries = await contentfulClient.getEntries<MatchEventSkeleton>({
-        content_type: 'matchEvent',
-        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
-        'fields.slug': slug,
-        include: 2,
-        limit: 1,
-    });
-
-    const match = entries.items[0];
-    if (!match) throw new Error(`No match event found for slug: ${slug}`);
-
-    const assets: Asset[] = entries.includes?.Asset ?? [];
-
-    return {match, assets};
-}
 
 export default async function MatchPage(props: {
     params: Promise<{ slug: string }>
