@@ -75,3 +75,25 @@ export async function getMatchViewModel(slug: string): Promise<MatchViewModel | 
         },
     };
 }
+
+export async function getAllTeamLogos(): Promise<Record<string, string>> {
+    const entries = await contentfulClient.getEntries<TeamSkeleton>({
+        content_type: 'team',
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        select: 'fields.slug,fields.logo',
+    });
+
+    const logoMap: Record<string, string> = {};
+
+    for (const team of entries.items) {
+        const slug = team.fields.slug as unknown as string;
+        const logo = team.fields.logo as unknown as Asset;
+        const logoUrl = logo.fields.file?.url as unknown as string;
+
+        if (slug && logoUrl) {
+            logoMap[slug] = logoUrl; // Adjust if you use full CDN URLs
+        }
+    }
+
+    return logoMap;
+}
