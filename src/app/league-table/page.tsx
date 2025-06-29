@@ -1,6 +1,6 @@
 import {contentfulClient} from '@/lib/contentful';
-import {LeagueTableEntry, SeasonSkeleton} from '@/lib/types';
-import {Entry} from 'contentful';
+import {LeagueTableEntry, SeasonSkeleton, TeamSkeleton} from '@/lib/types';
+import {Asset, Entry} from 'contentful';
 
 export async function getSeasonBySlug(slug: string): Promise<Entry<SeasonSkeleton>> {
     const entries = await contentfulClient.getEntries<SeasonSkeleton>({
@@ -12,11 +12,34 @@ export async function getSeasonBySlug(slug: string): Promise<Entry<SeasonSkeleto
     return entries.items[0];
 }
 
+export async function getAllTeamLogos(): Promise<Record<string, string>> {
+    const entries = await contentfulClient.getEntries<TeamSkeleton>({
+        content_type: 'team',
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        select: 'fields.slug,fields.logo',
+    });
+
+    const logoMap: Record<string, string> = {};
+
+    for (const team of entries.items) {
+        const slug = team.fields.slug as unknown as string;
+        const  logo = team.fields.logo as unknown as Asset;
+        const logoUrl = logo.fields.file?.url as unknown as string;
+
+        if (slug && logoUrl) {
+            logoMap[slug] = logoUrl; // Adjust if you use full CDN URLs
+        }
+    }
+
+    return logoMap;
+}
+
 export default async function LeagueTablePage(props: {
     params: Promise<{ slug: string }>
 }) {
     const params = await props.params;
     const standings = await getSeasonBySlug(params.slug);
+    const teamLogos = await getAllTeamLogos() as Record<string, string>;
     const leagueTable = standings?.fields.leagueTable as unknown as LeagueTableEntry[];
     return (
         <main className="bg-white min-h-screen text-slate-900">
@@ -50,6 +73,14 @@ export default async function LeagueTablePage(props: {
                         {leagueTable.map((team) => (
                             <tr key={team.slug} className="odd:bg-white even:bg-slate-50 hover:bg-red-50 transition">
                                 <td className="px-3 py-2 font-semibold text-red-700">{team.position}</td>
+                                <td className="px-3 py-2 flex items-center space-x-2">
+                                    <img
+                                        src={teamLogos[team.slug] || '/placeholder.png'}
+                                        alt={team.team}
+                                        className="w-6 h-6 object-contain"
+                                    />
+                                    <span>{team.team}</span>
+                                </td>
                                 <td className="px-3 py-2">{team.team}</td>
                                 <td className="px-3 py-2 text-center">{team.played}</td>
                                 <td className="px-3 py-2 text-center">{team.wins}</td>
