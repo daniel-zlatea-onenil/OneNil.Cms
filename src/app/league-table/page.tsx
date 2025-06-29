@@ -6,6 +6,8 @@ export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
     const entries = await contentfulClient.getEntries<SeasonSkeleton>({
         content_type: 'season',
         limit: 1,
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        order: '-fields.startYear'
     });
 
     return entries.items[0];
