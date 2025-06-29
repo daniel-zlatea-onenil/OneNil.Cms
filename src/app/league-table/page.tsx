@@ -2,11 +2,10 @@ import {contentfulClient} from '@/lib/contentful';
 import {LeagueTableEntry, SeasonSkeleton, TeamSkeleton} from '@/lib/types';
 import {Asset, Entry} from 'contentful';
 
-export async function getSeasonBySlug(slug: string): Promise<Entry<SeasonSkeleton>> {
+export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
     const entries = await contentfulClient.getEntries<SeasonSkeleton>({
         content_type: 'season',
-        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
-        'fields.slug': slug,
+        limit: 1,
     });
 
     return entries.items[0];
@@ -23,7 +22,7 @@ export async function getAllTeamLogos(): Promise<Record<string, string>> {
 
     for (const team of entries.items) {
         const slug = team.fields.slug as unknown as string;
-        const  logo = team.fields.logo as unknown as Asset;
+        const logo = team.fields.logo as unknown as Asset;
         const logoUrl = logo.fields.file?.url as unknown as string;
 
         if (slug && logoUrl) {
@@ -34,11 +33,8 @@ export async function getAllTeamLogos(): Promise<Record<string, string>> {
     return logoMap;
 }
 
-export default async function LeagueTablePage(props: {
-    params: Promise<{ slug: string }>
-}) {
-    const params = await props.params;
-    const standings = await getSeasonBySlug(params.slug);
+export default async function LeagueTablePage() {
+    const standings = await getLastSeason();
     const teamLogos = await getAllTeamLogos() as Record<string, string>;
     const leagueTable = standings?.fields.leagueTable as unknown as LeagueTableEntry[];
     return (
@@ -64,35 +60,48 @@ export default async function LeagueTablePage(props: {
                             <th className="px-3 py-2 text-center">D</th>
                             <th className="px-3 py-2 text-center">L</th>
                             <th className="px-3 py-2 text-center">GF</th>
-                            <th className="px-3 py-2 text-center" >GA</th>
-                            <th className="px-3 py-2 text-center" >GD</th>
+                            <th className="px-3 py-2 text-center">GA</th>
+                            <th className="px-3 py-2 text-center">GD</th>
                             <th className="px-3 py-2 text-center">PTS</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {leagueTable.map((team) => (
-                            <tr key={team.slug} className="odd:bg-white even:bg-slate-50 hover:bg-red-50 transition">
-                                <td className="px-3 py-2 font-semibold text-red-700">{team.position}</td>
-                                <td className="px-3 py-2 flex items-center space-x-2">
-                                    <img
-                                        src={teamLogos[team.slug] || '/placeholder.png'}
-                                        alt={team.team}
-                                        className="w-6 h-6 object-contain"
-                                    />
-                                    <span>{team.team}</span>
-                                </td>
-                                <td className="px-3 py-2">{team.team}</td>
-                                <td className="px-3 py-2 text-center">{team.played}</td>
-                                <td className="px-3 py-2 text-center">{team.wins}</td>
-                                <td className="px-3 py-2 text-center">{team.draws}</td>
-                                <td className="px-3 py-2 text-center">{team.losses}</td>
-                                <td className="px-3 py-2 text-center">{team.goalsFor}</td>
-                                <td className="px-3 py-2 text-center">{team.goalsAgainst}</td>
-                                <td className="px-3 py-2 text-center">{team.goalDifference}</td>
-                                <td className="px-3 py-2 text-center font-bold text-slate-900">{team.points}</td>
-                            </tr>
-                        ))}
+                        {leagueTable.map((team, index) => {
+                            const isTop4 = index < 4;
+                            const isBottom3 = index >= leagueTable.length - 3;
+
+                            return (
+                                <tr
+                                    key={team.slug}
+                                    className={`
+          ${isTop4 ? 'bg-blue-200' : ''}
+          ${isBottom3 ? 'bg-red-200' : ''}
+          ${!isTop4 && !isBottom3 ? 'odd:bg-white even:bg-slate-50' : ''}
+          text-black hover:bg-opacity-80 transition
+        `}
+                                >
+                                    <td className="px-3 py-2">{team.position}</td>
+                                    <td className="px-3 py-2 flex items-center space-x-2">
+                                        <img
+                                            src={teamLogos[team.slug] || '/placeholder.png'}
+                                            alt={team.team}
+                                            className="w-6 h-6 object-contain"
+                                        />
+                                        <span>{team.team}</span>
+                                    </td>
+                                    <td className="px-3 py-2 text-center">{team.played}</td>
+                                    <td className="px-3 py-2 text-center">{team.wins}</td>
+                                    <td className="px-3 py-2 text-center">{team.draws}</td>
+                                    <td className="px-3 py-2 text-center">{team.losses}</td>
+                                    <td className="px-3 py-2 text-center">{team.goalsFor}</td>
+                                    <td className="px-3 py-2 text-center">{team.goalsAgainst}</td>
+                                    <td className="px-3 py-2 text-center">{team.goalDifference}</td>
+                                    <td className="px-3 py-2 text-center font-bold">{team.points}</td>
+                                </tr>
+                            );
+                        })}
                         </tbody>
+
                     </table>
                 </div>
             </section>
