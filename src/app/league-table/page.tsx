@@ -1,17 +1,7 @@
 import {contentfulClient} from '@/lib/contentful';
-import {LeagueTableEntry, SeasonSkeleton, TeamSkeleton} from '@/lib/types';
-import {Asset, Entry} from 'contentful';
-
-export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
-    const entries = await contentfulClient.getEntries<SeasonSkeleton>({
-        content_type: 'season',
-        limit: 1,
-        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
-        order: '-fields.startYear'
-    });
-
-    return entries.items[0];
-}
+import {LeagueTableEntry, TeamSkeleton} from '@/lib/types';
+import {Asset} from 'contentful';
+import {getLastSeason} from "@/lib/serverUtils";
 
 export async function getAllTeamLogos(): Promise<Record<string, string>> {
     const entries = await contentfulClient.getEntries<TeamSkeleton>({

@@ -1,10 +1,20 @@
 import { contentfulClient } from '@/lib/contentful';
-import { MatchEventSkeleton, TeamSkeleton } from '@/lib/types';
+import {MatchEventSkeleton, SeasonSkeleton, TeamSkeleton} from '@/lib/types';
 import {MatchViewModel} from "@/lib/viewModels";
 import {Asset, Entry} from "contentful";
 import {resolveAsset} from "@/lib/utils";
 import {format} from "date-fns";
 
+export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
+    const entries = await contentfulClient.getEntries<SeasonSkeleton>({
+        content_type: 'season',
+        limit: 1,
+        // @ts-expect-error – ordering by fields is valid but not in the SDK's types
+        order: '-fields.startYear'
+    });
+
+    return entries.items[0];
+}
 
 export async function getMatchViewModel(slug: string): Promise<MatchViewModel | undefined> {
     const entries = await contentfulClient.getEntries<MatchEventSkeleton>({
