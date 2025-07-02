@@ -53,7 +53,7 @@ export default async function LeagueTablePage() {
                                         <img
                                             src={teamLogos[team.slug] || '/placeholder.png'}
                                             alt={team.team}
-                                            className="w-6 h-6 object-contain"
+                                            className="w-8 h-8 object-contain"
                                         />
                                         <span>{team.team}</span>
                                     </td>
