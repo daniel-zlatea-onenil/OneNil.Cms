@@ -36,27 +36,64 @@ export default async function RootLayout({children}: { children: React.ReactNode
         </main>
 
         {/* Footer */}
-        <footer className="bg-red-700 text-white text-sm text-center mt-12">
-            {/* Sponsor Section */}
-            <div className="bg-red-600 py-6">
-                <div className="max-w-7xl mx-auto px-4">
-                    <h3 className="text-lg font-semibold mb-4">Proudly Sponsored By</h3>
-                    <div className="flex flex-wrap justify-center items-center gap-6">
-                        <img src="/images/sponsor1.svg" alt="Power Tech sponsor logo" className="h-10"/>
-                        <img src="/images/sponsor2.svg" alt="Sponsor 2" className="h-10"/>
-                        <img src="/images/sponsor3.svg" alt="Sponsor 3" className="h-10"/>
-                        <img src="/images/sponsor4.svg" alt="Sponsor 4" className="h-10"/>
+        <footer className="bg-red-700 text-white text-sm mt-12">
+            {/* Sponsors Section */}
+            {/* Sponsors Section */}
+            <div className="py-10">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <h3 className="text-lg font-semibold uppercase mb-6">Partners Oficiales</h3>
+                    <div className="flex flex-wrap justify-center items-center gap-10">
+                        <img src="/images/sponsor1.svg" alt="Sponsor 1" className="h-20" />
+                        <img src="/images/sponsor2.svg" alt="Sponsor 2" className="h-20" />
+                        <img src="/images/sponsor3.svg" alt="Sponsor 3" className="h-20" />
+                        <img src="/images/sponsor4.svg" alt="Sponsor 4" className="h-20" />
                     </div>
                 </div>
             </div>
 
-            {/* Legal Footer */}
-            <div className="py-6 border-t border-red-500">
-                <div className="max-w-7xl mx-auto px-4">
-                    &copy; {new Date().getFullYear()} OneNil FC · All rights reserved.
+
+            {/* Club Info & Legal Section */}
+            <div className="bg-black py-10 border-t border-neutral-800">
+                <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-10 text-center md:text-left">
+                    {/* Column 1: Navigation Links */}
+                    <div>
+                        <h4 className="font-semibold mb-3">Club</h4>
+                        <ul className="space-y-1">
+                            <li><a href="#" className="hover:underline">Equipos</a></li>
+                            <li><a href="#" className="hover:underline">Estadio</a></li>
+                            <li><a href="#" className="hover:underline">Entradas</a></li>
+                            <li><a href="#" className="hover:underline">Tienda</a></li>
+                        </ul>
+                    </div>
+
+                    {/* Column 2: Social Icons */}
+                    <div>
+                        <h4 className="font-semibold mb-3">Síguenos</h4>
+                        <div className="flex justify-center md:justify-start gap-4 text-xl">
+                            <a href="#"><i className="fab fa-facebook-f" /></a>
+                            <a href="#"><i className="fab fa-x-twitter" /></a>
+                            <a href="#"><i className="fab fa-instagram" /></a>
+                            <a href="#"><i className="fab fa-youtube" /></a>
+                        </div>
+                    </div>
+
+                    {/* Column 3: Legal */}
+                    <div>
+                        <h4 className="font-semibold mb-3">Legal</h4>
+                        <ul className="space-y-1">
+                            <li><a href="#" className="hover:underline">Aviso Legal</a></li>
+                            <li><a href="#" className="hover:underline">Política de Privacidad</a></li>
+                            <li><a href="#" className="hover:underline">Cookies</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="text-center text-xs mt-8 opacity-60">
+                    &copy; {new Date().getFullYear()} OneNil FC. Todos los derechos reservados.
                 </div>
             </div>
         </footer>
+
         </body>
         </html>
     );
