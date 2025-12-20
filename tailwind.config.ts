@@ -5,6 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        'brand-red': '#dc2626',
         primary: 'rgb(var(--color-primary) / <alpha-value>)',
         primaryDark: 'rgb(var(--color-primary-dark) / <alpha-value>)',
         accentBg: 'rgb(var(--color-accent-bg) / <alpha-value>)',

@@ -24,7 +24,7 @@ export default function HeroCarousel({ articles }: HeroCarouselProps) {
   }, [slides.length]);
 
   return (
-    <section className="relative h-[600px] w-full overflow-hidden">
+    <section className="relative h-[700px] w-full overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -51,7 +51,7 @@ export default function HeroCarousel({ articles }: HeroCarouselProps) {
           <div className="absolute inset-0 z-20 flex items-end pb-16">
             <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-8">
               <div>
-                <h1 className="text-4xl font-bold text-white mb-4">
+                <h1 className="text-6xl font-bold text-white mb-4">
                   {slide.headline}
                 </h1>
                 <p className="text-lg text-white/90 mb-6">
@@ -59,7 +59,7 @@ export default function HeroCarousel({ articles }: HeroCarouselProps) {
                 </p>
                 <a
                   href={slide.ctaLink}
-                  className="inline-block bg-red-700 text-white px-6 py-2 rounded hover:bg-red-800 transition"
+                  className="inline-block bg-brand-red text-white px-6 py-2 rounded hover:bg-red-800 transition"
                 >
                   Explore More
                 </a>

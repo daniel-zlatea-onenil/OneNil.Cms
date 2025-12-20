@@ -1,22 +1,22 @@
-import {contentfulClient} from '@/lib/contentful';
+import { contentfulClient } from '@/lib/contentful';
 import Link from 'next/link';
-import {
-    MatchEventFields,
-    MatchEventSkeleton,
-} from '@/lib/types';
+import { MatchEventFields, MatchEventSkeleton } from '@/lib/types';
 import { getMatchViewModel } from '@/lib/serverUtils';
 import Image from 'next/image';
+import Countdown from './CountdownComponent';
 
 export default async function NextMatchBlock() {
-              const query = {
-                  content_type: 'matchEvent',
-                  limit: 1,
-                  include: 2,
-                  order: ['fields.date'],
-                  'fields.date[gte]': new Date().toISOString(),
-              };
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const res = await contentfulClient.getEntries<MatchEventSkeleton>(query as any);  const match = res.items[0];
+  const query = {
+    content_type: 'matchEvent',
+    limit: 1,
+    include: 2,
+    order: ['fields.date'],
+    'fields.date[gte]': new Date().toISOString(),
+  };
+  const res = await contentfulClient.getEntries<MatchEventSkeleton>(
+    query as any // eslint-disable-line @typescript-eslint/no-explicit-any
+  );
+  const match = res.items[0];
   if (!match) {
     return (
       <div className="text-center text-gray-600 py-6">
@@ -67,30 +67,19 @@ export default async function NextMatchBlock() {
             )}
           </p>
 
-          <p className="text-lg font-medium text-white mt-4 flex items-center justify-center space-x-2">
-            <span className="text-xl">🕒</span>
-            <span>
-              {new Date(date).toLocaleString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              })}
-            </span>
-          </p>
+          <div className="my-4">
+            <Countdown targetDate={new Date(date)} />
+          </div>
 
           <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
             <Link href={`/matches/${slug}`}>
-              <button className="px-6 py-2 bg-red-700 text-white font-medium rounded hover:bg-red-800 transition">
+              <button className="px-6 py-2 bg-brand-red text-white font-medium rounded shadow-md hover:shadow-lg transition-all duration-300">
                 Match Details
               </button>
             </Link>
 
             <Link href={`/tickets/${slug}`} passHref>
-              <button className="px-6 py-2 bg-red-700 text-white font-medium rounded hover:bg-red-800 transition">
+              <button className="px-6 py-2 bg-brand-red text-white font-medium rounded shadow-md hover:shadow-lg transition-all duration-300">
                 Buy Tickets
               </button>
             </Link>
