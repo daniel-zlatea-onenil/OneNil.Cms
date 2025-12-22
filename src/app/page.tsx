@@ -50,7 +50,12 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="text-center mt-4">
-            <Link href="/matches/latest" className="text-brand-black hover:underline">Match Report</Link>
+            <Link
+              href="/matches/latest"
+              className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
+            >
+              Match Report
+            </Link>
           </div>
         </div>
       </section>
@@ -101,8 +106,13 @@ export default async function HomePage() {
               </tr>
             </tbody>
           </table>
-          <div className="text-center mt-4">
-            <Link href="/league-table" className="text-brand-red hover:underline">View Full Table</Link>
+          <div className="text-center mt-6">
+            <Link
+                href="/league-table"
+                className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
+            >
+              View Full Table
+            </Link>
           </div>
         </div>
       </section>
@@ -184,7 +194,9 @@ export default async function HomePage() {
               <div><input type="radio" name="poll" id="poll2" className="mr-2" /><label htmlFor="poll2">Player B</label></div>
               <div><input type="radio" name="poll" id="poll3" className="mr-2" /><label htmlFor="poll3">Player C</label></div>
             </div>
-            <button className="w-full bg-brand-red text-white p-2 rounded mt-4">Vote</button>
+            <button className="w-full bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors mt-4">
+              Vote
+            </button>
           </div>
         </div>
       </section>
@@ -197,7 +209,12 @@ export default async function HomePage() {
               <h2 className="text-3xl font-bold">Official Club Shop</h2>
               <p>Get the latest kits, training wear, and merchandise.</p>
             </div>
-            <Link href="/shop" className="bg-brand-red text-white px-6 py-3 rounded-lg font-semibold">Shop Now</Link>
+            <Link
+              href="/shop"
+              className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
+            >
+              Shop Now
+            </Link>
           </div>
         </div>
       </section>
@@ -207,8 +224,13 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold">Become a Member</h2>
           <p className="mt-2 text-lg">Join the OneNil FC family and get exclusive benefits.</p>
-          <Link href="/membership" className="mt-4 inline-block bg-brand-red text-white px-6 py-3 rounded-lg font-semibold">Learn More</Link>
-          </div>
+          <Link
+            href="/membership"
+            className="mt-4 inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
+          >
+            Learn More
+          </Link>
+        </div>
       </section>
     </div>
   );
