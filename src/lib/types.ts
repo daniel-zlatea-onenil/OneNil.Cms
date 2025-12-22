@@ -73,6 +73,7 @@ export type TeamFields = {
   teamColors?: string;
   website?: string;
   bio?: string;
+  isTheTeamWeSupport: boolean;
 };
 
 export type MatchEventFields = {

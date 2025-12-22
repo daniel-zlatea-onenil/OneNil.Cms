@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getLatestArticles, getPlayer } from '@/lib/contentHelper';
 import NextMatchBlock from '@/app/components/NextMatchBlock';
 import PlayerComponent from '@/app/components/PlayerComponent';
+import ShortLeagueTable from '@/app/components/ShortLeagueTable';
 
 export default async function HomePage() {
   const articlesHero = await getLatestArticles(3);
@@ -61,61 +62,7 @@ export default async function HomePage() {
       </section>
 
       {/* League Table Snippet */}
-      <section className="py-12 bg-brand-gray">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">League Table</h2>
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="p-4">Pos</th>
-                <th className="p-4">Team</th>
-                <th className="p-4">Pld</th>
-                <th className="p-4">W</th>
-                <th className="p-4">D</th>
-                <th className="p-4">L</th>
-                <th className="p-4">Pts</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b">
-                <td className="p-4">1</td>
-                <td className="p-4">Team A</td>
-                <td className="p-4">10</td>
-                <td className="p-4">8</td>
-                <td className="p-4">1</td>
-                <td className="p-4">1</td>
-                <td className="p-4">25</td>
-              </tr>
-              <tr className="border-b bg-brand-red/20">
-                <td className="p-4">2</td>
-                <td className="p-4">OneNil FC</td>
-                <td className="p-4">10</td>
-                <td className="p-4">7</td>
-                <td className="p-4">2</td>
-                <td className="p-4">1</td>
-                <td className="p-4">23</td>
-              </tr>
-              <tr className="border-b">
-                <td className="p-4">3</td>
-                <td className="p-4">Team C</td>
-                <td className="p-4">10</td>
-                <td className="p-4">6</td>
-                <td className="p-4">2</td>
-                <td className="p-4">2</td>
-                <td className="p-4">20</td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="text-center mt-6">
-            <Link
-                href="/league-table"
-                className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
-            >
-              View Full Table
-            </Link>
-          </div>
-        </div>
-      </section>
+      <ShortLeagueTable />
 
       {/* Team Stats Leaders */}
       <section className="py-12 bg-brand-red text-brand-white">

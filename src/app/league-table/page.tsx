@@ -4,7 +4,13 @@ import Image from 'next/image';
 
 export default async function LeagueTablePage() {
   const standings = await getLastSeason();
-  const teamLogos = (await getAllTeamLogos()) as Record<string, string>;
+  const teamLogos: Record<
+      string,
+      {
+        logoUrl: string;
+        isTheTeamWeSupport: boolean;
+      }
+  > = await getAllTeamLogos();  
   const leagueTable = standings?.fields
     .leagueTable as unknown as LeagueTableEntry[];
   return (
@@ -39,21 +45,26 @@ export default async function LeagueTablePage() {
               {leagueTable.map((team, index) => {
                 const isTop4 = index < 4;
                 const isBottom3 = index >= leagueTable.length - 3;
-
+                const isSupportedTeam = teamLogos[team.slug].isTheTeamWeSupport;
                 return (
                   <tr
                     key={team.slug}
                     className={`
-          ${isTop4 ? 'bg-blue-200' : ''}
-          ${isBottom3 ? 'bg-red-200' : ''}
-          ${!isTop4 && !isBottom3 ? 'odd:bg-white even:bg-slate-50' : ''}
+          ${isSupportedTeam ? 'bg-red-300' : ''}
+          ${!isSupportedTeam && isTop4 ? 'bg-blue-200' : ''}
+          ${!isSupportedTeam && isBottom3 ? 'bg-red-200' : ''}
+          ${
+            !isSupportedTeam && !isTop4 && !isBottom3
+              ? 'odd:bg-white even:bg-slate-50'
+              : ''
+          }
           text-black hover:bg-opacity-80 transition
         `}
                   >
                     <td className="px-3 py-2">{team.position}</td>
                     <td className="px-3 py-2 flex items-center space-x-2">
                       <Image
-                        src={teamLogos[team.slug] || '/placeholder.png'}
+                        src={teamLogos[team.slug].logoUrl || '/placeholder.png'}
                         alt={team.team}
                         width={32}
                         height={32}

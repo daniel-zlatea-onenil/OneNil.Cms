@@ -82,24 +82,44 @@ export async function getMatchViewModel(
   };
 }
 
-export async function getAllTeamLogos(): Promise<Record<string, string>> {
+export async function getAllTeamLogos(): Promise<
+    Record<
+        string,
+        {
+          logoUrl: string;
+          isTheTeamWeSupport: boolean;
+        }
+    >
+> {
   const entries = await contentfulClient.getEntries<TeamSkeleton>({
     content_type: 'team',
-    // @ts-expect-error – ordering by fields is valid but not in the SDK's types
-    select: 'fields.slug,fields.logo',
+    // @ts-expect-error – Contentful SDK typing limitation
+    select: 'fields.slug,fields.logo,fields.isTheTeamWeSupport',
   });
 
-  const logoMap: Record<string, string> = {};
+  const teamMap: Record<
+      string,
+      {
+        logoUrl: string;
+        isTheTeamWeSupport: boolean;
+      }
+  > = {};
 
   for (const team of entries.items) {
     const slug = team.fields.slug as unknown as string;
     const logo = team.fields.logo as unknown as Asset;
-    const logoUrl = logo.fields.file?.url as unknown as string;
-
+    const logoUrl = logo?.fields?.file?.url as unknown as string;
+    const isTheTeamWeSupport =
+        team.fields.isTheTeamWeSupport as unknown as boolean;
+    console.log(slug, logoUrl, isTheTeamWeSupport);
     if (slug && logoUrl) {
-      logoMap[slug] = logoUrl; // Adjust if you use full CDN URLs
+      teamMap[slug] = {
+        logoUrl,
+        isTheTeamWeSupport: Boolean(isTheTeamWeSupport),
+      };
     }
   }
 
-  return logoMap;
+  return teamMap;
 }
+
