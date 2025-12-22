@@ -7,6 +7,7 @@ import { getLatestArticles, getPlayer } from '@/lib/contentHelper';
 import NextMatchBlock from '@/app/components/NextMatchBlock';
 import PlayerComponent from '@/app/components/PlayerComponent';
 import ShortLeagueTable from '@/app/components/ShortLeagueTable';
+import LatestResultBlock from '@/app/components/LatestResultBlock';
 
 export default async function HomePage() {
   const articlesHero = await getLatestArticles(3);
@@ -34,32 +35,7 @@ export default async function HomePage() {
       </div>
 
       {/* Latest Result */}
-      <section className="py-12 bg-brand-red text-brand-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Latest Result</h2>
-          <div className="flex items-center justify-center text-center">
-            <div className="flex items-center">
-              <Image src="/images/onenil-crest.png" alt="OneNil FC" width={80} height={80} className="h-20" />
-              <span className="text-2xl font-bold ml-4">OneNil FC</span>
-            </div>
-            <div className="mx-8">
-              <span className="text-5xl font-bold">3 - 1</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-2xl font-bold mr-4">Opponent FC</span>
-              <Image src="/images/opponent-crest.png" alt="Opponent FC" width={80} height={80} className="h-20" />
-            </div>
-          </div>
-          <div className="text-center mt-4">
-            <Link
-              href="/matches/latest"
-              className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
-            >
-              Match Report
-            </Link>
-          </div>
-        </div>
-      </section>
+      <LatestResultBlock />
 
       {/* League Table Snippet */}
       <ShortLeagueTable />

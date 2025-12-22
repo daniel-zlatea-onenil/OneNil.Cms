@@ -83,6 +83,8 @@ export type MatchEventFields = {
   location: string;
   competition: string;
   ticketLink?: string;
+  homeScore?: number;
+  awayScore?: number;
   teamHome: Entry<TeamSkeleton>;
   teamAway: Entry<TeamSkeleton>;
   heroBanner: Asset;
