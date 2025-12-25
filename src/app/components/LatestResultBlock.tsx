@@ -33,45 +33,72 @@ export default async function LatestResultBlock() {
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
 
   return (
-    <section className="py-12 bg-brand-red text-brand-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-8">Latest Result</h2>
-        <div className="flex items-center justify-center text-center">
-          <div className="flex items-center">
-            <Image
-              src={matchViewModel.teamHome.logoUrl}
-              alt={matchViewModel.teamHome.name}
-              width={80}
-              height={80}
-              className="h-20"
-            />
-            <span className="text-2xl font-bold ml-4">
-              {matchViewModel.teamHome.name}
-            </span>
+    <section className="py-16 md:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
+          Latest Result
+        </h2>
+
+        {/* Result Card */}
+        <div className="glass-dark rounded-3xl p-8 md:p-12 max-w-3xl mx-auto">
+          <div className="flex items-center justify-center">
+            {/* Home Team */}
+            <div className="flex items-center flex-1 justify-end">
+              <span className="text-lg md:text-2xl font-bold mr-4 text-right hidden sm:block">
+                {matchViewModel.teamHome.name}
+              </span>
+              <Image
+                src={matchViewModel.teamHome.logoUrl}
+                alt={matchViewModel.teamHome.name}
+                width={80}
+                height={80}
+                className="h-14 w-14 md:h-20 md:w-20 object-contain"
+              />
+            </div>
+
+            {/* Score */}
+            <div className="mx-4 md:mx-10 text-center">
+              <div className="text-5xl md:text-7xl font-black tabular-nums tracking-tight">
+                {scoreLabel}
+              </div>
+            </div>
+
+            {/* Away Team */}
+            <div className="flex items-center flex-1">
+              <Image
+                src={matchViewModel.teamAway.logoUrl}
+                alt={matchViewModel.teamAway.name}
+                width={80}
+                height={80}
+                className="h-14 w-14 md:h-20 md:w-20 object-contain"
+              />
+              <span className="text-lg md:text-2xl font-bold ml-4 hidden sm:block">
+                {matchViewModel.teamAway.name}
+              </span>
+            </div>
           </div>
-          <div className="mx-8">
-            <span className="text-5xl font-bold">{scoreLabel}</span>
+
+          {/* Mobile team names */}
+          <div className="flex justify-between mt-4 sm:hidden text-sm font-medium">
+            <span>{matchViewModel.teamHome.name}</span>
+            <span>{matchViewModel.teamAway.name}</span>
           </div>
-          <div className="flex items-center">
-            <span className="text-2xl font-bold mr-4">
-              {matchViewModel.teamAway.name}
-            </span>
-            <Image
-              src={matchViewModel.teamAway.logoUrl}
-              alt={matchViewModel.teamAway.name}
-              width={80}
-              height={80}
-              className="h-20"
-            />
+
+          {/* CTA */}
+          <div className="text-center mt-8">
+            <Link
+              href={`/matches/${matchViewModel.slug}`}
+              className="inline-block bg-white text-red-700 px-8 py-3 rounded-full font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg"
+            >
+              Match Report
+            </Link>
           </div>
-        </div>
-        <div className="text-center mt-4">
-          <Link
-            href={`/matches/${matchViewModel.slug}`}
-            className="inline-block bg-red-600 text-white px-6 py-2 rounded font-semibold hover:bg-red-700 transition-colors"
-          >
-            Match Report
-          </Link>
         </div>
       </div>
     </section>
