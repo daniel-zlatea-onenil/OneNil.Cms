@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FiClock } from 'react-icons/fi';
 
 export default function Countdown({ targetDate }: { targetDate: Date }) {
   const [countdownText, setCountdownText] = useState<string>('');
@@ -34,8 +35,9 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
   }, [targetDate]);
 
   return (
-    <div className="bg-white text-red-700 px-6 py-3 rounded font-semibold text-base shadow inline-block min-w-[280px] text-center">
-      🕒 {countdownText}
+    <div className="glass-light text-red-700 px-8 py-4 rounded-2xl font-semibold text-base shadow-card inline-flex items-center gap-3 min-w-[280px] justify-center">
+      <FiClock className="w-5 h-5 animate-pulse" />
+      <span>{countdownText}</span>
     </div>
   );
 }

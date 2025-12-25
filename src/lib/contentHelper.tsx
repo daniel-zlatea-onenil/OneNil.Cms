@@ -55,3 +55,25 @@ export async function getPlayer(): Promise<Player | null> {
     photoUrl: photoUrl,
   };
 }
+
+export async function getPlayers(limit = 3): Promise<Player[]> {
+  const response = await contentfulClient.getEntries<PlayerSkeleton>({
+    content_type: 'player',
+    limit,
+  });
+
+  return response.items.map((playerEntry) => {
+    const photo = playerEntry.fields.photo as Asset;
+    const photoUrl = photo.fields.file?.url
+      ? `https:${photo.fields.file.url}`
+      : '/images/player.jpg';
+
+    return {
+      name: playerEntry.fields.name,
+      position: playerEntry.fields.position,
+      squadNumber: playerEntry.fields.squadNumber,
+      bio: playerEntry.fields.bio,
+      photoUrl: photoUrl,
+    };
+  });
+}
