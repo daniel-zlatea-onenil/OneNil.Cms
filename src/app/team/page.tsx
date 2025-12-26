@@ -56,10 +56,16 @@ export default async function TeamPage() {
   const players = await getPlayers();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-red-700 mb-8 text-center">
-        Meet the Team
-      </h1>
+    <div className="min-h-screen bg-slate-50">
+      {/* Page Header */}
+      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <h1 className="text-4xl md:text-5xl font-bold">Meet the Team</h1>
+          <p className="text-white/80 mt-2">Season 2024/2025</p>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 py-12">
       {Object.entries(players).map(([position, group]) => (
         <section key={position} className="mb-12">
           <h2 className="text-xl font-semibold text-slate-800 mb-4">
@@ -91,6 +97,7 @@ export default async function TeamPage() {
           </div>
         </section>
       ))}
+      </div>
     </div>
   );
 }

@@ -38,7 +38,7 @@ export default async function ArticlePage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white py-12 md:py-16">
+      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <h1 className="text-4xl md:text-5xl font-bold">Latest News</h1>
           <p className="text-white/80 mt-2">

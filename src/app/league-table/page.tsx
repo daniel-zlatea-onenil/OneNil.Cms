@@ -17,7 +17,7 @@ export default async function LeagueTablePage() {
   return (
     <main className="bg-slate-50 min-h-screen text-slate-900">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white py-12 md:py-16">
+      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <h1 className="text-4xl md:text-5xl font-bold">League Table</h1>
           <p className="text-white/80 mt-2">Season 2024/2025</p>
