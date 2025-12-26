@@ -59,15 +59,65 @@ export default async function ResultsPage() {
     return (team.fields.name as unknown as string) || '';
   };
 
+  // Helper to get hero banner URL
+  const getHeroBannerUrl = (
+    match: MatchEventFields | null
+  ): string | undefined => {
+    if (!match?.heroBanner) return undefined;
+    const banner = match.heroBanner as unknown as Asset;
+    if (banner?.sys?.id) {
+      return resolveAsset(banner.sys.id, assets ?? []);
+    }
+    // Direct URL fallback
+    if (banner?.fields?.file?.url) {
+      return `https:${banner.fields.file.url}`;
+    }
+    return undefined;
+  };
+
+  // Helper to parse scorers - handle both string and array formats
+  const parseScorers = (scorers: string | string[] | undefined): string[] => {
+    if (!scorers) return [];
+    if (Array.isArray(scorers)) return scorers;
+    if (typeof scorers === 'string')
+      return scorers.split(',').map((s) => s.trim());
+    return [];
+  };
+
+  const heroBannerUrl = getHeroBannerUrl(latestResult);
+  const homeScorersList = latestResult
+    ? parseScorers(latestResult.homeScorers)
+    : [];
+  const awayScorersList = latestResult
+    ? parseScorers(latestResult.awayScorers)
+    : [];
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Latest Result Hero Banner */}
       {latestResult && (
-        <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
-          <div className="max-w-6xl mx-auto px-4 md:px-8">
+        <section
+          className="relative text-white pt-24 md:pt-28 pb-12 md:pb-16 bg-cover bg-center bg-no-repeat overflow-hidden"
+          style={
+            heroBannerUrl
+              ? { backgroundImage: `url(${heroBannerUrl})` }
+              : undefined
+          }
+        >
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+
+          {/* Fallback gradient if no banner */}
+          {!heroBannerUrl && (
+            <div className="absolute inset-0 bg-gradient-to-br from-red-600 via-red-700 to-red-800" />
+          )}
+
+          <div className="relative max-w-6xl mx-auto px-4 md:px-8">
             <p className="text-white/70 text-sm uppercase tracking-wider mb-2">
               Latest Result
             </p>
+
             <div className="flex items-center justify-center gap-4 md:gap-8 my-8">
               {/* Home Team */}
               <div className="flex flex-col items-center">
@@ -75,18 +125,18 @@ export default async function ResultsPage() {
                   <Image
                     src={getLogoUrl(latestResult.teamHome)!}
                     alt={getTeamName(latestResult.teamHome)}
-                    width={64}
-                    height={64}
-                    className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                    width={80}
+                    height={80}
+                    className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg"
                   />
                 )}
-                <span className="mt-2 text-sm md:text-base font-medium text-center">
+                <span className="mt-2 text-sm md:text-lg font-semibold text-center drop-shadow-md">
                   {getTeamName(latestResult.teamHome)}
                 </span>
               </div>
 
               {/* Score */}
-              <div className="text-4xl md:text-6xl font-black tabular-nums">
+              <div className="text-5xl md:text-7xl font-black tabular-nums drop-shadow-lg">
                 {latestResult.homeScore} - {latestResult.awayScore}
               </div>
 
@@ -96,16 +146,49 @@ export default async function ResultsPage() {
                   <Image
                     src={getLogoUrl(latestResult.teamAway)!}
                     alt={getTeamName(latestResult.teamAway)}
-                    width={64}
-                    height={64}
-                    className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                    width={80}
+                    height={80}
+                    className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-lg"
                   />
                 )}
-                <span className="mt-2 text-sm md:text-base font-medium text-center">
+                <span className="mt-2 text-sm md:text-lg font-semibold text-center drop-shadow-md">
                   {getTeamName(latestResult.teamAway)}
                 </span>
               </div>
             </div>
+
+            {/* Scorers */}
+            {(homeScorersList.length > 0 || awayScorersList.length > 0) && (
+              <div className="flex justify-center gap-8 md:gap-16 my-6">
+                {/* Home Scorers */}
+                <div className="flex-1 text-right max-w-[200px]">
+                  {homeScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/90 space-y-1">
+                      {homeScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center justify-end gap-2">
+                          <span>{scorer}</span>
+                          <span>⚽</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Away Scorers */}
+                <div className="flex-1 text-left max-w-[200px]">
+                  {awayScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/90 space-y-1">
+                      {awayScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center gap-2">
+                          <span>⚽</span>
+                          <span>{scorer}</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="text-center">
               <p className="text-white/80 text-sm mb-4">
@@ -114,7 +197,7 @@ export default async function ResultsPage() {
               </p>
               <Link
                 href={`/matches/${latestResult.slug}`}
-                className="inline-block bg-white text-red-700 px-6 py-2 rounded-full font-semibold hover:bg-white/90 transition-all duration-300"
+                className="inline-block bg-white text-red-700 px-6 py-2 rounded-full font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg"
               >
                 Match Report
               </Link>
