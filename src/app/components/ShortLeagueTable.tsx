@@ -1,6 +1,7 @@
 import { LeagueTableEntry } from '@/lib/types';
 import { getAllTeamLogos, getLastSeason } from '@/lib/serverUtils';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function ShortLeagueTable() {
   const standings = await getLastSeason();
@@ -82,10 +83,23 @@ export default async function ShortLeagueTable() {
                     <td className="p-4 text-slate-600 font-medium">
                       {team.position}
                     </td>
-                    <td
-                      className={`p-4 ${isSupported ? 'font-bold text-red-700' : 'font-medium text-slate-900'}`}
-                    >
-                      {team.team}
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Image
+                          src={
+                            teamLogos[team.slug]?.logoUrl || '/placeholder.png'
+                          }
+                          alt={team.team}
+                          width={32}
+                          height={32}
+                          className="w-6 h-6 sm:w-8 sm:h-8 object-contain flex-shrink-0"
+                        />
+                        <span
+                          className={`${isSupported ? 'font-bold text-red-700' : 'font-medium text-slate-900'}`}
+                        >
+                          {team.team}
+                        </span>
+                      </div>
                     </td>
                     <td className="p-4 text-center text-slate-600">
                       {team.played}
