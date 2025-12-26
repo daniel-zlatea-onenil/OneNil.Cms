@@ -100,4 +100,5 @@ When given a feature request:
 3. Create and checkout the new branch
 4. Implement the feature
 5. Commit changes with descriptive messages
-6. Confirm completion and next steps (push, PR, etc.)
+6. Confirm completion and next steps with pushing the branch and create the PR
+7. Do not merge the pull request.
