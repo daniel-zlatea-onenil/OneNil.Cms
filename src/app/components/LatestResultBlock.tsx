@@ -27,10 +27,22 @@ export default async function LatestResultBlock() {
     return null;
   }
 
-  const { homeScore, awayScore } = match.fields as MatchEventFields;
+  const { homeScore, awayScore, homeScorers, awayScorers } =
+    match.fields as MatchEventFields;
   const hasScore =
     typeof homeScore === 'number' && typeof awayScore === 'number';
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
+
+  // Parse scorers - handle both string and array formats from Contentful
+  const parseScorers = (scorers: string | string[] | undefined): string[] => {
+    if (!scorers) return [];
+    if (Array.isArray(scorers)) return scorers;
+    if (typeof scorers === 'string') return scorers.split(',').map((s) => s.trim());
+    return [];
+  };
+
+  const homeScorersList = parseScorers(homeScorers);
+  const awayScorersList = parseScorers(awayScorers);
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden">
@@ -47,6 +59,7 @@ export default async function LatestResultBlock() {
 
         {/* Result Card */}
         <div className="glass-dark rounded-3xl p-8 md:p-12 max-w-3xl mx-auto">
+          {/* Teams and Score Row */}
           <div className="flex items-center justify-center">
             {/* Home Team */}
             <div className="flex items-center flex-1 justify-end">
@@ -89,6 +102,39 @@ export default async function LatestResultBlock() {
             <span>{matchViewModel.teamHome.name}</span>
             <span>{matchViewModel.teamAway.name}</span>
           </div>
+
+          {/* Scorers */}
+          {(homeScorersList.length > 0 || awayScorersList.length > 0) && (
+            <div className="flex justify-between mt-6 pt-6 border-t border-white/20">
+              {/* Home Scorers */}
+              <div className="flex-1 text-right pr-4 md:pr-8">
+                {homeScorersList.length > 0 && (
+                  <div className="text-sm md:text-base text-white/80 space-y-1">
+                    {homeScorersList.map((scorer, i) => (
+                      <p key={i} className="flex items-center justify-end gap-2">
+                        <span>{scorer}</span>
+                        <span className="text-lg">⚽</span>
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Away Scorers */}
+              <div className="flex-1 text-left pl-4 md:pl-8">
+                {awayScorersList.length > 0 && (
+                  <div className="text-sm md:text-base text-white/80 space-y-1">
+                    {awayScorersList.map((scorer, i) => (
+                      <p key={i} className="flex items-center gap-2">
+                        <span className="text-lg">⚽</span>
+                        <span>{scorer}</span>
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className="text-center mt-8">
