@@ -9,7 +9,7 @@ type Props = {
 export default function NextMatchBanner({ viewModel }: Props) {
   return (
     <section
-      className="relative w-full left-0 right-0 bg-cover bg-center bg-no-repeat text-white py-10 mb-10 overflow-hidden"
+      className="relative w-full left-0 right-0 bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-10 mb-10 overflow-hidden"
       style={{ backgroundImage: `url('${viewModel.heroBannerUrl}')` }}
     >
       {/* Dark overlay */}
