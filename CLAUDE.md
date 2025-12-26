@@ -70,3 +70,34 @@ CONTENTFUL_ACCESS_TOKEN=your_access_token
 - `season` - Seasons with leagueTable, fixtures, results
 - `fixture` - Match fixtures with home/away teams, date, venue
 - `result` - Match results with scores
+
+## Branch Naming Convention
+
+When implementing new features or fixes:
+
+1. **Always create a new branch** - Never work directly on main/master
+2. **Use this naming format**: `feature/ONENIL-{ticket-number}-{brief-description}`
+    - Example: `feature/ONENIL-1-improve-header-brightness`
+    - Use lowercase for the description
+    - Use hyphens to separate words
+    - Keep descriptions brief but descriptive
+
+3. **Before starting work**:
+    - Extract or ask for the ticket number from the feature request
+    - Create a branch with the proper naming convention
+    - Confirm the branch name before proceeding
+
+4. **Branch creation workflow**:
+```bash
+   git checkout -b feature/ONENIL-{ticket-number}-{description}
+```
+
+## Feature Implementation Process
+
+When given a feature request:
+1. Identify or ask for the JIRA ticket number (ONENIL-X)
+2. Create descriptive branch name from the feature description
+3. Create and checkout the new branch
+4. Implement the feature
+5. Commit changes with descriptive messages
+6. Confirm completion and next steps (push, PR, etc.)
