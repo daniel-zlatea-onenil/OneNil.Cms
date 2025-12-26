@@ -49,26 +49,26 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
   ];
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-3 sm:gap-4 w-full px-2 sm:px-4">
       {/* Kick-off label */}
-      <p className="text-white/60 text-sm font-medium uppercase tracking-widest">
+      <p className="text-white/60 text-xs sm:text-sm font-medium uppercase tracking-widest">
         Kick-off in
       </p>
 
       {/* Countdown boxes */}
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-1 sm:gap-2 md:gap-4 justify-center w-full">
         {timeUnits.map((unit, index) => (
-          <div key={unit.label} className="flex items-center gap-2 md:gap-4">
+          <div key={unit.label} className="flex items-center gap-1 sm:gap-2 md:gap-4">
             {/* Time unit box */}
             <div className="flex flex-col items-center">
               <div className="relative">
                 {/* Background glow */}
-                <div className="absolute inset-0 bg-red-500/20 rounded-xl blur-xl" />
+                <div className="absolute inset-0 bg-red-500/20 rounded-lg sm:rounded-xl blur-lg sm:blur-xl" />
 
                 {/* Main box */}
-                <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-3 py-3 md:px-5 md:py-4 min-w-[60px] md:min-w-[80px]">
+                <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg sm:rounded-xl px-2 py-2 sm:px-3 sm:py-3 md:px-5 md:py-4 min-w-[48px] sm:min-w-[60px] md:min-w-[80px]">
                   <span
-                    className={`block text-2xl md:text-4xl font-bold text-white tabular-nums text-center ${
+                    className={`block text-xl sm:text-2xl md:text-4xl font-bold text-white tabular-nums text-center ${
                       mounted ? 'transition-all duration-300' : ''
                     }`}
                   >
@@ -78,16 +78,16 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
               </div>
 
               {/* Label */}
-              <span className="mt-2 text-xs md:text-sm text-white/50 font-medium uppercase tracking-wider">
+              <span className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs md:text-sm text-white/50 font-medium uppercase tracking-wider">
                 {unit.label}
               </span>
             </div>
 
             {/* Separator (not after last item) */}
             {index < timeUnits.length - 1 && (
-              <div className="flex flex-col gap-1.5 pb-6">
-                <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
-                <span className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
+              <div className="flex flex-col gap-1 sm:gap-1.5 pb-4 sm:pb-6">
+                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
+                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
               </div>
             )}
           </div>

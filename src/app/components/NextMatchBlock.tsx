@@ -47,10 +47,10 @@ export default async function NextMatchBlock() {
         </h2>
 
         {/* Teams Display */}
-        <div className="glass-dark rounded-3xl p-8 md:p-12 inline-block mx-auto max-w-2xl">
-          <div className="flex items-center justify-center gap-6 md:gap-12">
+        <div className="glass-dark rounded-3xl p-4 sm:p-6 md:p-12 inline-block mx-auto max-w-2xl w-full">
+          <div className="flex items-center justify-center gap-3 sm:gap-6 md:gap-12">
             {/* Home Team */}
-            <div className="flex flex-col items-center group">
+            <div className="flex flex-col items-center group flex-1 min-w-0">
               {matchViewModel?.teamHome.logoUrl && (
                 <div className="relative">
                   <Image
@@ -58,22 +58,22 @@ export default async function NextMatchBlock() {
                     alt={matchViewModel?.teamHome.name}
                     width={64}
                     height={64}
-                    className="h-16 w-16 md:h-20 md:w-20 object-contain transition-transform duration-300 group-hover:scale-110"
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
               )}
-              <span className="mt-3 font-semibold text-sm md:text-base">
+              <span className="mt-2 sm:mt-3 font-semibold text-xs sm:text-sm md:text-base text-center truncate w-full px-1">
                 {matchViewModel?.teamHome.name}
               </span>
             </div>
 
             {/* VS */}
-            <div className="text-2xl md:text-3xl font-bold text-white/60 px-2">
+            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white/60 px-1 sm:px-2 flex-shrink-0">
               vs
             </div>
 
             {/* Away Team */}
-            <div className="flex flex-col items-center group">
+            <div className="flex flex-col items-center group flex-1 min-w-0">
               {matchViewModel?.teamAway.logoUrl && (
                 <div className="relative">
                   <Image
@@ -81,11 +81,11 @@ export default async function NextMatchBlock() {
                     alt={matchViewModel?.teamAway.name}
                     width={64}
                     height={64}
-                    className="h-16 w-16 md:h-20 md:w-20 object-contain transition-transform duration-300 group-hover:scale-110"
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
               )}
-              <span className="mt-3 font-semibold text-sm md:text-base">
+              <span className="mt-2 sm:mt-3 font-semibold text-xs sm:text-sm md:text-base text-center truncate w-full px-1">
                 {matchViewModel?.teamAway.name}
               </span>
             </div>
