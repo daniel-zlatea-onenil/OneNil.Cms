@@ -5,174 +5,221 @@ import {
   MatchEventSkeleton,
   TeamSkeleton,
 } from '@/lib/types';
-import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
 import { format } from 'date-fns';
 import { Asset, Entry } from 'contentful';
 import { resolveAsset } from '@/lib/utils';
-import { getMatchViewModel } from '@/lib/serverUtils';
-import { MatchViewModel } from '@/lib/viewModels';
 import Image from 'next/image';
 
-async function getEvents(): Promise<{
-  events: MatchEventFields[];
-  nextEventViewModel: MatchViewModel | undefined;
+async function getResults(): Promise<{
+  results: (MatchEventFields & { homeScore: number; awayScore: number })[];
+  latestResult:
+    | (MatchEventFields & { homeScore: number; awayScore: number })
+    | null;
   assets?: Asset[];
 }> {
   const query = {
     content_type: 'matchEvent',
-    order: ['fields.date'],
+    order: ['-fields.date'], // Most recent first
     include: 2,
-    'fields.date[lte]': new Date().toISOString(),
+    'fields.date[lte]': new Date().toISOString(), // Past events only
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response = await contentfulClient.getEntries<MatchEventSkeleton>(query as any);
-  const assets = response.includes?.Asset ?? [];
-  const nextEventViewModel = await getMatchViewModel(
-    response.items[0].fields.slug
+  const response = await contentfulClient.getEntries<MatchEventSkeleton>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    query as any
   );
-  const events = response.items.map((item) => {
-    const fields = item.fields as MatchEventFields;
-    const {
-      slug,
-      date,
-      title,
-      location,
-      competition,
-      ticketLink,
-      teamHome,
-      teamAway,
-      heroBanner,
-    } = fields;
+  const assets = response.includes?.Asset ?? [];
 
-    return {
-      slug,
-      date,
-      title,
-      location,
-      competition,
-      ticketLink,
-      teamHome,
-      teamAway,
-      heroBanner,
-    };
-  });
+  // Filter to only include matches with scores set (actual results)
+  const results = response.items
+    .map((item) => item.fields as MatchEventFields)
+    .filter(
+      (match): match is MatchEventFields & { homeScore: number; awayScore: number } =>
+        typeof match.homeScore === 'number' && typeof match.awayScore === 'number'
+    );
 
-  return { events, nextEventViewModel, assets };
+  const latestResult = results.length > 0 ? results[0] : null;
+
+  return { results, latestResult, assets };
 }
 
 export default async function ResultsPage() {
-  const { events, nextEventViewModel, assets } = await getEvents();
+  const { results, latestResult, assets } = await getResults();
+
+  // Helper to get team logo URL
+  const getLogoUrl = (team: Entry<TeamSkeleton>): string | undefined => {
+    const logo = team.fields.logo as unknown as Asset;
+    if (logo?.sys?.id) {
+      return resolveAsset(logo.sys.id, assets ?? []);
+    }
+    return undefined;
+  };
 
   return (
-    <>
-      <NextMatchBannerWrapper viewModel={nextEventViewModel} />
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <h1 className="text-4xl font-bold text-red-700 mb-8">
-          2024/25 Results
-        </h1>
-        <ul className="space-y-6">
-          {events.length > 1 &&
-            events.slice(1).map((match) => {
-              const date = new Date(match.date);
-              const formattedDate = format(date, 'dd MMM yyyy');
-              const formattedTime = date.toLocaleTimeString('en-GB', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-              });
+    <div className="min-h-screen bg-slate-50">
+      {/* Latest Result Hero Banner */}
+      {latestResult && (
+        <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
+          <div className="max-w-6xl mx-auto px-4 md:px-8">
+            <p className="text-white/70 text-sm uppercase tracking-wider mb-2">
+              Latest Result
+            </p>
+            <div className="flex items-center justify-center gap-4 md:gap-8 my-8">
+              {/* Home Team */}
+              <div className="flex flex-col items-center">
+                {getLogoUrl(latestResult.teamHome) && (
+                  <Image
+                    src={getLogoUrl(latestResult.teamHome)!}
+                    alt={(latestResult.teamHome.fields.name as string) || ''}
+                    width={64}
+                    height={64}
+                    className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                  />
+                )}
+                <span className="mt-2 text-sm md:text-base font-medium text-center">
+                  {latestResult.teamHome.fields.name as string}
+                </span>
+              </div>
 
-              const homeTeam = match.teamHome as Entry<TeamSkeleton>;
-              const awayTeam = match.teamAway as Entry<TeamSkeleton>;
+              {/* Score */}
+              <div className="text-4xl md:text-6xl font-black tabular-nums">
+                {latestResult.homeScore} - {latestResult.awayScore}
+              </div>
 
-              const assetIncludes = assets ?? [];
+              {/* Away Team */}
+              <div className="flex flex-col items-center">
+                {getLogoUrl(latestResult.teamAway) && (
+                  <Image
+                    src={getLogoUrl(latestResult.teamAway)!}
+                    alt={(latestResult.teamAway.fields.name as string) || ''}
+                    width={64}
+                    height={64}
+                    className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                  />
+                )}
+                <span className="mt-2 text-sm md:text-base font-medium text-center">
+                  {latestResult.teamAway.fields.name as string}
+                </span>
+              </div>
+            </div>
 
-              let homeLogoUrl: string | undefined = undefined;
-              let awayLogoUrl: string | undefined = undefined;
+            <div className="text-center">
+              <p className="text-white/80 text-sm mb-4">
+                {format(new Date(latestResult.date), 'dd MMM yyyy')} ·{' '}
+                {latestResult.competition}
+              </p>
+              <Link
+                href={`/matches/${latestResult.slug}`}
+                className="inline-block bg-white text-red-700 px-6 py-2 rounded-full font-semibold hover:bg-white/90 transition-all duration-300"
+              >
+                Match Report
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
-              const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
-              const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
-              const homeTeamName = homeTeam.fields.name! as unknown as string;
-              const awayTeamName = awayTeam.fields.name! as unknown as string;
+      {/* No results fallback */}
+      {!latestResult && (
+        <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
+          <div className="max-w-6xl mx-auto px-4 md:px-8">
+            <h1 className="text-4xl md:text-5xl font-bold">Results</h1>
+            <p className="text-white/80 mt-2">Season 2024/2025</p>
+          </div>
+        </section>
+      )}
 
-              if (homeTeamLogo.sys?.id) {
-                homeLogoUrl = resolveAsset(homeTeamLogo.sys?.id, assetIncludes);
-              }
+      {/* Results List */}
+      <section className="py-12 md:py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl font-bold text-slate-900 mb-8">
+            All Results
+          </h2>
 
-              if (awayTeamLogo.sys?.id) {
-                awayLogoUrl = resolveAsset(awayTeamLogo.sys?.id, assetIncludes);
-              }
+          {results.length === 0 ? (
+            <p className="text-slate-500 text-center py-12">
+              No results available yet.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {results.map((match) => {
+                const homeTeam = match.teamHome;
+                const awayTeam = match.teamAway;
+                const homeLogoUrl = getLogoUrl(homeTeam);
+                const awayLogoUrl = getLogoUrl(awayTeam);
 
-              return (
-                <li
-                  key={match.slug}
-                  className="border border-gray-200 rounded p-4 shadow-sm"
-                >
-                  <div className="flex flex-col md:flex-row justify-between md:items-center">
-                    <div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-1 flex items-center space-x-4">
-                        {/* Home team */}
-                        <div className="flex items-center space-x-2">
+                return (
+                  <Link
+                    key={match.slug}
+                    href={`/matches/${match.slug}`}
+                    className="block bg-white rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      {/* Match Info */}
+                      <div className="flex items-center gap-4 flex-1">
+                        {/* Home Team */}
+                        <div className="flex items-center gap-2 flex-1 justify-end">
+                          <span className="text-sm md:text-base font-medium text-slate-900 text-right hidden sm:block">
+                            {homeTeam.fields.name as string}
+                          </span>
                           {homeLogoUrl && (
                             <Image
                               src={homeLogoUrl}
-                              alt={homeTeamName}
-                              width={24}
-                              height={24}
-                              className="object-contain"
+                              alt={(homeTeam.fields.name as string) || ''}
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 object-contain"
                             />
                           )}
-                          <span>{homeTeamName}</span>
                         </div>
 
-                        <span className="text-gray-400">vs</span>
+                        {/* Score */}
+                        <div className="flex items-center justify-center min-w-[80px]">
+                          <span className="text-xl md:text-2xl font-bold text-slate-900 tabular-nums">
+                            {match.homeScore} - {match.awayScore}
+                          </span>
+                        </div>
 
-                        {/* Away team */}
-                        <div className="flex items-center space-x-2">
+                        {/* Away Team */}
+                        <div className="flex items-center gap-2 flex-1">
                           {awayLogoUrl && (
                             <Image
                               src={awayLogoUrl}
-                              alt={awayTeamName}
-                              width={24}
-                              height={24}
-                              className="object-contain"
+                              alt={(awayTeam.fields.name as string) || ''}
+                              width={32}
+                              height={32}
+                              className="w-8 h-8 object-contain"
                             />
                           )}
-                          <span>{awayTeamName}</span>
+                          <span className="text-sm md:text-base font-medium text-slate-900 hidden sm:block">
+                            {awayTeam.fields.name as string}
+                          </span>
                         </div>
-                      </h2>
+                      </div>
 
-                      <p className="text-sm text-gray-600">
-                        {formattedDate} · {formattedTime} · {match.location}
-                      </p>
-                      <p className="text-sm text-gray-500 italic">
-                        {match.competition}
-                      </p>
+                      {/* Date & Competition */}
+                      <div className="text-right ml-4 hidden md:block">
+                        <p className="text-sm text-slate-600">
+                          {format(new Date(match.date), 'dd MMM yyyy')}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {match.competition}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="mt-4 md:mt-0">
-                      <Link
-                        href={`/matches/${match.slug}`}
-                        className="text-red-700 hover:underline text-sm mr-4"
-                      >
-                        Match details →
-                      </Link>
-                      {match.ticketLink && (
-                        <a
-                          href={match.ticketLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-800 text-sm"
-                        >
-                          Tickets
-                        </a>
-                      )}
+                    {/* Mobile: Team names and date */}
+                    <div className="flex justify-between mt-3 sm:hidden text-xs text-slate-500">
+                      <span>{homeTeam.fields.name as string}</span>
+                      <span>{format(new Date(match.date), 'dd MMM')}</span>
+                      <span>{awayTeam.fields.name as string}</span>
                     </div>
-                  </div>
-                </li>
-              );
-            })}
-        </ul>
-      </div>
-    </>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
