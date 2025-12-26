@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { NavigationLinkEntry } from '@/lib/types';
@@ -15,6 +16,9 @@ interface HeaderProps {
 }
 
 export default function Header({ headerLinks, crestSvgUrl }: HeaderProps) {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+  const transparentAtTop = isHomePage;
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -35,7 +39,10 @@ export default function Header({ headerLinks, crestSvgUrl }: HeaderProps) {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const isScrolled = mounted ? scrolled : true;
+  // Determine if header should be in "scrolled" (solid) state
+  // If not transparentAtTop, always show solid background
+  const isScrolled = transparentAtTop ? (mounted ? scrolled : true) : true;
+  const showAccentLine = transparentAtTop ? (mounted && scrolled) : true;
 
   return (
     <header
@@ -45,11 +52,11 @@ export default function Header({ headerLinks, crestSvgUrl }: HeaderProps) {
           : 'bg-transparent'
       }`}
     >
-      {/* Top accent line - only show after mounted to prevent flicker */}
+      {/* Top accent line */}
       <div
         className={`h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600 ${
-          mounted ? 'transition-opacity duration-300' : ''
-        } ${mounted && scrolled ? 'opacity-100' : 'opacity-0'}`}
+          transparentAtTop && mounted ? 'transition-opacity duration-300' : ''
+        } ${showAccentLine ? 'opacity-100' : 'opacity-0'}`}
       />
 
       <div
