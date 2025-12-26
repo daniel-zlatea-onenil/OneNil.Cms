@@ -33,6 +33,17 @@ export default async function LatestResultBlock() {
     typeof homeScore === 'number' && typeof awayScore === 'number';
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
 
+  // Parse scorers - handle both string and array formats from Contentful
+  const parseScorers = (scorers: string | string[] | undefined): string[] => {
+    if (!scorers) return [];
+    if (Array.isArray(scorers)) return scorers;
+    if (typeof scorers === 'string') return scorers.split(',').map((s) => s.trim());
+    return [];
+  };
+
+  const homeScorersList = parseScorers(homeScorers);
+  const awayScorersList = parseScorers(awayScorers);
+
   return (
     <section className="py-16 md:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden">
       {/* Decorative elements */}
@@ -93,15 +104,15 @@ export default async function LatestResultBlock() {
           </div>
 
           {/* Scorers */}
-          {(homeScorers || awayScorers) && (
+          {(homeScorersList.length > 0 || awayScorersList.length > 0) && (
             <div className="flex justify-between mt-6 pt-6 border-t border-white/20">
               {/* Home Scorers */}
               <div className="flex-1 text-right pr-4 md:pr-8">
-                {homeScorers && (
+                {homeScorersList.length > 0 && (
                   <div className="text-sm md:text-base text-white/80 space-y-1">
-                    {homeScorers.split(',').map((scorer, i) => (
+                    {homeScorersList.map((scorer, i) => (
                       <p key={i} className="flex items-center justify-end gap-2">
-                        <span>{scorer.trim()}</span>
+                        <span>{scorer}</span>
                         <span className="text-lg">⚽</span>
                       </p>
                     ))}
@@ -111,12 +122,12 @@ export default async function LatestResultBlock() {
 
               {/* Away Scorers */}
               <div className="flex-1 text-left pl-4 md:pl-8">
-                {awayScorers && (
+                {awayScorersList.length > 0 && (
                   <div className="text-sm md:text-base text-white/80 space-y-1">
-                    {awayScorers.split(',').map((scorer, i) => (
+                    {awayScorersList.map((scorer, i) => (
                       <p key={i} className="flex items-center gap-2">
                         <span className="text-lg">⚽</span>
-                        <span>{scorer.trim()}</span>
+                        <span>{scorer}</span>
                       </p>
                     ))}
                   </div>

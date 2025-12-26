@@ -85,8 +85,8 @@ export type MatchEventFields = {
   ticketLink?: string;
   homeScore?: number;
   awayScore?: number;
-  homeScorers?: string;
-  awayScorers?: string;
+  homeScorers?: string | string[];
+  awayScorers?: string | string[];
   teamHome: Entry<TeamSkeleton>;
   teamAway: Entry<TeamSkeleton>;
   heroBanner: Asset;
