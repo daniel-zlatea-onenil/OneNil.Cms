@@ -48,7 +48,7 @@ export default function HeroCarousel({ articles }: HeroCarouselProps) {
             fill
             sizes="100vw"
             priority={index === 0}
-            className="object-cover object-top"
+            className="object-cover object-center"
           />
 
           {/* Multi-layer overlay for depth */}
