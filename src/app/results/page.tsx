@@ -54,6 +54,11 @@ export default async function ResultsPage() {
     return undefined;
   };
 
+  // Helper to get team name safely
+  const getTeamName = (team: Entry<TeamSkeleton>): string => {
+    return (team.fields.name as unknown as string) || '';
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Latest Result Hero Banner */}
@@ -69,14 +74,14 @@ export default async function ResultsPage() {
                 {getLogoUrl(latestResult.teamHome) && (
                   <Image
                     src={getLogoUrl(latestResult.teamHome)!}
-                    alt={(latestResult.teamHome.fields.name as string) || ''}
+                    alt={getTeamName(latestResult.teamHome)}
                     width={64}
                     height={64}
                     className="w-12 h-12 md:w-16 md:h-16 object-contain"
                   />
                 )}
                 <span className="mt-2 text-sm md:text-base font-medium text-center">
-                  {latestResult.teamHome.fields.name as string}
+                  {getTeamName(latestResult.teamHome)}
                 </span>
               </div>
 
@@ -90,14 +95,14 @@ export default async function ResultsPage() {
                 {getLogoUrl(latestResult.teamAway) && (
                   <Image
                     src={getLogoUrl(latestResult.teamAway)!}
-                    alt={(latestResult.teamAway.fields.name as string) || ''}
+                    alt={getTeamName(latestResult.teamAway)}
                     width={64}
                     height={64}
                     className="w-12 h-12 md:w-16 md:h-16 object-contain"
                   />
                 )}
                 <span className="mt-2 text-sm md:text-base font-medium text-center">
-                  {latestResult.teamAway.fields.name as string}
+                  {getTeamName(latestResult.teamAway)}
                 </span>
               </div>
             </div>
@@ -159,12 +164,12 @@ export default async function ResultsPage() {
                         {/* Home Team */}
                         <div className="flex items-center gap-2 flex-1 justify-end">
                           <span className="text-sm md:text-base font-medium text-slate-900 text-right hidden sm:block">
-                            {homeTeam.fields.name as string}
+                            {getTeamName(homeTeam)}
                           </span>
                           {homeLogoUrl && (
                             <Image
                               src={homeLogoUrl}
-                              alt={(homeTeam.fields.name as string) || ''}
+                              alt={getTeamName(homeTeam)}
                               width={32}
                               height={32}
                               className="w-8 h-8 object-contain"
@@ -184,14 +189,14 @@ export default async function ResultsPage() {
                           {awayLogoUrl && (
                             <Image
                               src={awayLogoUrl}
-                              alt={(awayTeam.fields.name as string) || ''}
+                              alt={getTeamName(awayTeam)}
                               width={32}
                               height={32}
                               className="w-8 h-8 object-contain"
                             />
                           )}
                           <span className="text-sm md:text-base font-medium text-slate-900 hidden sm:block">
-                            {awayTeam.fields.name as string}
+                            {getTeamName(awayTeam)}
                           </span>
                         </div>
                       </div>
@@ -209,9 +214,9 @@ export default async function ResultsPage() {
 
                     {/* Mobile: Team names and date */}
                     <div className="flex justify-between mt-3 sm:hidden text-xs text-slate-500">
-                      <span>{homeTeam.fields.name as string}</span>
+                      <span>{getTeamName(homeTeam)}</span>
                       <span>{format(new Date(match.date), 'dd MMM')}</span>
-                      <span>{awayTeam.fields.name as string}</span>
+                      <span>{getTeamName(awayTeam)}</span>
                     </div>
                   </Link>
                 );
