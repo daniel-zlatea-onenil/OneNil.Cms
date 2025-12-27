@@ -16,11 +16,18 @@ const playerStats = {
 
 const playerInfo = {
   nationality: 'Spain',
+  nationalityFlag: '🇪🇸',
   age: 27,
   height: '1.82m',
   preferredFoot: 'Right',
   joinedClub: '2021',
 };
+
+const playerHighlights = [
+  'Academy graduate with 6 years at the club',
+  'Team captain since 2023',
+  'Fan-voted Player of the Season 2023/24',
+];
 
 const playerQuote = {
   text: "Every match is an opportunity to give everything for this club and our fans.",
@@ -86,10 +93,13 @@ export default function PlayerComponent({ player }: PlayerProps) {
                 </div>
 
                 {/* Personal Info */}
-                <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm mb-6">
                   <div>
                     <span className="text-slate-400">Nationality</span>
-                    <p className="font-semibold text-slate-700">{playerInfo.nationality}</p>
+                    <p className="font-semibold text-slate-700">
+                      <span className="mr-1">{playerInfo.nationalityFlag}</span>
+                      {playerInfo.nationality}
+                    </p>
                   </div>
                   <div>
                     <span className="text-slate-400">Age</span>
@@ -103,6 +113,16 @@ export default function PlayerComponent({ player }: PlayerProps) {
                     <span className="text-slate-400">Foot</span>
                     <p className="font-semibold text-slate-700">{playerInfo.preferredFoot}</p>
                   </div>
+                </div>
+
+                {/* Highlights */}
+                <div className="space-y-2">
+                  {playerHighlights.map((highlight, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-slate-600">
+                      <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
+                      <span>{highlight}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
