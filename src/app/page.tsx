@@ -10,6 +10,7 @@ import PlayerComponent from '@/app/components/PlayerComponent';
 import ShortLeagueTable from '@/app/components/ShortLeagueTable';
 import LatestResultBlock from '@/app/components/LatestResultBlock';
 import TeamStatsLeaders from '@/app/components/TeamStatsLeaders';
+import FanPollComponent from '@/app/components/FanPollComponent';
 
 export default async function HomePage() {
   const articlesHero = await getLatestArticles(3);
@@ -91,37 +92,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Polls & Quizzes */}
-      <section className="py-16 md:py-20 bg-slate-50">
-        <div className="max-w-md mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-slate-900">
-            Fan Poll
-          </h2>
-          <div className="bg-white p-8 rounded-2xl shadow-card">
-            <p className="font-semibold text-slate-900 mb-6">
-              Who was the man of the match?
-            </p>
-            <div className="space-y-3">
-              {['Player A', 'Player B', 'Player C'].map((player, i) => (
-                <label
-                  key={i}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name="poll"
-                    className="w-5 h-5 text-red-600 focus:ring-red-500"
-                  />
-                  <span className="text-slate-700">{player}</span>
-                </label>
-              ))}
-            </div>
-            <button className="w-full bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-full font-semibold hover:shadow-glow-red transition-all duration-300 hover:scale-105 mt-6">
-              Vote
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* Fan Poll */}
+      <FanPollComponent />
 
       {/* Club Shop Promotion */}
       <section className="py-16 md:py-20 bg-gradient-to-br from-slate-900 to-black">
