@@ -17,11 +17,16 @@ async function getResults(): Promise<{
     | null;
   assets?: Asset[];
 }> {
+  // LIVE window: 3 hours before kickoff to 4 hours after kickoff
+  // Results page shows matches AFTER the LIVE window ends (kickoff + 4 hours)
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
+
   const query = {
     content_type: 'matchEvent',
     order: ['-fields.date'], // Most recent first
     include: 2,
-    'fields.date[lte]': new Date().toISOString(), // Past events only
+    limit: 1000, // Fetch all historical results
+    'fields.date[lte]': fourHoursAgo.toISOString(), // Exclude matches in LIVE window
   };
   const response = await contentfulClient.getEntries<MatchEventSkeleton>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,13 +34,15 @@ async function getResults(): Promise<{
   );
   const assets = response.includes?.Asset ?? [];
 
-  // Filter to only include matches with scores set (actual results)
-  const results = response.items
-    .map((item) => item.fields as MatchEventFields)
-    .filter(
-      (match): match is MatchEventFields & { homeScore: number; awayScore: number } =>
-        typeof match.homeScore === 'number' && typeof match.awayScore === 'number'
-    );
+  // Map all past matches, defaulting to 0-0 if no score is set
+  const results = response.items.map((item) => {
+    const fields = item.fields as MatchEventFields;
+    return {
+      ...fields,
+      homeScore: typeof fields.homeScore === 'number' ? fields.homeScore : 0,
+      awayScore: typeof fields.awayScore === 'number' ? fields.awayScore : 0,
+    };
+  });
 
   const latestResult = results.length > 0 ? results[0] : null;
 
@@ -97,7 +104,7 @@ export default async function ResultsPage() {
       {/* Latest Result Hero Banner */}
       {latestResult && (
         <section
-          className="relative text-white pt-24 md:pt-28 pb-12 md:pb-16 bg-cover bg-center bg-no-repeat overflow-hidden"
+          className="relative text-white pt-28 md:pt-36 pb-16 md:pb-24 bg-cover bg-top bg-no-repeat overflow-hidden bg-black"
           style={
             heroBannerUrl
               ? { backgroundImage: `url(${heroBannerUrl})` }
@@ -105,12 +112,13 @@ export default async function ResultsPage() {
           }
         >
           {/* Gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
+          {/* Stronger side gradients for images that don't fill the width */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" />
 
-          {/* Fallback gradient if no banner */}
+          {/* Fallback gradient if no banner - softer red tones */}
           {!heroBannerUrl && (
-            <div className="absolute inset-0 bg-gradient-to-br from-red-600 via-red-700 to-red-800" />
+            <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-red-500 to-red-600" />
           )}
 
           <div className="relative max-w-6xl mx-auto px-4 md:px-8">
@@ -206,9 +214,9 @@ export default async function ResultsPage() {
         </section>
       )}
 
-      {/* No results fallback */}
+      {/* No results fallback - softer red tones */}
       {!latestResult && (
-        <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
+        <section className="bg-gradient-to-r from-red-400 to-red-500 text-white pt-24 md:pt-28 pb-12 md:pb-16">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             <h1 className="text-4xl md:text-5xl font-bold">Results</h1>
             <p className="text-white/80 mt-2">Season 2024/2025</p>
@@ -223,87 +231,102 @@ export default async function ResultsPage() {
             All Results
           </h2>
 
-          {results.length === 0 ? (
+          {/* Filter out the latest result since it's already shown in the hero */}
+          {results.filter((m) => m.slug !== latestResult?.slug).length === 0 ? (
             <p className="text-slate-500 text-center py-12">
-              No results available yet.
+              No other results available yet.
             </p>
           ) : (
             <div className="space-y-4">
-              {results.map((match) => {
-                const homeTeam = match.teamHome;
-                const awayTeam = match.teamAway;
-                const homeLogoUrl = getLogoUrl(homeTeam);
-                const awayLogoUrl = getLogoUrl(awayTeam);
+              {results
+                .filter((m) => m.slug !== latestResult?.slug)
+                .map((match) => {
+                  const homeTeam = match.teamHome;
+                  const awayTeam = match.teamAway;
+                  const homeLogoUrl = getLogoUrl(homeTeam);
+                  const awayLogoUrl = getLogoUrl(awayTeam);
 
-                return (
-                  <Link
-                    key={match.slug}
-                    href={`/matches/${match.slug}`}
-                    className="block bg-white rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
-                  >
-                    <div className="flex items-center justify-between">
-                      {/* Match Info */}
-                      <div className="flex items-center gap-4 flex-1">
-                        {/* Home Team */}
-                        <div className="flex items-center gap-2 flex-1 justify-end">
-                          <span className="text-sm md:text-base font-medium text-slate-900 text-right hidden sm:block">
-                            {getTeamName(homeTeam)}
-                          </span>
-                          {homeLogoUrl && (
-                            <Image
-                              src={homeLogoUrl}
-                              alt={getTeamName(homeTeam)}
-                              width={32}
-                              height={32}
-                              className="w-8 h-8 object-contain"
-                            />
-                          )}
+                  return (
+                    <div
+                      key={match.slug}
+                      className="bg-white rounded-xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                    >
+                      <div className="flex items-center justify-between">
+                        {/* Match Info */}
+                        <div className="flex items-center gap-4 flex-1">
+                          {/* Home Team */}
+                          <div className="flex items-center gap-2 flex-1 justify-end">
+                            <span className="text-sm md:text-base font-medium text-slate-900 text-right hidden sm:block">
+                              {getTeamName(homeTeam)}
+                            </span>
+                            {homeLogoUrl && (
+                              <Image
+                                src={homeLogoUrl}
+                                alt={getTeamName(homeTeam)}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 object-contain"
+                              />
+                            )}
+                          </div>
+
+                          {/* Score */}
+                          <div className="flex items-center justify-center min-w-[80px]">
+                            <span className="text-xl md:text-2xl font-bold text-slate-900 tabular-nums">
+                              {match.homeScore} - {match.awayScore}
+                            </span>
+                          </div>
+
+                          {/* Away Team */}
+                          <div className="flex items-center gap-2 flex-1">
+                            {awayLogoUrl && (
+                              <Image
+                                src={awayLogoUrl}
+                                alt={getTeamName(awayTeam)}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 object-contain"
+                              />
+                            )}
+                            <span className="text-sm md:text-base font-medium text-slate-900 hidden sm:block">
+                              {getTeamName(awayTeam)}
+                            </span>
+                          </div>
                         </div>
 
-                        {/* Score */}
-                        <div className="flex items-center justify-center min-w-[80px]">
-                          <span className="text-xl md:text-2xl font-bold text-slate-900 tabular-nums">
-                            {match.homeScore} - {match.awayScore}
-                          </span>
-                        </div>
-
-                        {/* Away Team */}
-                        <div className="flex items-center gap-2 flex-1">
-                          {awayLogoUrl && (
-                            <Image
-                              src={awayLogoUrl}
-                              alt={getTeamName(awayTeam)}
-                              width={32}
-                              height={32}
-                              className="w-8 h-8 object-contain"
-                            />
-                          )}
-                          <span className="text-sm md:text-base font-medium text-slate-900 hidden sm:block">
-                            {getTeamName(awayTeam)}
-                          </span>
+                        {/* Date, Competition & Button */}
+                        <div className="flex items-center gap-4 ml-4">
+                          <div className="text-right hidden md:block">
+                            <p className="text-sm text-slate-600">
+                              {format(new Date(match.date), 'dd MMM yyyy')}
+                            </p>
+                            <p className="text-xs text-slate-400">
+                              {match.competition}
+                            </p>
+                          </div>
+                          <Link
+                            href={`/matches/${match.slug}`}
+                            className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-full hover:bg-red-700 transition-colors whitespace-nowrap"
+                          >
+                            Match Report
+                          </Link>
                         </div>
                       </div>
 
-                      {/* Date & Competition */}
-                      <div className="text-right ml-4 hidden md:block">
-                        <p className="text-sm text-slate-600">
-                          {format(new Date(match.date), 'dd MMM yyyy')}
-                        </p>
-                        <p className="text-xs text-slate-400">
-                          {match.competition}
-                        </p>
+                      {/* Mobile: Team names and date */}
+                      <div className="flex justify-between items-center mt-3 sm:hidden">
+                        <div className="text-xs text-slate-500">
+                          <span>{getTeamName(homeTeam)}</span>
+                          <span className="mx-2">vs</span>
+                          <span>{getTeamName(awayTeam)}</span>
+                        </div>
+                        <span className="text-xs text-slate-400">
+                          {format(new Date(match.date), 'dd MMM')}
+                        </span>
                       </div>
                     </div>
-
-                    {/* Mobile: Team names and date */}
-                    <div className="flex justify-between mt-3 sm:hidden text-xs text-slate-500">
-                      <span>{getTeamName(homeTeam)}</span>
-                      <span>{format(new Date(match.date), 'dd MMM')}</span>
-                      <span>{getTeamName(awayTeam)}</span>
-                    </div>
-                  </Link>
-                );
-              })}
+                  );
+                })}
             </div>
           )}
         </div>
