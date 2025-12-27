@@ -17,14 +17,16 @@ async function getResults(): Promise<{
     | null;
   assets?: Asset[];
 }> {
-  // Only show matches that started at least 4 hours ago (to allow for match completion)
+  // LIVE window: 3 hours before kickoff to 4 hours after kickoff
+  // Results page shows matches AFTER the LIVE window ends (kickoff + 4 hours)
   const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
 
   const query = {
     content_type: 'matchEvent',
     order: ['-fields.date'], // Most recent first
     include: 2,
-    'fields.date[lte]': fourHoursAgo.toISOString(), // Matches started 4+ hours ago
+    limit: 1000, // Fetch all historical results
+    'fields.date[lte]': fourHoursAgo.toISOString(), // Exclude matches in LIVE window
   };
   const response = await contentfulClient.getEntries<MatchEventSkeleton>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
