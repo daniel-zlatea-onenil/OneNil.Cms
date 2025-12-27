@@ -34,6 +34,16 @@ const playerQuote = {
   context: "On his commitment to the team",
 };
 
+const playerBio = {
+  playingStyle: 'Creative midfielder with exceptional vision and passing range. Known for his set-piece delivery and ability to dictate the tempo of the game.',
+  strengths: ['Long-range passing', 'Set pieces', 'Leadership', 'Work rate'],
+  achievements: [
+    'Europa League Winner 2023',
+    'La Liga Best XI 2022/23',
+    'Club Player of the Year 2024',
+  ],
+};
+
 // Sevilla FC crest from Contentful
 const sevillaLogo = 'https://images.ctfassets.net/600e09scr76p/573OBjjqAf65nvIdvilpa0/44e8eded97da79543fff6446e5979e9c/Sevilla_FC-ONkDhzzby_brandlogos.net.svg';
 
@@ -158,13 +168,55 @@ export default function PlayerComponent({ player }: PlayerProps) {
                 </div>
 
                 {/* Highlights */}
-                <div className="space-y-2">
+                <div className="space-y-2 mb-6">
                   {playerHighlights.map((highlight, index) => (
                     <div key={index} className="flex items-center gap-2 text-sm text-slate-600">
                       <span className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0" />
                       <span>{highlight}</span>
                     </div>
                   ))}
+                </div>
+
+                {/* Playing Style */}
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                    Playing Style
+                  </h4>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    {playerBio.playingStyle}
+                  </p>
+                </div>
+
+                {/* Strengths */}
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                    Strengths
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {playerBio.strengths.map((strength, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-full"
+                      >
+                        {strength}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Achievements */}
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                    Honours
+                  </h4>
+                  <div className="space-y-1.5">
+                    {playerBio.achievements.map((achievement, index) => (
+                      <div key={index} className="flex items-center gap-2 text-sm text-slate-600">
+                        <span className="text-amber-500">🏆</span>
+                        <span>{achievement}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
