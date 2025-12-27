@@ -35,12 +35,12 @@ const playerQuote = {
 };
 
 const playerBio = {
-  playingStyle: 'Creative midfielder with exceptional vision and passing range. Known for his set-piece delivery and ability to dictate the tempo of the game.',
-  strengths: ['Long-range passing', 'Set pieces', 'Leadership', 'Work rate'],
+  playingStyle: 'Creative midfielder with exceptional vision. Known for set-pieces and game control.',
+  strengths: ['Passing', 'Set pieces', 'Leadership', 'Work rate'],
   achievements: [
-    'Europa League Winner 2023',
+    'Europa League 2023',
     'La Liga Best XI 2022/23',
-    'Club Player of the Year 2024',
+    'Player of the Year 2024',
   ],
 };
 
