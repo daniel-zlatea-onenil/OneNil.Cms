@@ -34,6 +34,12 @@ const playerQuote = {
   context: "On his commitment to the team",
 };
 
+const careerHistory = [
+  { years: '2021 - Present', club: 'OneNil FC', appearances: 142, goals: 38 },
+  { years: '2018 - 2021', club: 'Real Zaragoza', appearances: 89, goals: 12 },
+  { years: '2016 - 2018', club: 'Deportivo Alavés B', appearances: 45, goals: 8 },
+];
+
 export default function PlayerComponent({ player }: PlayerProps) {
   if (!player) {
     return null;
@@ -149,14 +155,34 @@ export default function PlayerComponent({ player }: PlayerProps) {
                   </div>
                 </div>
 
-                {/* Bio */}
+                {/* Career History */}
                 <div className="mb-8">
-                  <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                    About
+                  <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+                    Career
                   </h4>
-                  <p className="text-slate-600 leading-relaxed">
-                    {player.bio}
-                  </p>
+                  <div className="space-y-3">
+                    {careerHistory.map((entry, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3 hover:bg-slate-100 transition-colors"
+                      >
+                        <div>
+                          <p className="font-semibold text-slate-800">{entry.club}</p>
+                          <p className="text-xs text-slate-500">{entry.years}</p>
+                        </div>
+                        <div className="flex gap-4 text-sm">
+                          <div className="text-center">
+                            <p className="font-bold text-slate-800">{entry.appearances}</p>
+                            <p className="text-xs text-slate-400">Apps</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="font-bold text-red-600">{entry.goals}</p>
+                            <p className="text-xs text-slate-400">Goals</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Quote */}
