@@ -36,6 +36,21 @@ src/
 │   └── types.ts            # TypeScript type definitions
 ```
 
+## Development Server Management
+
+**Important**: This is a Next.js project that runs a dev server.
+
+### Before making code changes:
+1. The dev server may be running - be aware that file changes can cause build conflicts
+2. If build errors occur (ENOENT in .next folder), instruct the user to:
+   - Stop the dev server (Ctrl+C)
+   - Run: `rm -rf .next`
+   - Restart: `npm run dev`
+
+### After completing changes:
+- Remind the user to restart the dev server if it was stopped
+- Suggest testing the changes with `npm run dev`
+
 ## Key Patterns
 
 ### Data Fetching
@@ -92,13 +107,32 @@ When implementing new features or fixes:
    git checkout -b feature/ONENIL-{ticket-number}-{description}
 ```
 
+## GitHub Issues
+
+Tickets are tracked using GitHub Issues: https://github.com/daniel-zlatea-onenil/OneNil.Cms/issues
+
+### Labels
+- `feature` - New feature or enhancement
+- `bug` - Something isn't working
+- `ui` - User interface changes
+- `in-progress` - Currently being worked on
+- `ready-for-review` - PR ready for review
+
+### Issue Commands
+```bash
+gh issue list                           # List open issues
+gh issue view {number}                  # View issue details
+gh issue create --title "..." --body "..." --label feature  # Create issue
+gh issue close {number}                 # Close issue
+```
+
 ## Feature Implementation Process
 
 When given a feature request:
-1. Identify or ask for the JIRA ticket number (ONENIL-X)
-2. Create descriptive branch name from the feature description
-3. Create and checkout the new branch
+1. Check if a GitHub Issue exists, or create one: `gh issue create`
+2. Note the issue number (e.g., #15 becomes ONENIL-15)
+3. Create branch: `feature/ONENIL-{issue-number}-{description}`
 4. Implement the feature
 5. Commit changes with descriptive messages
-6. Confirm completion and next steps with pushing the branch and create the PR
+6. Push and create PR linking to the issue
 7. Do not merge the pull request.
