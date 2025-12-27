@@ -67,6 +67,7 @@ export type TeamFields = {
   shortName?: string;
   slug: string;
   logo: Asset;
+  stadiumPhoto?: Asset;
   foundationYear?: number;
   city?: string;
   stadium?: string;

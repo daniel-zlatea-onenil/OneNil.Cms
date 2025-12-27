@@ -14,12 +14,18 @@ export default async function MatchPage(props: {
 
   const matchStatus = getMatchStatus(matchViewModel.targetDate);
 
+  // Use stadium photo for upcoming matches, hero banner for completed/live matches
+  const heroImageUrl =
+    matchStatus === 'pre-match'
+      ? matchViewModel.homeStadiumPhotoUrl || matchViewModel.heroBannerUrl
+      : matchViewModel.heroBannerUrl;
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
       <section
-        className="relative w-full bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-hidden"
-        style={{ backgroundImage: `url('${matchViewModel.heroBannerUrl}')` }}
+        className="relative w-full bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-hidden bg-slate-900"
+        style={heroImageUrl ? { backgroundImage: `url('${heroImageUrl}')` } : undefined}
       >
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
