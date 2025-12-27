@@ -84,6 +84,24 @@ const careerHistory = [
     appearances: 34,
     goals: 4
   },
+  {
+    season: '2020/21',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
+    competition: 'La Liga',
+    competitionFlag: '🇪🇸',
+    appearances: 29,
+    goals: 3
+  },
+  {
+    season: '2019/20',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
+    competition: 'La Liga',
+    competitionFlag: '🇪🇸',
+    appearances: 22,
+    goals: 1
+  },
 ];
 
 export default function PlayerComponent({ player }: PlayerProps) {
