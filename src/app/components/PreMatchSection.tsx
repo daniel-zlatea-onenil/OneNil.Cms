@@ -98,12 +98,12 @@ export default function PreMatchSection({
             <div className="space-y-2">
               <p className="text-xs text-slate-400 uppercase tracking-wider mb-2">Recent Meetings</p>
               {headToHead.recentMeetings.map((match, i) => (
-                <div key={i} className="flex justify-between items-center text-sm py-2 border-b border-slate-100 last:border-0">
-                  <span className="text-slate-500">{match.date}</span>
-                  <span className="font-semibold text-slate-900">
+                <div key={i} className="flex items-center text-sm py-2 border-b border-slate-100 last:border-0">
+                  <span className="text-slate-500 w-24">{match.date}</span>
+                  <span className="font-semibold text-slate-900 w-12 text-center">
                     {match.homeScore} - {match.awayScore}
                   </span>
-                  <span className="text-xs text-slate-400">{match.competition}</span>
+                  <span className="text-xs text-slate-400 flex-1 text-right">{match.competition}</span>
                 </div>
               ))}
             </div>
