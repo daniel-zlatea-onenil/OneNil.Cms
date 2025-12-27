@@ -7,7 +7,8 @@ export type MatchViewModel = {
   kickoffTime: string;
   competition: string;
   ticketLink?: string;
-  heroBannerUrl: string;
+  heroBannerUrl?: string;
+  homeStadiumPhotoUrl?: string;
   teamHome: {
     name: string;
     shortName?: string;

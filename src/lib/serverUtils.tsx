@@ -36,9 +36,11 @@ export async function getMatchViewModel(
   const awayTeam = teamAway as Entry<TeamSkeleton>;
   let homeLogoUrl: string | undefined = undefined;
   let awayLogoUrl: string | undefined = undefined;
+  let homeStadiumPhotoUrl: string | undefined = undefined;
 
   const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
   const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
+  const homeTeamStadiumPhoto = homeTeam.fields.stadiumPhoto as unknown as Asset;
   const homeTeamName = homeTeam.fields.name! as unknown as string;
   const homeTeamShortName = homeTeam.fields.name! as unknown as string;
   const awayTeamName = awayTeam.fields.shortName! as unknown as string;
@@ -51,6 +53,10 @@ export async function getMatchViewModel(
   if (awayTeamLogo.sys?.id) {
     awayLogoUrl = resolveAsset(awayTeamLogo.sys?.id, assets);
   }
+
+  if (homeTeamStadiumPhoto?.sys?.id) {
+    homeStadiumPhotoUrl = resolveAsset(homeTeamStadiumPhoto.sys.id, assets);
+  }
   const date = new Date(match.fields.date);
   const formattedDate = format(date, 'dd MMM yyyy');
   const formattedTime = date.toLocaleTimeString('en-GB', {
@@ -58,6 +64,11 @@ export async function getMatchViewModel(
     minute: '2-digit',
     hour12: false,
   });
+
+  const heroBannerAsset = heroBanner as Asset;
+  const heroBannerUrl = heroBannerAsset?.fields?.file?.url
+    ? `https:${heroBannerAsset.fields.file.url}`
+    : undefined;
 
   return {
     title: match.fields.title,
@@ -68,7 +79,8 @@ export async function getMatchViewModel(
     kickoffTime: formattedTime,
     competition: match.fields.competition,
     ticketLink: match.fields.ticketLink,
-    heroBannerUrl: `https:${(heroBanner as Asset)?.fields?.file?.url}`,
+    heroBannerUrl,
+    homeStadiumPhotoUrl,
     teamHome: {
       name: homeTeamName,
       shortName: homeTeamShortName,
