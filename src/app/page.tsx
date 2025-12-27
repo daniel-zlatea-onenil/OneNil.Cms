@@ -21,6 +21,9 @@ export default async function HomePage() {
       {/* Hero Section */}
       <HeroCarousel articles={articlesHero} />
 
+      {/* Spacer between Hero and Next Match */}
+      <div className="h-8 md:h-12 bg-gradient-to-b from-black/80 to-transparent" />
+
       {/* Upcoming Match */}
       <NextMatchBlock />
 
