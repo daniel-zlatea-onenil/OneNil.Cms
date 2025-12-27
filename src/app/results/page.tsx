@@ -17,11 +17,14 @@ async function getResults(): Promise<{
     | null;
   assets?: Asset[];
 }> {
+  // Only show matches that started at least 4 hours ago (to allow for match completion)
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
+
   const query = {
     content_type: 'matchEvent',
     order: ['-fields.date'], // Most recent first
     include: 2,
-    'fields.date[lte]': new Date().toISOString(), // Past events only
+    'fields.date[lte]': fourHoursAgo.toISOString(), // Matches started 4+ hours ago
   };
   const response = await contentfulClient.getEntries<MatchEventSkeleton>(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -108,9 +111,9 @@ export default async function ResultsPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50" />
 
-          {/* Fallback gradient if no banner */}
+          {/* Fallback gradient if no banner - softer red tones */}
           {!heroBannerUrl && (
-            <div className="absolute inset-0 bg-gradient-to-br from-red-600 via-red-700 to-red-800" />
+            <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-red-500 to-red-600" />
           )}
 
           <div className="relative max-w-6xl mx-auto px-4 md:px-8">
@@ -206,9 +209,9 @@ export default async function ResultsPage() {
         </section>
       )}
 
-      {/* No results fallback */}
+      {/* No results fallback - softer red tones */}
       {!latestResult && (
-        <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
+        <section className="bg-gradient-to-r from-red-400 to-red-500 text-white pt-24 md:pt-28 pb-12 md:pb-16">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             <h1 className="text-4xl md:text-5xl font-bold">Results</h1>
             <p className="text-white/80 mt-2">Season 2024/2025</p>
