@@ -34,13 +34,15 @@ async function getResults(): Promise<{
   );
   const assets = response.includes?.Asset ?? [];
 
-  // Filter to only include matches with scores set (actual results)
-  const results = response.items
-    .map((item) => item.fields as MatchEventFields)
-    .filter(
-      (match): match is MatchEventFields & { homeScore: number; awayScore: number } =>
-        typeof match.homeScore === 'number' && typeof match.awayScore === 'number'
-    );
+  // Map all past matches, defaulting to 0-0 if no score is set
+  const results = response.items.map((item) => {
+    const fields = item.fields as MatchEventFields;
+    return {
+      ...fields,
+      homeScore: typeof fields.homeScore === 'number' ? fields.homeScore : 0,
+      awayScore: typeof fields.awayScore === 'number' ? fields.awayScore : 0,
+    };
+  });
 
   const latestResult = results.length > 0 ? results[0] : null;
 
