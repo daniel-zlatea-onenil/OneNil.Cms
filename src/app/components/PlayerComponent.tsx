@@ -34,33 +34,45 @@ const playerQuote = {
   context: "On his commitment to the team",
 };
 
+// Sevilla FC crest from Contentful
+const sevillaLogo = 'https://images.ctfassets.net/600e09scr76p/573OBjjqAf65nvIdvilpa0/44e8eded97da79543fff6446e5979e9c/Sevilla_FC-ONkDhzzby_brandlogos.net.svg';
+
 const careerHistory = [
   {
-    years: '2021 - Present',
-    club: 'OneNil FC',
-    badge: '🔴',
+    season: '2024/25',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
     competition: 'La Liga',
     competitionFlag: '🇪🇸',
-    appearances: 142,
-    goals: 38
-  },
-  {
-    years: '2018 - 2021',
-    club: 'Real Zaragoza',
-    badge: '🦁',
-    competition: 'Segunda División',
-    competitionFlag: '🇪🇸',
-    appearances: 89,
+    appearances: 24,
     goals: 12
   },
   {
-    years: '2016 - 2018',
-    club: 'Deportivo Alavés B',
-    badge: '🔵',
-    competition: 'Segunda B',
+    season: '2023/24',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
+    competition: 'La Liga',
     competitionFlag: '🇪🇸',
-    appearances: 45,
+    appearances: 36,
+    goals: 14
+  },
+  {
+    season: '2022/23',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
+    competition: 'La Liga',
+    competitionFlag: '🇪🇸',
+    appearances: 38,
     goals: 8
+  },
+  {
+    season: '2021/22',
+    club: 'Sevilla FC',
+    logo: sevillaLogo,
+    competition: 'La Liga',
+    competitionFlag: '🇪🇸',
+    appearances: 34,
+    goals: 4
   },
 ];
 
@@ -191,11 +203,17 @@ export default function PlayerComponent({ player }: PlayerProps) {
                         className="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3 hover:bg-slate-100 transition-colors"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="text-2xl">{entry.badge}</span>
+                          <Image
+                            src={entry.logo}
+                            alt={entry.club}
+                            width={32}
+                            height={32}
+                            className="w-8 h-8 object-contain"
+                          />
                           <div>
-                            <p className="font-semibold text-slate-800">{entry.club}</p>
+                            <p className="font-semibold text-slate-800">{entry.season}</p>
                             <div className="flex items-center gap-2 text-xs text-slate-500">
-                              <span>{entry.years}</span>
+                              <span>{entry.club}</span>
                               <span className="text-slate-300">•</span>
                               <span>{entry.competitionFlag} {entry.competition}</span>
                             </div>
