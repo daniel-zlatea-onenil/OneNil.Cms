@@ -104,16 +104,22 @@ export default async function ResultsPage() {
       {/* Latest Result Hero Banner */}
       {latestResult && (
         <section
-          className="relative text-white pt-28 md:pt-36 pb-16 md:pb-24 bg-cover bg-top bg-no-repeat overflow-hidden bg-black"
-          style={
-            heroBannerUrl
-              ? { backgroundImage: `url(${heroBannerUrl})` }
-              : undefined
-          }
+          className="relative text-white pt-24 md:pt-28 pb-12 md:pb-16 bg-black overflow-hidden"
         >
+          {/* Background image - auto height to show more of image */}
+          {heroBannerUrl && (
+            <div
+              className="absolute inset-0 bg-contain bg-top bg-no-repeat"
+              style={{
+                backgroundImage: `url(${heroBannerUrl})`,
+                backgroundPosition: 'center top',
+                backgroundSize: 'auto 100%',
+              }}
+            />
+          )}
           {/* Gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
-          {/* Stronger side gradients for images that don't fill the width */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
+          {/* Side gradients to fade image edges into black */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" />
 
           {/* Fallback gradient if no banner - softer red tones */}
