@@ -104,7 +104,7 @@ export default async function ResultsPage() {
       {/* Latest Result Hero Banner */}
       {latestResult && (
         <section
-          className="relative text-white pt-24 md:pt-28 pb-12 md:pb-16 bg-cover bg-center bg-no-repeat overflow-hidden"
+          className="relative text-white pt-24 md:pt-28 pb-12 md:pb-16 bg-cover bg-top bg-no-repeat overflow-hidden"
           style={
             heroBannerUrl
               ? { backgroundImage: `url(${heroBannerUrl})` }
