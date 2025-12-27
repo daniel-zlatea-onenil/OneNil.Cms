@@ -35,7 +35,7 @@ const playerQuote = {
 };
 
 const playerBio = {
-  playingStyle: 'Creative midfielder with exceptional vision. Known for set-pieces and game control.',
+  playingStyle: 'Creative midfielder with vision.\nSet-piece specialist.',
   strengths: ['Passing', 'Set pieces', 'Leadership', 'Work rate'],
   achievements: [
     'Europa League 2023',
@@ -114,7 +114,7 @@ export default function PlayerComponent({ player }: PlayerProps) {
           <div className="relative p-8 md:p-10">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               {/* Left Column - Player Image & Basic Info */}
-              <div className="flex flex-col items-center lg:items-start">
+              <div className="flex flex-col items-center lg:items-start lg:w-1/3">
                 {/* Player Image */}
                 <div className="relative mb-6">
                   <div className="w-44 h-44 md:w-52 md:h-52 rounded-full overflow-hidden ring-4 ring-white shadow-xl">
@@ -182,7 +182,7 @@ export default function PlayerComponent({ player }: PlayerProps) {
                   <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">
                     Playing Style
                   </h4>
-                  <p className="text-sm text-slate-600 leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
                     {playerBio.playingStyle}
                   </p>
                 </div>
@@ -221,7 +221,7 @@ export default function PlayerComponent({ player }: PlayerProps) {
               </div>
 
               {/* Right Column - Stats & Bio */}
-              <div className="flex-1 flex flex-col">
+              <div className="flex-1 flex flex-col lg:w-2/3">
                 {/* Season Stats */}
                 <div className="mb-8">
                   <h4 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
