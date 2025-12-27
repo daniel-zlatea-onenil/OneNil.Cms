@@ -35,9 +35,33 @@ const playerQuote = {
 };
 
 const careerHistory = [
-  { years: '2021 - Present', club: 'OneNil FC', appearances: 142, goals: 38 },
-  { years: '2018 - 2021', club: 'Real Zaragoza', appearances: 89, goals: 12 },
-  { years: '2016 - 2018', club: 'Deportivo Alavés B', appearances: 45, goals: 8 },
+  {
+    years: '2021 - Present',
+    club: 'OneNil FC',
+    badge: '🔴',
+    competition: 'La Liga',
+    competitionFlag: '🇪🇸',
+    appearances: 142,
+    goals: 38
+  },
+  {
+    years: '2018 - 2021',
+    club: 'Real Zaragoza',
+    badge: '🦁',
+    competition: 'Segunda División',
+    competitionFlag: '🇪🇸',
+    appearances: 89,
+    goals: 12
+  },
+  {
+    years: '2016 - 2018',
+    club: 'Deportivo Alavés B',
+    badge: '🔵',
+    competition: 'Segunda B',
+    competitionFlag: '🇪🇸',
+    appearances: 45,
+    goals: 8
+  },
 ];
 
 export default function PlayerComponent({ player }: PlayerProps) {
@@ -166,9 +190,16 @@ export default function PlayerComponent({ player }: PlayerProps) {
                         key={index}
                         className="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3 hover:bg-slate-100 transition-colors"
                       >
-                        <div>
-                          <p className="font-semibold text-slate-800">{entry.club}</p>
-                          <p className="text-xs text-slate-500">{entry.years}</p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{entry.badge}</span>
+                          <div>
+                            <p className="font-semibold text-slate-800">{entry.club}</p>
+                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                              <span>{entry.years}</span>
+                              <span className="text-slate-300">•</span>
+                              <span>{entry.competitionFlag} {entry.competition}</span>
+                            </div>
+                          </div>
                         </div>
                         <div className="flex gap-4 text-sm">
                           <div className="text-center">
