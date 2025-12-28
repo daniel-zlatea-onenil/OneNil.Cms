@@ -1,67 +1,22 @@
-import { contentfulClient } from '@/lib/contentful';
 import Link from 'next/link';
-import {
-  MatchEventFields,
-  MatchEventSkeleton,
-  TeamSkeleton,
-} from '@/lib/types';
+import { MatchEventSkeleton, TeamSkeleton } from '@/lib/types';
 import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
 import { format } from 'date-fns';
 import { Asset, Entry } from 'contentful';
-import { resolveAsset } from '@/lib/utils';
-import { getMatchViewModel } from '@/lib/serverUtils';
-import { MatchViewModel } from '@/lib/viewModels';
+import {
+  getFixtures as getFixturesFromSeason,
+  getMatchViewModel,
+} from '@/lib/serverUtils';
 import Image from 'next/image';
 
-async function getEvents(): Promise<{
-  events: MatchEventFields[];
-  nextEventViewModel: MatchViewModel | null | undefined;
-  assets?: Asset[];
-}> {
-  const query = {
-    content_type: 'matchEvent',
-    order: ['fields.date'],
-    include: 2,
-    'fields.date[gte]': new Date().toISOString(),
-  };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const response = await contentfulClient.getEntries<MatchEventSkeleton>(query as any);
-  const assets = response.includes?.Asset ?? [];
-  const nextEventViewModel = response?.items?.length
-    ? await getMatchViewModel(response.items[0].fields?.slug)
-    : null;
-  const events = response.items.map((item) => {
-    const fields = item.fields as MatchEventFields;
-    const {
-      slug,
-      date,
-      title,
-      location,
-      competition,
-      ticketLink,
-      teamHome,
-      teamAway,
-      heroBanner,
-    } = fields;
-
-    return {
-      slug,
-      date,
-      title,
-      location,
-      competition,
-      ticketLink,
-      teamHome,
-      teamAway,
-      heroBanner,
-    };
-  });
-
-  return { events, nextEventViewModel, assets };
-}
-
 export default async function FixturesPage() {
-  const { events, nextEventViewModel, assets } = await getEvents();
+  const { fixtures, season } = await getFixturesFromSeason();
+
+  const seasonTitle = season.fields.title as unknown as string;
+  const nextEventViewModel =
+    fixtures.length > 0
+      ? await getMatchViewModel(fixtures[0].fields.slug as unknown as string)
+      : null;
 
   return (
     <>
@@ -70,12 +25,12 @@ export default async function FixturesPage() {
       )}
       <div className="max-w-7xl mx-auto px-4 py-10">
         <h1 className="text-4xl font-bold text-red-700 mb-8">
-          2024/25 Fixtures
+          {seasonTitle} Fixtures
         </h1>
         <ul className="space-y-6">
-          {events.length > 1 &&
-            events.slice(1).map((match) => {
-              const date = new Date(match.date);
+          {fixtures.length > 1 &&
+            fixtures.slice(1).map((match: Entry<MatchEventSkeleton>) => {
+              const date = new Date(match.fields.date as unknown as string);
               const formattedDate = format(date, 'dd MMM yyyy');
               const formattedTime = date.toLocaleTimeString('en-GB', {
                 hour: '2-digit',
@@ -83,30 +38,24 @@ export default async function FixturesPage() {
                 hour12: false,
               });
 
-              const homeTeam = match.teamHome as Entry<TeamSkeleton>;
-              const awayTeam = match.teamAway as Entry<TeamSkeleton>;
-
-              const assetIncludes = assets ?? [];
-
-              let homeLogoUrl: string | undefined = undefined;
-              let awayLogoUrl: string | undefined = undefined;
+              const homeTeam = match.fields.teamHome as unknown as Entry<TeamSkeleton>;
+              const awayTeam = match.fields.teamAway as unknown as Entry<TeamSkeleton>;
 
               const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
               const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
-              const homeTeamName = homeTeam.fields.name! as unknown as string;
-              const awayTeamName = awayTeam.fields.name! as unknown as string;
+              const homeTeamName = homeTeam.fields.name as unknown as string;
+              const awayTeamName = awayTeam.fields.name as unknown as string;
 
-              if (homeTeamLogo.sys?.id) {
-                homeLogoUrl = resolveAsset(homeTeamLogo.sys?.id, assetIncludes);
-              }
-
-              if (awayTeamLogo.sys?.id) {
-                awayLogoUrl = resolveAsset(awayTeamLogo.sys?.id, assetIncludes);
-              }
+              const homeLogoUrl = homeTeamLogo?.fields?.file?.url
+                ? `https:${homeTeamLogo.fields.file.url}`
+                : undefined;
+              const awayLogoUrl = awayTeamLogo?.fields?.file?.url
+                ? `https:${awayTeamLogo.fields.file.url}`
+                : undefined;
 
               return (
                 <li
-                  key={match.slug}
+                  key={match.fields.slug as unknown as string}
                   className="border border-gray-200 rounded p-4 shadow-sm"
                 >
                   <div className="flex flex-col md:flex-row justify-between md:items-center">
@@ -144,23 +93,24 @@ export default async function FixturesPage() {
                       </h2>
 
                       <p className="text-sm text-gray-600">
-                        {formattedDate} · {formattedTime} · {match.location}
+                        {formattedDate} · {formattedTime} ·{' '}
+                        {match.fields.location as unknown as string}
                       </p>
                       <p className="text-sm text-gray-500 italic">
-                        {match.competition}
+                        {match.fields.competition as unknown as string}
                       </p>
                     </div>
 
                     <div className="mt-4 md:mt-0">
                       <Link
-                        href={`/matches/${match.slug}`}
+                        href={`/matches/${match.fields.slug}`}
                         className="text-red-700 hover:underline text-sm mr-4"
                       >
                         Match details →
                       </Link>
-                      {match.ticketLink && (
+                      {match.fields.ticketLink && (
                         <a
-                          href={match.ticketLink}
+                          href={match.fields.ticketLink as unknown as string}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="bg-red-700 text-white px-4 py-1 rounded hover:bg-red-800 text-sm"

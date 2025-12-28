@@ -1,22 +1,12 @@
-import { contentfulClient } from '@/lib/contentful';
 import Link from 'next/link';
-import { MatchEventFields, MatchEventSkeleton } from '@/lib/types';
-import { getMatchViewModel } from '@/lib/serverUtils';
+import { MatchEventFields } from '@/lib/types';
+import { getMatchViewModel, getNextMatch } from '@/lib/serverUtils';
 import Image from 'next/image';
 import Countdown from './CountdownComponent';
 
 export default async function NextMatchBlock() {
-  const query = {
-    content_type: 'matchEvent',
-    limit: 1,
-    include: 2,
-    order: ['fields.date'],
-    'fields.date[gte]': new Date().toISOString(),
-  };
-  const res = await contentfulClient.getEntries<MatchEventSkeleton>(
-    query as any // eslint-disable-line @typescript-eslint/no-explicit-any
-  );
-  const match = res.items[0];
+  const { match } = await getNextMatch();
+
   if (!match) {
     return (
       <div className="text-center text-gray-600 py-6">
@@ -26,7 +16,7 @@ export default async function NextMatchBlock() {
   }
 
   const { date, slug } = match.fields as MatchEventFields;
-  const matchViewModel = await getMatchViewModel(match.fields.slug);
+  const matchViewModel = await getMatchViewModel(match.fields.slug as unknown as string);
 
   return (
     <section

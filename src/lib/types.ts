@@ -91,6 +91,7 @@ export type MatchEventFields = {
   teamHome: Entry<TeamSkeleton>;
   teamAway: Entry<TeamSkeleton>;
   heroBanner: Asset;
+  season?: Entry<SeasonSkeleton>;
 };
 
 export type LeagueTableEntry = {
@@ -110,6 +111,8 @@ export type LeagueTableEntry = {
 export type SeasonFields = {
   title: string;
   slug: string;
+  startYear: number;
+  isActive: boolean;
   leagueTable: LeagueTableEntry[];
 };
 

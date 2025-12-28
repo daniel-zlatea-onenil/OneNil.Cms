@@ -1,31 +1,244 @@
 import { contentfulClient } from '@/lib/contentful';
-import { MatchEventSkeleton, SeasonSkeleton, TeamSkeleton } from '@/lib/types';
+import {
+  MatchEventSkeleton,
+  SeasonSkeleton,
+  TeamSkeleton,
+} from '@/lib/types';
 import { MatchViewModel } from '@/lib/viewModels';
 import { Asset, Entry } from 'contentful';
 import { resolveAsset } from '@/lib/utils';
 import { format } from 'date-fns';
 
-export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
-  const entries = await contentfulClient.getEntries<SeasonSkeleton>({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ContentfulQuery = any;
+
+/**
+ * Error thrown when there are multiple active seasons or no active season.
+ */
+export class ActiveSeasonError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'ActiveSeasonError';
+  }
+}
+
+/**
+ * Gets the currently active season (where isActive === true).
+ * There must be exactly one active season at any time.
+ *
+ * @throws {ActiveSeasonError} If multiple seasons are active or no active season exists.
+ */
+export async function getActiveSeason(): Promise<Entry<SeasonSkeleton>> {
+  const query: ContentfulQuery = {
     content_type: 'season',
-    limit: 1,
-    // @ts-expect-error – ordering by fields is valid but not in the SDK's types
-    order: '-fields.startYear',
-  });
+    'fields.isActive': true,
+  };
+  const entries = await contentfulClient.getEntries<SeasonSkeleton>(query);
+
+  if (entries.items.length === 0) {
+    throw new ActiveSeasonError(
+      'No active season found. Please mark exactly one season as active in Contentful.'
+    );
+  }
+
+  if (entries.items.length > 1) {
+    const activeSlugs = entries.items
+      .map((s) => s.fields.slug as unknown as string)
+      .join(', ');
+    throw new ActiveSeasonError(
+      `Multiple active seasons found: ${activeSlugs}. Only one season can be active at a time.`
+    );
+  }
 
   return entries.items[0];
+}
+
+/**
+ * Gets a season by slug, or returns the active season if no slug is provided.
+ *
+ * @param seasonSlug Optional season slug. If not provided, returns the active season.
+ */
+export async function getSeason(
+  seasonSlug?: string
+): Promise<Entry<SeasonSkeleton>> {
+  if (seasonSlug) {
+    const query: ContentfulQuery = {
+      content_type: 'season',
+      'fields.slug': seasonSlug,
+      limit: 1,
+    };
+    const entries = await contentfulClient.getEntries<SeasonSkeleton>(query);
+
+    if (entries.items.length === 0) {
+      throw new Error(`Season with slug "${seasonSlug}" not found.`);
+    }
+
+    return entries.items[0];
+  }
+
+  return getActiveSeason();
+}
+
+/**
+ * @deprecated Use getSeason() instead. This function uses startYear ordering which should not be used.
+ */
+export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
+  const query: ContentfulQuery = {
+    content_type: 'season',
+    limit: 1,
+    order: '-fields.startYear',
+  };
+  const entries = await contentfulClient.getEntries<SeasonSkeleton>(query);
+
+  return entries.items[0];
+}
+
+/**
+ * Gets fixtures (upcoming matches) for a season.
+ *
+ * @param seasonSlug Optional season slug. If not provided, uses the active season.
+ */
+export async function getFixtures(
+  seasonSlug?: string
+): Promise<{ fixtures: Entry<MatchEventSkeleton>[]; season: Entry<SeasonSkeleton> }> {
+  const season = await getSeason(seasonSlug);
+  const seasonId = season.sys.id;
+
+  const now = new Date().toISOString();
+
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.season.sys.id': seasonId,
+    'fields.date[gte]': now,
+    order: 'fields.date',
+    limit: 1000,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+
+  return { fixtures: entries.items, season };
+}
+
+/**
+ * Gets results (past matches) for a season.
+ *
+ * @param seasonSlug Optional season slug. If not provided, uses the active season.
+ */
+export async function getResults(
+  seasonSlug?: string
+): Promise<{ results: Entry<MatchEventSkeleton>[]; season: Entry<SeasonSkeleton>; assets: Asset[] }> {
+  const season = await getSeason(seasonSlug);
+  const seasonId = season.sys.id;
+
+  // Results are matches where kickoff + 4 hours has passed
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.season.sys.id': seasonId,
+    'fields.date[lte]': fourHoursAgo,
+    order: '-fields.date',
+    include: 2,
+    limit: 1000,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+
+  const assets = (entries.includes?.Asset as unknown as Asset[]) || [];
+
+  return { results: entries.items, season, assets };
+}
+
+/**
+ * Gets all matches for a season (both fixtures and results).
+ *
+ * @param seasonSlug Optional season slug. If not provided, uses the active season.
+ */
+export async function getMatches(
+  seasonSlug?: string
+): Promise<{ matches: Entry<MatchEventSkeleton>[]; season: Entry<SeasonSkeleton> }> {
+  const season = await getSeason(seasonSlug);
+  const seasonId = season.sys.id;
+
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.season.sys.id': seasonId,
+    order: 'fields.date',
+    limit: 1000,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+
+  return { matches: entries.items, season };
+}
+
+/**
+ * Gets the next upcoming match for a season (within 3 hours before kickoff).
+ *
+ * @param seasonSlug Optional season slug. If not provided, uses the active season.
+ */
+export async function getNextMatch(
+  seasonSlug?: string
+): Promise<{ match: Entry<MatchEventSkeleton> | null; season: Entry<SeasonSkeleton>; assets: Asset[] }> {
+  const season = await getSeason(seasonSlug);
+  const seasonId = season.sys.id;
+
+  // Get matches that haven't started yet (kickoff - 3 hours)
+  const threeHoursFromNow = new Date(
+    Date.now() + 3 * 60 * 60 * 1000
+  ).toISOString();
+
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.season.sys.id': seasonId,
+    'fields.date[gte]': threeHoursFromNow,
+    order: 'fields.date',
+    include: 2,
+    limit: 1,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+
+  const assets = (entries.includes?.Asset as unknown as Asset[]) || [];
+
+  return { match: entries.items[0] || null, season, assets };
+}
+
+/**
+ * Gets the latest completed match for a season.
+ *
+ * @param seasonSlug Optional season slug. If not provided, uses the active season.
+ */
+export async function getLatestResult(
+  seasonSlug?: string
+): Promise<{ match: Entry<MatchEventSkeleton> | null; season: Entry<SeasonSkeleton>; assets: Asset[] }> {
+  const season = await getSeason(seasonSlug);
+  const seasonId = season.sys.id;
+
+  // Results are matches where kickoff + 4 hours has passed
+  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString();
+
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.season.sys.id': seasonId,
+    'fields.date[lte]': fourHoursAgo,
+    order: '-fields.date',
+    include: 2,
+    limit: 1,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+
+  const assets = (entries.includes?.Asset as unknown as Asset[]) || [];
+
+  return { match: entries.items[0] || null, season, assets };
 }
 
 export async function getMatchViewModel(
   slug: string
 ): Promise<MatchViewModel | undefined> {
-  const entries = await contentfulClient.getEntries<MatchEventSkeleton>({
+  const query: ContentfulQuery = {
     content_type: 'matchEvent',
-    // @ts-expect-error – ordering by fields is valid but not in the SDK's types
     'fields.slug': slug,
     include: 2,
     limit: 1,
-  });
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
   const assets = entries.includes?.Asset as unknown as Asset[]; // if needed
 
   const match = entries.items[0];
@@ -103,11 +316,11 @@ export async function getAllTeamLogos(): Promise<
         }
     >
 > {
-  const entries = await contentfulClient.getEntries<TeamSkeleton>({
+  const query: ContentfulQuery = {
     content_type: 'team',
-    // @ts-expect-error – Contentful SDK typing limitation
     select: 'fields.slug,fields.logo,fields.isTheTeamWeSupport',
-  });
+  };
+  const entries = await contentfulClient.getEntries<TeamSkeleton>(query);
 
   const teamMap: Record<
       string,
@@ -134,4 +347,3 @@ export async function getAllTeamLogos(): Promise<
 
   return teamMap;
 }
-

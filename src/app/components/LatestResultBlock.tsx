@@ -1,27 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { contentfulClient } from '@/lib/contentful';
-import { MatchEventFields, MatchEventSkeleton } from '@/lib/types';
-import { getMatchViewModel } from '@/lib/serverUtils';
+import { MatchEventFields } from '@/lib/types';
+import { getLatestResult, getMatchViewModel } from '@/lib/serverUtils';
 
 export default async function LatestResultBlock() {
-  const query = {
-    content_type: 'matchEvent',
-    limit: 1,
-    include: 2,
-    order: ['-fields.date'],
-    'fields.date[lte]': new Date().toISOString(),
-  };
-  const res = await contentfulClient.getEntries<MatchEventSkeleton>(
-    query as any // eslint-disable-line @typescript-eslint/no-explicit-any
-  );
-  const match = res.items[0];
+  const { match } = await getLatestResult();
 
   if (!match) {
     return null;
   }
 
-  const matchViewModel = await getMatchViewModel(match.fields.slug);
+  const matchViewModel = await getMatchViewModel(match.fields.slug as unknown as string);
 
   if (!matchViewModel) {
     return null;
