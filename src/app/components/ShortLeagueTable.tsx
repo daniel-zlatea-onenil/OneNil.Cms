@@ -1,10 +1,10 @@
 import { LeagueTableEntry } from '@/lib/types';
-import { getAllTeamLogos, getLastSeason } from '@/lib/serverUtils';
+import { getAllTeamLogos, getSeason } from '@/lib/serverUtils';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default async function ShortLeagueTable() {
-  const standings = await getLastSeason();
+  const standings = await getSeason();
   const teamLogos: Record<
     string,
     {

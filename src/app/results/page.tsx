@@ -1,41 +1,18 @@
-import { contentfulClient } from '@/lib/contentful';
 import Link from 'next/link';
-import {
-  MatchEventFields,
-  MatchEventSkeleton,
-  TeamSkeleton,
-} from '@/lib/types';
+import { MatchEventFields, MatchEventSkeleton, TeamSkeleton } from '@/lib/types';
 import { format } from 'date-fns';
 import { Asset, Entry } from 'contentful';
 import { resolveAsset } from '@/lib/utils';
+import { getResults as getResultsFromSeason } from '@/lib/serverUtils';
 import Image from 'next/image';
 
-async function getResults(): Promise<{
-  results: (MatchEventFields & { homeScore: number; awayScore: number })[];
-  latestResult:
-    | (MatchEventFields & { homeScore: number; awayScore: number })
-    | null;
-  assets?: Asset[];
-}> {
-  // LIVE window: 3 hours before kickoff to 4 hours after kickoff
-  // Results page shows matches AFTER the LIVE window ends (kickoff + 4 hours)
-  const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
+export default async function ResultsPage() {
+  const { results, season, assets } = await getResultsFromSeason();
 
-  const query = {
-    content_type: 'matchEvent',
-    order: ['-fields.date'], // Most recent first
-    include: 2,
-    limit: 1000, // Fetch all historical results
-    'fields.date[lte]': fourHoursAgo.toISOString(), // Exclude matches in LIVE window
-  };
-  const response = await contentfulClient.getEntries<MatchEventSkeleton>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    query as any
-  );
-  const assets = response.includes?.Asset ?? [];
+  const seasonTitle = season.fields.title as unknown as string;
 
-  // Map all past matches, defaulting to 0-0 if no score is set
-  const results = response.items.map((item) => {
+  // Map results to include default scores
+  const resultsWithScores = results.map((item: Entry<MatchEventSkeleton>) => {
     const fields = item.fields as MatchEventFields;
     return {
       ...fields,
@@ -44,13 +21,7 @@ async function getResults(): Promise<{
     };
   });
 
-  const latestResult = results.length > 0 ? results[0] : null;
-
-  return { results, latestResult, assets };
-}
-
-export default async function ResultsPage() {
-  const { results, latestResult, assets } = await getResults();
+  const latestResult = resultsWithScores.length > 0 ? resultsWithScores[0] : null;
 
   // Helper to get team logo URL
   const getLogoUrl = (team: Entry<TeamSkeleton>): string | undefined => {
@@ -219,7 +190,7 @@ export default async function ResultsPage() {
         <section className="bg-gradient-to-r from-red-400 to-red-500 text-white pt-24 md:pt-28 pb-12 md:pb-16">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             <h1 className="text-4xl md:text-5xl font-bold">Results</h1>
-            <p className="text-white/80 mt-2">Season 2024/2025</p>
+            <p className="text-white/80 mt-2">{seasonTitle}</p>
           </div>
         </section>
       )}
@@ -232,13 +203,13 @@ export default async function ResultsPage() {
           </h2>
 
           {/* Filter out the latest result since it's already shown in the hero */}
-          {results.filter((m) => m.slug !== latestResult?.slug).length === 0 ? (
+          {resultsWithScores.filter((m) => m.slug !== latestResult?.slug).length === 0 ? (
             <p className="text-slate-500 text-center py-12">
               No other results available yet.
             </p>
           ) : (
             <div className="space-y-4">
-              {results
+              {resultsWithScores
                 .filter((m) => m.slug !== latestResult?.slug)
                 .map((match) => {
                   const homeTeam = match.teamHome;
