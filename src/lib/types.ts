@@ -68,6 +68,7 @@ export type TeamFields = {
   slug: string;
   logo: Asset;
   stadiumPhoto?: Asset;
+  heroImage?: Asset;
   foundationYear?: number;
   city?: string;
   stadium?: string;
@@ -135,3 +136,9 @@ export type Player = {
   bio: string;
   photoUrl: string;
 };
+
+export type DefaultSettingsFields = {
+  matchHeroBanner?: Asset;
+};
+
+export type DefaultSettingsSkeleton = EntrySkeletonType<DefaultSettingsFields>;

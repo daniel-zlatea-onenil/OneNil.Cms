@@ -1,5 +1,6 @@
 import { contentfulClient } from '@/lib/contentful';
 import {
+  DefaultSettingsSkeleton,
   MatchEventSkeleton,
   SeasonSkeleton,
   TeamSkeleton,
@@ -250,10 +251,12 @@ export async function getMatchViewModel(
   let homeLogoUrl: string | undefined = undefined;
   let awayLogoUrl: string | undefined = undefined;
   let homeStadiumPhotoUrl: string | undefined = undefined;
+  let homeHeroImageUrl: string | undefined = undefined;
 
   const homeTeamLogo = homeTeam.fields.logo as unknown as Asset;
   const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
   const homeTeamStadiumPhoto = homeTeam.fields.stadiumPhoto as unknown as Asset;
+  const homeTeamHeroImage = homeTeam.fields.heroImage as unknown as Asset;
   const homeTeamName = homeTeam.fields.name! as unknown as string;
   const homeTeamShortName = homeTeam.fields.name! as unknown as string;
   const awayTeamName = awayTeam.fields.shortName! as unknown as string;
@@ -270,6 +273,11 @@ export async function getMatchViewModel(
   if (homeTeamStadiumPhoto?.sys?.id) {
     homeStadiumPhotoUrl = resolveAsset(homeTeamStadiumPhoto.sys.id, assets);
   }
+
+  if (homeTeamHeroImage?.sys?.id) {
+    homeHeroImageUrl = resolveAsset(homeTeamHeroImage.sys.id, assets);
+  }
+
   const date = new Date(match.fields.date);
   const formattedDate = format(date, 'dd MMM yyyy');
   const formattedTime = date.toLocaleTimeString('en-GB', {
@@ -278,10 +286,21 @@ export async function getMatchViewModel(
     hour12: false,
   });
 
+  // Hero banner fallback logic:
+  // 1. Match hero banner (if available)
+  // 2. Home team hero image (if available)
+  // 3. Default settings matchHeroBanner (fetched separately if needed)
   const heroBannerAsset = heroBanner as Asset;
-  const heroBannerUrl = heroBannerAsset?.fields?.file?.url
-    ? `https:${heroBannerAsset.fields.file.url}`
-    : undefined;
+  let heroBannerUrl: string | undefined = undefined;
+
+  if (heroBannerAsset?.fields?.file?.url) {
+    heroBannerUrl = `https:${heroBannerAsset.fields.file.url}`;
+  } else if (homeHeroImageUrl) {
+    heroBannerUrl = homeHeroImageUrl;
+  } else {
+    // Fetch default hero banner as last fallback
+    heroBannerUrl = await getDefaultHeroBannerUrl();
+  }
 
   return {
     title: match.fields.title,
@@ -305,6 +324,33 @@ export async function getMatchViewModel(
       logoUrl: awayLogoUrl!,
     },
   };
+}
+
+/**
+ * Gets the default settings from Contentful.
+ * Returns undefined if no settings are found.
+ */
+export async function getDefaultSettings(): Promise<Entry<DefaultSettingsSkeleton> | undefined> {
+  const query: ContentfulQuery = {
+    content_type: 'defaultSettings',
+    limit: 1,
+  };
+  const entries = await contentfulClient.getEntries<DefaultSettingsSkeleton>(query);
+  return entries.items[0];
+}
+
+/**
+ * Gets the default hero banner URL from the default settings.
+ */
+export async function getDefaultHeroBannerUrl(): Promise<string | undefined> {
+  const settings = await getDefaultSettings();
+  if (!settings) return undefined;
+
+  const heroBanner = settings.fields.matchHeroBanner as unknown as Asset;
+  if (heroBanner?.fields?.file?.url) {
+    return `https:${heroBanner.fields.file.url}`;
+  }
+  return undefined;
 }
 
 export async function getAllTeamLogos(): Promise<
