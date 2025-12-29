@@ -71,7 +71,7 @@ export type TeamFields = {
   heroImage?: Asset;
   foundationYear?: number;
   city?: string;
-  stadium?: string;
+  stadiumName?: string;
   teamColors?: string;
   website?: string;
   bio?: string;
@@ -115,6 +115,7 @@ export type SeasonFields = {
   startYear: number;
   isActive: boolean;
   leagueTable: LeagueTableEntry[];
+  logo?: Asset;
 };
 
 export type SeasonSkeleton = EntrySkeletonType<SeasonFields>;

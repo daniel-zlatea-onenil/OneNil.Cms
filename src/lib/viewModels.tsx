@@ -4,6 +4,7 @@ export type MatchViewModel = {
   date: string;
   targetDate: Date;
   location: string;
+  venue?: string;
   kickoffTime: string;
   competition: string;
   ticketLink?: string;
