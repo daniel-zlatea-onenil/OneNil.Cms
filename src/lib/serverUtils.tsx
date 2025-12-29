@@ -280,11 +280,10 @@ export async function getMatchViewModel(
 
   const date = new Date(match.fields.date);
   const formattedDate = format(date, 'dd MMM yyyy');
-  const formattedTime = date.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
+  const formattedTime = format(date, 'HH:mm');
+
+  // Get venue from home team's stadium field
+  const venue = homeTeam.fields.stadium as unknown as string;
 
   // Hero banner fallback logic:
   // 1. Match hero banner (if available)
@@ -308,6 +307,7 @@ export async function getMatchViewModel(
     date: formattedDate,
     targetDate: date,
     location: match.fields.location,
+    venue,
     kickoffTime: formattedTime,
     competition: match.fields.competition,
     ticketLink: match.fields.ticketLink,

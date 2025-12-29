@@ -2,28 +2,32 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MatchEventFields, SeasonSkeleton } from '@/lib/types';
 import { getLatestResult, getMatchViewModel } from '@/lib/serverUtils';
-import { format } from 'date-fns';
 import { Entry } from 'contentful';
 
-// LaLiga logo component (monochrome white version for dark backgrounds)
+// LaLiga logo component (official monochrome version for dark backgrounds)
 function LaLigaLogo({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      viewBox="0 0 120 40"
+      viewBox="0 0 200 60"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <text
-        x="0"
-        y="28"
-        fontFamily="Arial, sans-serif"
-        fontSize="24"
-        fontWeight="bold"
-        fill="currentColor"
-      >
-        LaLiga
-      </text>
+      {/* LaLiga official logo - stylized text with accent */}
+      <g>
+        {/* L */}
+        <path d="M10 10h8v32h20v8H10V10z" />
+        {/* a */}
+        <path d="M45 26c0-8.8 7.2-16 16-16s16 7.2 16 16v24h-8V38c-2.4 1.6-5.2 2.6-8 2.6-8.8 0-16-7.2-16-14.6zm16-8c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z" />
+        {/* L */}
+        <path d="M85 10h8v32h20v8H85V10z" />
+        {/* i */}
+        <path d="M120 10h8v8h-8v-8zm0 16h8v24h-8V26z" />
+        {/* g */}
+        <path d="M138 26c0-8.8 7.2-16 16-16s16 7.2 16 16v30c0 8.8-7.2 16-16 16s-16-7.2-16-16h8c0 4.4 3.6 8 8 8s8-3.6 8-8V38c-2.4 1.6-5.2 2.6-8 2.6-8.8 0-16-7.2-16-14.6zm16-8c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z" />
+        {/* a */}
+        <path d="M180 26c0-8.8 7.2-16 16-16v8c-4.4 0-8 3.6-8 8s3.6 8 8 8v8c-8.8 0-16-7.2-16-16z" />
+      </g>
     </svg>
   );
 }
@@ -41,21 +45,12 @@ export default async function LatestResultBlock() {
     return null;
   }
 
-  const { homeScore, awayScore, homeScorers, awayScorers, date, competition, season } =
+  const { homeScore, awayScore, homeScorers, awayScorers, competition, season } =
     match.fields as MatchEventFields;
   const hasScore =
     typeof homeScore === 'number' && typeof awayScore === 'number';
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
   const isGoalless = hasScore && homeScore === 0 && awayScore === 0;
-
-  // Format date and time
-  const matchDate = new Date(date);
-  const formattedDate = format(matchDate, 'dd MMM yyyy');
-  const formattedTime = matchDate.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
 
   // Get season title
   const seasonEntry = season as unknown as Entry<SeasonSkeleton>;
@@ -101,11 +96,14 @@ export default async function LatestResultBlock() {
 
         {/* Result Card */}
         <div className="glass-dark rounded-3xl p-8 md:p-12 max-w-3xl mx-auto">
-          {/* Date and Time */}
+          {/* Date, Time and Venue */}
           <div className="text-center mb-6">
             <p className="text-white/70 text-sm tracking-wide">
-              {formattedDate} • {formattedTime}
+              {matchViewModel.date} • {matchViewModel.kickoffTime}
             </p>
+            {matchViewModel.venue && (
+              <p className="text-white/50 text-xs mt-1">{matchViewModel.venue}</p>
+            )}
           </div>
 
           {/* Teams and Score Row */}
