@@ -50,17 +50,27 @@ export default async function LeagueTablePage({
       {/* Page Header */}
       <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-bold">{displayTitle}</h1>
-              {!isActiveSeason && (
-                <p className="text-white/80 mt-2">{seasonTitle}</p>
-              )}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold">{displayTitle}</h1>
+                {!isActiveSeason && (
+                  <p className="text-white/80 mt-2">{seasonTitle}</p>
+                )}
+              </div>
+              <div className="sm:hidden">
+                <SeasonSelector
+                  seasons={allSeasons}
+                  currentSeasonSlug={activeSeasonSlug}
+                />
+              </div>
             </div>
-            <SeasonSelector
-              seasons={allSeasons}
-              currentSeasonSlug={activeSeasonSlug}
-            />
+            <div className="hidden sm:flex sm:justify-end">
+              <SeasonSelector
+                seasons={allSeasons}
+                currentSeasonSlug={activeSeasonSlug}
+              />
+            </div>
           </div>
 
           {/* Error message if invalid season was requested */}
@@ -86,30 +96,58 @@ export default async function LeagueTablePage({
           <div className="bg-white rounded-2xl shadow-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full table-auto text-sm md:text-base">
-                <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+                <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white sticky top-0 z-10">
                   <tr>
                     <th className="px-4 py-4 text-left font-semibold">#</th>
                     <th className="px-4 py-4 text-left font-semibold">Team</th>
-                    <th className="px-4 py-4 text-center font-semibold">P</th>
-                    <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold"
+                      title="Played"
+                    >
+                      P
+                    </th>
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                      title="Wins"
+                    >
                       W
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                      title="Draws"
+                    >
                       D
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                      title="Losses"
+                    >
                       L
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                      title="Goals For"
+                    >
                       GF
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                      title="Goals Against"
+                    >
                       GA
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                    <th
+                      className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                      title="Goal Difference"
+                    >
                       GD
                     </th>
-                    <th className="px-4 py-4 text-center font-semibold">PTS</th>
+                    <th
+                      className="px-4 py-4 text-center font-semibold"
+                      title="Points"
+                    >
+                      PTS
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -123,10 +161,10 @@ export default async function LeagueTablePage({
                       <tr
                         key={team.slug}
                         className={`
-                          border-b border-slate-100 transition-colors duration-200
+                          border-b border-slate-100 transition-all duration-300
                           ${
                             isSupportedTeam
-                              ? 'bg-red-50 border-l-4 border-l-red-600'
+                              ? 'bg-red-100 border-l-4 border-l-red-600'
                               : 'border-l-4 border-l-transparent'
                           }
                           ${!isSupportedTeam && isTop4 ? 'bg-blue-50/50' : ''}
@@ -139,7 +177,33 @@ export default async function LeagueTablePage({
                         `}
                       >
                         <td className="px-4 py-4 text-slate-600 font-medium">
-                          {team.position}
+                          <div className="flex items-center gap-2">
+                            {team.position}
+                            {isTop4 && !isSupportedTeam && (
+                              <svg
+                                className="w-3 h-3 text-blue-600"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                aria-label="Champions League spot"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                              </svg>
+                            )}
+                            {isBottom3 && !isSupportedTeam && (
+                              <svg
+                                className="w-3 h-3 text-orange-600"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                aria-label="Relegation zone"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
                         </td>
                         <td className="px-4 py-4">
                           <div className="flex items-center space-x-3">
@@ -180,7 +244,9 @@ export default async function LeagueTablePage({
                         <td className="px-4 py-4 text-center text-slate-600 hidden md:table-cell">
                           {team.goalDifference > 0
                             ? `+${team.goalDifference}`
-                            : team.goalDifference}
+                            : team.goalDifference === 0
+                              ? '0'
+                              : team.goalDifference}
                         </td>
                         <td
                           className={`px-4 py-4 text-center font-bold ${isSupportedTeam ? 'text-red-700' : 'text-slate-900'}`}
@@ -197,14 +263,34 @@ export default async function LeagueTablePage({
         )}
 
         {/* Legend */}
-        <div className="mt-6 flex flex-wrap gap-6 text-sm text-slate-600">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-slate-600">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-100 border border-blue-200" />
-            <span>Champions League</span>
+            <div className="w-4 h-4 rounded bg-blue-100 border border-blue-200 flex items-center justify-center">
+              <svg
+                className="w-2.5 h-2.5 text-blue-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </div>
+            <span>Champions League (Top 4)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-orange-100 border border-orange-200" />
-            <span>Relegation Zone</span>
+            <div className="w-4 h-4 rounded bg-orange-100 border border-orange-200 flex items-center justify-center">
+              <svg
+                className="w-2.5 h-2.5 text-orange-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <span>Relegation Zone (Bottom 3)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded bg-red-100 border-l-4 border-l-red-600" />
