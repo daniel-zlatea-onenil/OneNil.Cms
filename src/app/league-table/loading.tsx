@@ -2,14 +2,26 @@ export default function LeagueTableLoading() {
   return (
     <main className="bg-slate-50 min-h-screen text-slate-900">
       {/* Page Header Skeleton */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <div className="h-12 w-64 bg-white/20 rounded-lg animate-pulse" />
-              <div className="h-6 w-40 bg-white/20 rounded-lg animate-pulse mt-2" />
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-24 md:pt-28 pb-12 md:pb-16 relative">
+        {/* Decorative elements - contained within bounds */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-red-500 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 opacity-10" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2 opacity-10" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            {/* Left: Logo and Title Skeleton */}
+            <div className="flex items-center gap-5">
+              <div className="h-16 md:h-20 w-16 md:w-20 bg-white/10 rounded-lg animate-pulse" />
+              <div>
+                <div className="h-10 md:h-12 w-48 md:w-64 bg-white/10 rounded-lg animate-pulse" />
+                <div className="h-5 w-32 bg-white/10 rounded-lg animate-pulse mt-2" />
+              </div>
             </div>
-            <div className="h-10 w-48 bg-white/20 rounded-lg animate-pulse" />
+
+            {/* Right: Season Selector Skeleton */}
+            <div className="h-11 w-40 bg-white/10 rounded-full animate-pulse" />
           </div>
         </div>
       </section>
@@ -19,30 +31,58 @@ export default function LeagueTableLoading() {
         <div className="bg-white rounded-2xl shadow-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full table-auto text-sm md:text-base">
-              <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white">
+              <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white sticky top-0 z-10">
                 <tr>
                   <th className="px-4 py-4 text-left font-semibold">#</th>
                   <th className="px-4 py-4 text-left font-semibold">Team</th>
-                  <th className="px-4 py-4 text-center font-semibold">P</th>
-                  <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold"
+                    title="Played"
+                  >
+                    P
+                  </th>
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                    title="Wins"
+                  >
                     W
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                    title="Draws"
+                  >
                     D
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold hidden sm:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden sm:table-cell"
+                    title="Losses"
+                  >
                     L
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                    title="Goals For"
+                  >
                     GF
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                    title="Goals Against"
+                  >
                     GA
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold hidden md:table-cell">
+                  <th
+                    className="px-4 py-4 text-center font-semibold hidden md:table-cell"
+                    title="Goal Difference"
+                  >
                     GD
                   </th>
-                  <th className="px-4 py-4 text-center font-semibold">PTS</th>
+                  <th
+                    className="px-4 py-4 text-center font-semibold"
+                    title="Points"
+                  >
+                    PTS
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -92,11 +132,11 @@ export default function LeagueTableLoading() {
         </div>
 
         {/* Legend Skeleton */}
-        <div className="mt-6 flex flex-wrap gap-6">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="flex items-center gap-2">
               <div className="w-4 h-4 bg-slate-200 rounded animate-pulse" />
-              <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+              <div className="h-4 w-40 bg-slate-200 rounded animate-pulse" />
             </div>
           ))}
         </div>
