@@ -149,9 +149,20 @@ export default async function ResultsPage() {
                           <p className="text-sm text-slate-600">
                             {format(new Date(match.date), 'dd MMM yyyy')}
                           </p>
-                          <p className="text-xs text-slate-400">
-                            {match.competition}
-                          </p>
+                          <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                            {seasonLogoUrl && (
+                              <Image
+                                src={seasonLogoUrl}
+                                alt={match.competition}
+                                width={16}
+                                height={16}
+                                className="h-4 w-auto object-contain"
+                              />
+                            )}
+                            <p className="text-xs text-slate-400">
+                              {match.competition}
+                            </p>
+                          </div>
                         </div>
                         <Link
                           href={`/matches/${match.slug}`}
