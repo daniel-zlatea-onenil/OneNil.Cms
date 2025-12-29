@@ -136,3 +136,66 @@ When given a feature request:
 5. Commit changes with descriptive messages
 6. Push and create PR linking to the issue
 7. Do not merge the pull request.
+
+## Feature Implementation Workflow with Agents
+
+For complex features, use specialized agents in the following workflow:
+
+### 1. Feature Analysis (feature-analyzer)
+**When**: Before starting implementation
+**Purpose**: Analyze feature requirements, identify gaps, and generate acceptance criteria
+
+```
+"Use feature-analyzer to analyze the [feature name] feature for completeness and generate acceptance criteria"
+```
+
+### 2. Implementation (react-feature-implementer)
+**When**: After requirements are clear and acceptance criteria defined
+**Purpose**: Implement React components, hooks, and functionality
+
+```
+"Use react-feature-implementer to build [feature description]"
+```
+
+### 3. Testing (feature-branch-tester)
+**When**: After PR is created and Vercel preview is deployed
+**Purpose**: Validate against acceptance criteria and run smoke tests
+
+```
+"Use feature-branch-tester to test PR #[number] on the Vercel preview"
+```
+
+### 4. UX Review (ux-ui-analyst)
+**When**: Periodically after features are merged (not during active development)
+**Purpose**: Analyze UI changes and create improvement issues
+
+```
+"Use ux-ui-analyst to review recent UI changes and create improvement issues"
+```
+
+### Example Complete Workflow
+
+```
+User: "I want to add a user profile page with avatar upload"
+
+Step 1: "Use feature-analyzer to analyze the user profile feature"
+        → Outputs: requirements, edge cases, acceptance criteria
+
+Step 2: "Use react-feature-implementer to build the profile page with avatar upload"
+        → Outputs: implemented components, PR created
+
+Step 3: "Use feature-branch-tester to test PR #42 on preview"
+        → Outputs: test results, any issues found
+
+Step 4 (later): "Use ux-ui-analyst to review recent UI changes"
+        → Outputs: GitHub issues for UI improvements
+```
+
+### Agent Selection Guide
+
+| Task | Agent | Trigger |
+|------|-------|---------|
+| Understand requirements | feature-analyzer | New feature request |
+| Build React UI | react-feature-implementer | Clear requirements exist |
+| Test on preview | feature-branch-tester | PR + Vercel deploy ready |
+| Review UI quality | ux-ui-analyst | After sprint/batch of features |
