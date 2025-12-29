@@ -2,6 +2,7 @@ import { LeagueTableEntry } from '@/lib/types';
 import { getAllTeamLogos, getSeason, getAllSeasons, getActiveSeason } from '@/lib/serverUtils';
 import Image from 'next/image';
 import SeasonSelector from '@/app/components/SeasonSelector';
+import { Asset } from 'contentful';
 
 interface LeagueTablePageProps {
   searchParams: Promise<{ season?: string }>;
@@ -40,32 +41,51 @@ export default async function LeagueTablePage({
   const isActiveSeason = season.fields.isActive as unknown as boolean;
   const activeSeasonSlug = season.fields.slug as unknown as string;
 
+  // Get season logo (LaLiga logo)
+  const seasonLogoAsset = season.fields.logo as unknown as Asset;
+  let seasonLogoUrl: string | undefined;
+  if (seasonLogoAsset?.fields?.file?.url) {
+    seasonLogoUrl = `https:${seasonLogoAsset.fields.file.url}`;
+  }
+
   // Determine display title based on season type
   const displayTitle = isActiveSeason
     ? 'League Table'
-    : `Final Standings - ${seasonTitle}`;
+    : `Final Standings`;
 
   return (
     <main className="bg-slate-50 min-h-screen text-slate-900">
       {/* Page Header */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-24 md:pt-28 pb-12 md:pb-16 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-red-500 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            {/* Left: Logo and Title */}
+            <div className="flex items-center gap-5">
+              {seasonLogoUrl && (
+                <div className="flex-shrink-0">
+                  <Image
+                    src={seasonLogoUrl}
+                    alt="LaLiga"
+                    width={80}
+                    height={80}
+                    className="h-16 md:h-20 w-auto object-contain"
+                  />
+                </div>
+              )}
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold">{displayTitle}</h1>
-                {!isActiveSeason && (
-                  <p className="text-white/80 mt-2">{seasonTitle}</p>
-                )}
-              </div>
-              <div className="sm:hidden">
-                <SeasonSelector
-                  seasons={allSeasons}
-                  currentSeasonSlug={activeSeasonSlug}
-                />
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">{displayTitle}</h1>
+                <p className="text-white/60 mt-1 text-sm md:text-base">{seasonTitle}</p>
               </div>
             </div>
-            <div className="hidden sm:flex sm:justify-end">
+
+            {/* Right: Season Selector */}
+            <div className="flex-shrink-0">
               <SeasonSelector
                 seasons={allSeasons}
                 currentSeasonSlug={activeSeasonSlug}
@@ -75,7 +95,7 @@ export default async function LeagueTablePage({
 
           {/* Error message if invalid season was requested */}
           {error && seasonSlug && (
-            <div className="mt-4 bg-red-500/20 border border-red-400/50 rounded-lg px-4 py-3 text-white/90">
+            <div className="mt-6 bg-red-500/20 backdrop-blur border border-red-400/30 rounded-xl px-4 py-3 text-white/90">
               <p className="text-sm">
                 Season not found. Showing active season instead.
               </p>

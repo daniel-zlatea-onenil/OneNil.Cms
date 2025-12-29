@@ -2,19 +2,26 @@ export default function LeagueTableLoading() {
   return (
     <main className="bg-slate-50 min-h-screen text-slate-900">
       {/* Page Header Skeleton */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 text-white pt-24 md:pt-28 pb-12 md:pb-16">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-24 md:pt-28 pb-12 md:pb-16 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-red-500 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-600 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-4 md:px-8 relative">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            {/* Left: Logo and Title Skeleton */}
+            <div className="flex items-center gap-5">
+              <div className="h-16 md:h-20 w-16 md:w-20 bg-white/10 rounded-lg animate-pulse" />
               <div>
-                <div className="h-12 w-64 bg-white/20 rounded-lg animate-pulse" />
-                <div className="h-6 w-40 bg-white/20 rounded-lg animate-pulse mt-2" />
+                <div className="h-10 md:h-12 w-48 md:w-64 bg-white/10 rounded-lg animate-pulse" />
+                <div className="h-5 w-32 bg-white/10 rounded-lg animate-pulse mt-2" />
               </div>
-              <div className="sm:hidden h-10 w-full bg-white/20 rounded-lg animate-pulse" />
             </div>
-            <div className="hidden sm:flex sm:justify-end">
-              <div className="h-10 w-64 bg-white/20 rounded-lg animate-pulse" />
-            </div>
+
+            {/* Right: Season Selector Skeleton */}
+            <div className="h-11 w-40 bg-white/10 rounded-full animate-pulse" />
           </div>
         </div>
       </section>
