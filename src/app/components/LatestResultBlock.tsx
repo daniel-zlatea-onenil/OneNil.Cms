@@ -2,38 +2,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MatchEventFields, SeasonSkeleton } from '@/lib/types';
 import { getLatestResult, getMatchViewModel } from '@/lib/serverUtils';
-import { Entry } from 'contentful';
-
-// LaLiga logo component (official monochrome version for dark backgrounds)
-function LaLigaLogo({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 200 60"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* LaLiga official logo - stylized text with accent */}
-      <g>
-        {/* L */}
-        <path d="M10 10h8v32h20v8H10V10z" />
-        {/* a */}
-        <path d="M45 26c0-8.8 7.2-16 16-16s16 7.2 16 16v24h-8V38c-2.4 1.6-5.2 2.6-8 2.6-8.8 0-16-7.2-16-14.6zm16-8c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z" />
-        {/* L */}
-        <path d="M85 10h8v32h20v8H85V10z" />
-        {/* i */}
-        <path d="M120 10h8v8h-8v-8zm0 16h8v24h-8V26z" />
-        {/* g */}
-        <path d="M138 26c0-8.8 7.2-16 16-16s16 7.2 16 16v30c0 8.8-7.2 16-16 16s-16-7.2-16-16h8c0 4.4 3.6 8 8 8s8-3.6 8-8V38c-2.4 1.6-5.2 2.6-8 2.6-8.8 0-16-7.2-16-14.6zm16-8c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8z" />
-        {/* a */}
-        <path d="M180 26c0-8.8 7.2-16 16-16v8c-4.4 0-8 3.6-8 8s3.6 8 8 8v8c-8.8 0-16-7.2-16-16z" />
-      </g>
-    </svg>
-  );
-}
+import { Asset, Entry } from 'contentful';
+import { resolveAsset } from '@/lib/utils';
 
 export default async function LatestResultBlock() {
-  const { match } = await getLatestResult();
+  const { match, assets } = await getLatestResult();
 
   if (!match) {
     return null;
@@ -45,16 +18,23 @@ export default async function LatestResultBlock() {
     return null;
   }
 
-  const { homeScore, awayScore, homeScorers, awayScorers, competition, season } =
+  const { homeScore, awayScore, homeScorers, awayScorers, competition, season, location } =
     match.fields as MatchEventFields;
   const hasScore =
     typeof homeScore === 'number' && typeof awayScore === 'number';
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
   const isGoalless = hasScore && homeScore === 0 && awayScore === 0;
 
-  // Get season title
+  // Get season title and logo
   const seasonEntry = season as unknown as Entry<SeasonSkeleton>;
   const seasonTitle = seasonEntry?.fields?.title as unknown as string;
+  const seasonLogoAsset = seasonEntry?.fields?.logo as unknown as Asset;
+  const seasonLogoUrl = seasonLogoAsset?.sys?.id
+    ? resolveAsset(seasonLogoAsset.sys.id, assets)
+    : null;
+
+  // Get venue - prefer matchViewModel.venue, fall back to match location
+  const venue = matchViewModel.venue || location;
 
   // Parse scorers - handle both string and array formats from Contentful
   const parseScorers = (scorers: string | string[] | undefined): string[] => {
@@ -87,8 +67,16 @@ export default async function LatestResultBlock() {
         </h2>
 
         {/* Competition and Season Context */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <LaLigaLogo className="h-4 w-auto opacity-80" />
+        <div className="flex items-center justify-center gap-3 mb-8">
+          {seasonLogoUrl && (
+            <Image
+              src={seasonLogoUrl}
+              alt={seasonTitle || competition}
+              width={80}
+              height={24}
+              className="h-6 w-auto object-contain opacity-90"
+            />
+          )}
           <span className="text-white/80 text-sm">
             {competition} {seasonTitle && `• ${seasonTitle}`}
           </span>
@@ -101,8 +89,8 @@ export default async function LatestResultBlock() {
             <p className="text-white/70 text-sm tracking-wide">
               {matchViewModel.date} • {matchViewModel.kickoffTime}
             </p>
-            {matchViewModel.venue && (
-              <p className="text-white/50 text-xs mt-1">{matchViewModel.venue}</p>
+            {venue && (
+              <p className="text-white/50 text-xs mt-1">{venue}</p>
             )}
           </div>
 

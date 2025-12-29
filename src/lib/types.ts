@@ -115,6 +115,7 @@ export type SeasonFields = {
   startYear: number;
   isActive: boolean;
   leagueTable: LeagueTableEntry[];
+  logo?: Asset;
 };
 
 export type SeasonSkeleton = EntrySkeletonType<SeasonFields>;
