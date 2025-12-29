@@ -68,20 +68,9 @@ export default async function ResultsPage() {
       {/* Results List */}
       <section className="py-12 md:py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            {seasonLogoUrl && (
-              <Image
-                src={seasonLogoUrl}
-                alt={seasonTitle}
-                width={32}
-                height={32}
-                className="h-8 w-auto object-contain"
-              />
-            )}
-            <h2 className="text-2xl font-bold text-slate-900">
-              All Results
-            </h2>
-          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-8">
+            All Results
+          </h2>
 
           {otherResults.length === 0 ? (
             <p className="text-slate-500 text-center py-12">
