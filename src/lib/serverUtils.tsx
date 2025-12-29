@@ -81,6 +81,21 @@ export async function getSeason(
 }
 
 /**
+ * Gets all seasons ordered by startYear descending (newest first).
+ * Used for season selection dropdown in league table page.
+ */
+export async function getAllSeasons(): Promise<Entry<SeasonSkeleton>[]> {
+  const query: ContentfulQuery = {
+    content_type: 'season',
+    order: '-fields.startYear',
+    limit: 1000,
+  };
+  const entries = await contentfulClient.getEntries<SeasonSkeleton>(query);
+
+  return entries.items;
+}
+
+/**
  * @deprecated Use getSeason() instead. This function uses startYear ordering which should not be used.
  */
 export async function getLastSeason(): Promise<Entry<SeasonSkeleton>> {
