@@ -71,7 +71,7 @@ export type TeamFields = {
   heroImage?: Asset;
   foundationYear?: number;
   city?: string;
-  stadium?: string;
+  stadiumName?: string;
   teamColors?: string;
   website?: string;
   bio?: string;

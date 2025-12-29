@@ -282,8 +282,8 @@ export async function getMatchViewModel(
   const formattedDate = format(date, 'dd MMM yyyy');
   const formattedTime = format(date, 'HH:mm');
 
-  // Get venue from home team's stadium field
-  const venue = homeTeam.fields.stadium as unknown as string;
+  // Get venue from home team's stadiumName field
+  const venue = homeTeam.fields.stadiumName as unknown as string;
 
   // Hero banner fallback logic:
   // 1. Match hero banner (if available)
