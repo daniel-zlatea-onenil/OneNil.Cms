@@ -1,7 +1,32 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { MatchEventFields } from '@/lib/types';
+import { MatchEventFields, SeasonSkeleton } from '@/lib/types';
 import { getLatestResult, getMatchViewModel } from '@/lib/serverUtils';
+import { format } from 'date-fns';
+import { Entry } from 'contentful';
+
+// LaLiga logo component (monochrome white version for dark backgrounds)
+function LaLigaLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 120 40"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <text
+        x="0"
+        y="28"
+        fontFamily="Arial, sans-serif"
+        fontSize="24"
+        fontWeight="bold"
+        fill="currentColor"
+      >
+        LaLiga
+      </text>
+    </svg>
+  );
+}
 
 export default async function LatestResultBlock() {
   const { match } = await getLatestResult();
@@ -16,11 +41,25 @@ export default async function LatestResultBlock() {
     return null;
   }
 
-  const { homeScore, awayScore, homeScorers, awayScorers } =
+  const { homeScore, awayScore, homeScorers, awayScorers, date, competition, season } =
     match.fields as MatchEventFields;
   const hasScore =
     typeof homeScore === 'number' && typeof awayScore === 'number';
   const scoreLabel = hasScore ? `${homeScore} - ${awayScore}` : 'TBD';
+  const isGoalless = hasScore && homeScore === 0 && awayScore === 0;
+
+  // Format date and time
+  const matchDate = new Date(date);
+  const formattedDate = format(matchDate, 'dd MMM yyyy');
+  const formattedTime = matchDate.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  // Get season title
+  const seasonEntry = season as unknown as Entry<SeasonSkeleton>;
+  const seasonTitle = seasonEntry?.fields?.title as unknown as string;
 
   // Parse scorers - handle both string and array formats from Contentful
   const parseScorers = (scorers: string | string[] | undefined): string[] => {
@@ -32,27 +71,43 @@ export default async function LatestResultBlock() {
 
   const homeScorersList = parseScorers(homeScorers);
   const awayScorersList = parseScorers(awayScorers);
+  const hasScorers = homeScorersList.length > 0 || awayScorersList.length > 0;
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-br from-red-500 via-red-600 to-red-800 text-white relative overflow-hidden">
-      {/* Decorative gradient overlays for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 via-transparent to-red-900/20" />
+    <section className="py-16 md:py-20 bg-gradient-to-br from-rose-400 via-red-500 to-red-700 text-white relative overflow-hidden">
+      {/* Softer decorative gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
 
-      {/* Decorative blur elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-red-400 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-900 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 opacity-30" />
+      {/* Softer decorative blur elements */}
+      <div className="absolute inset-0 opacity-15">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-rose-300 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-800 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 opacity-20" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
           Latest Result
         </h2>
 
+        {/* Competition and Season Context */}
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <LaLigaLogo className="h-4 w-auto opacity-80" />
+          <span className="text-white/80 text-sm">
+            {competition} {seasonTitle && `• ${seasonTitle}`}
+          </span>
+        </div>
+
         {/* Result Card */}
         <div className="glass-dark rounded-3xl p-8 md:p-12 max-w-3xl mx-auto">
+          {/* Date and Time */}
+          <div className="text-center mb-6">
+            <p className="text-white/70 text-sm tracking-wide">
+              {formattedDate} • {formattedTime}
+            </p>
+          </div>
+
           {/* Teams and Score Row */}
           <div className="flex items-center justify-center">
             {/* Home Team */}
@@ -74,6 +129,9 @@ export default async function LatestResultBlock() {
               <div className="text-5xl md:text-7xl font-black tabular-nums tracking-tight">
                 {scoreLabel}
               </div>
+              <p className="text-xs text-white/60 mt-1 uppercase tracking-wider">
+                Full Time
+              </p>
             </div>
 
             {/* Away Team */}
@@ -97,47 +155,80 @@ export default async function LatestResultBlock() {
             <span>{matchViewModel.teamAway.name}</span>
           </div>
 
-          {/* Scorers */}
-          {(homeScorersList.length > 0 || awayScorersList.length > 0) && (
-            <div className="flex justify-between mt-6 pt-6 border-t border-white/20">
-              {/* Home Scorers */}
-              <div className="flex-1 text-right pr-4 md:pr-8">
-                {homeScorersList.length > 0 && (
-                  <div className="text-sm md:text-base text-white/80 space-y-1">
-                    {homeScorersList.map((scorer, i) => (
-                      <p key={i} className="flex items-center justify-end gap-2">
-                        <span>{scorer}</span>
-                        <span className="text-lg">⚽</span>
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
+          {/* Scorers Section */}
+          <div className="mt-6 pt-6 border-t border-white/20">
+            {isGoalless ? (
+              <p className="text-center text-white/60 text-sm italic">No goals</p>
+            ) : hasScorers ? (
+              <div className="flex justify-between">
+                {/* Home Scorers */}
+                <div className="flex-1 text-right pr-4 md:pr-8">
+                  {homeScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/80 space-y-1">
+                      {homeScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center justify-end gap-2">
+                          <span>{scorer}</span>
+                          <span className="text-base">⚽</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-              {/* Away Scorers */}
-              <div className="flex-1 text-left pl-4 md:pl-8">
-                {awayScorersList.length > 0 && (
-                  <div className="text-sm md:text-base text-white/80 space-y-1">
-                    {awayScorersList.map((scorer, i) => (
-                      <p key={i} className="flex items-center gap-2">
-                        <span className="text-lg">⚽</span>
-                        <span>{scorer}</span>
-                      </p>
-                    ))}
-                  </div>
-                )}
+                {/* Away Scorers */}
+                <div className="flex-1 text-left pl-4 md:pl-8">
+                  {awayScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/80 space-y-1">
+                      {awayScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center gap-2">
+                          <span className="text-base">⚽</span>
+                          <span>{scorer}</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            ) : null}
+          </div>
 
-          {/* CTA */}
-          <div className="text-center mt-8">
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
             <Link
               href={`/matches/${matchViewModel.slug}`}
               className="inline-block bg-white text-red-700 px-8 py-3 rounded-full font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg"
             >
               Match Report
             </Link>
+
+            {/* Highlights Button (Placeholder) */}
+            <button
+              disabled
+              className="inline-flex items-center gap-2 bg-white/10 text-white/50 px-8 py-3 rounded-full font-semibold cursor-not-allowed border border-white/20"
+              title="Highlights coming soon"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Highlights
+              <span className="text-xs opacity-70">(Soon)</span>
+            </button>
           </div>
         </div>
       </div>
