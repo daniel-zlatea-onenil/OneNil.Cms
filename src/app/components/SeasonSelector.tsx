@@ -104,7 +104,7 @@ export default function SeasonSelector({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-2 z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="px-3 py-2 border-b border-slate-100">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
               Select Season
