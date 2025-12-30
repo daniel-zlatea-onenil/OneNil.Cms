@@ -56,7 +56,7 @@ export default async function MatchPage(props: {
           </p>
 
           {/* Competition and Season Logo */}
-          <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="flex items-center justify-center gap-2 mb-2">
             {matchStatus !== 'pre-match' && matchViewModel.season?.logoUrl && (
               <Image
                 src={matchViewModel.season.logoUrl}
@@ -70,6 +70,23 @@ export default async function MatchPage(props: {
               {matchViewModel.competition} · {matchViewModel.location}
             </p>
           </div>
+
+          {/* Attendance and Referee */}
+          {matchStatus === 'post-match' && (matchViewModel.attendance || matchViewModel.referee) && (
+            <div className="flex items-center justify-center gap-4 mb-6 text-white/50 text-xs">
+              {matchViewModel.attendance && (
+                <span>Attendance: {matchViewModel.attendance.toLocaleString()}</span>
+              )}
+              {matchViewModel.attendance && matchViewModel.referee && (
+                <span>·</span>
+              )}
+              {matchViewModel.referee && (
+                <span>Referee: {matchViewModel.referee}</span>
+              )}
+            </div>
+          )}
+
+          {matchStatus !== 'post-match' && <div className="mb-4" />}
 
           {/* Teams */}
           <div className="flex justify-center items-center gap-6 md:gap-10">

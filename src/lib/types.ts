@@ -93,6 +93,7 @@ export type MatchEventFields = {
   teamAway: Entry<TeamSkeleton>;
   heroBanner: Asset;
   season?: Entry<SeasonSkeleton>;
+  stats?: StatsJson;
 };
 
 export type LeagueTableEntry = {
@@ -143,3 +144,80 @@ export type DefaultSettingsFields = {
 };
 
 export type DefaultSettingsSkeleton = EntrySkeletonType<DefaultSettingsFields>;
+
+// Stats JSON schema types
+export type StatsJson = {
+  match?: {
+    competition?: {
+      name?: string;
+      season?: string;
+      matchday?: number;
+    };
+    score?: {
+      home?: number;
+      away?: number;
+      status?: string; // "FT", "HT", "LIVE", etc.
+    };
+    venue?: {
+      name?: string;
+      city?: string;
+    };
+    attendance?: number;
+    referee?: string;
+  };
+  goals?: StatsGoal[];
+  cards?: StatsCard[];
+  substitutions?: StatsSubstitution[];
+  team_stats?: {
+    home?: TeamStatistics;
+    away?: TeamStatistics;
+  };
+  lineups?: {
+    home_formation?: string;
+    away_formation?: string;
+    home_starting?: LineupPlayer[];
+    away_starting?: LineupPlayer[];
+    home_subs?: LineupPlayer[];
+    away_subs?: LineupPlayer[];
+  };
+};
+
+export type StatsGoal = {
+  minute?: string;
+  team?: string;
+  scorer?: string;
+  assist?: string;
+  play_type?: string; // "header", "penalty", "open play", etc.
+  notes?: string;
+};
+
+export type StatsCard = {
+  minute?: string;
+  team?: string;
+  player?: string;
+  type?: string; // "yellow", "red", "second yellow"
+};
+
+export type StatsSubstitution = {
+  minute?: string;
+  team?: string;
+  player_in?: string;
+  player_out?: string;
+};
+
+export type TeamStatistics = {
+  possession?: number;
+  shots?: number;
+  shots_on_target?: number;
+  corners?: number;
+  fouls?: number;
+  offsides?: number;
+  passes?: number;
+  pass_accuracy?: number;
+};
+
+export type LineupPlayer = {
+  name?: string;
+  number?: number;
+  position?: string;
+};
