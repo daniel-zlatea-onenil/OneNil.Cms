@@ -1,10 +1,11 @@
-import { LeagueTableEntry } from '@/lib/types';
+import { LeagueTableEntry, SeasonSkeleton } from '@/lib/types';
 import { getAllTeamLogos, getSeason } from '@/lib/serverUtils';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Asset, Entry } from 'contentful';
 
 export default async function ShortLeagueTable() {
-  const standings = await getSeason();
+  const season = await getSeason();
   const teamLogos: Record<
     string,
     {
@@ -12,11 +13,22 @@ export default async function ShortLeagueTable() {
       isTheTeamWeSupport: boolean;
     }
   > = await getAllTeamLogos();
-  const leagueTable = standings?.fields
+  const leagueTable = season?.fields
     .leagueTable as unknown as LeagueTableEntry[];
 
   if (!leagueTable?.length) {
     return null;
+  }
+
+  // Get season title and logo
+  const seasonEntry = season as Entry<SeasonSkeleton>;
+  const seasonTitle = seasonEntry?.fields?.title as unknown as string;
+  const seasonLogoAsset = seasonEntry?.fields?.logo as unknown as Asset;
+
+  // Get season logo URL
+  let seasonLogoUrl: string | undefined = undefined;
+  if (seasonLogoAsset?.fields?.file?.url) {
+    seasonLogoUrl = `https:${seasonLogoAsset.fields.file.url}`;
   }
 
   const supportedIndex = leagueTable.findIndex(
@@ -41,9 +53,29 @@ export default async function ShortLeagueTable() {
   return (
     <section className="py-16 md:py-20 bg-slate-50 relative">
       <div className="max-w-4xl mx-auto px-4 md:px-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-slate-900">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 text-slate-900">
           League Table
         </h2>
+
+        {/* Season Logo and Title */}
+        {(seasonLogoUrl || seasonTitle) && (
+          <div className="flex items-center justify-center gap-3 mb-10">
+            {seasonLogoUrl && (
+              <Image
+                src={seasonLogoUrl}
+                alt={seasonTitle || 'Season logo'}
+                width={80}
+                height={24}
+                className="h-6 w-auto object-contain"
+              />
+            )}
+            {seasonTitle && (
+              <span className="text-slate-600 text-sm font-medium">
+                {seasonTitle}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Table with modern styling */}
         <div className="bg-white rounded-2xl shadow-card overflow-hidden">
