@@ -30,7 +30,7 @@ export default async function ArticlePage(props: {
     .map((ref) => includes.find((entry) => entry.sys.id === ref.sys.id))
     .filter(Boolean) as ComponentEntry[];
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12">
+    <main className="max-w-3xl mx-auto px-4 pt-24 md:pt-28 pb-12">
       <h1 className="text-4xl font-bold text-red-700 mb-4">{title}</h1>
       <p className="text-sm text-gray-500 mb-6">
         {new Date(publishDate).toLocaleDateString()}
