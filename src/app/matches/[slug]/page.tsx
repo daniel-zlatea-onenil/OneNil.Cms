@@ -5,8 +5,9 @@ import { MatchStats, TeamSkeleton, SeasonSkeleton } from '@/lib/types';
 import { Entry } from 'contentful';
 import Image from 'next/image';
 import PreMatchSection from '@/app/components/PreMatchSection';
-import MatchFacts from '@/app/components/MatchFacts';
 import Link from 'next/link';
+import { FiMapPin, FiUsers } from 'react-icons/fi';
+import { GiWhistle } from 'react-icons/gi';
 
 export default async function MatchPage(props: {
   params: Promise<{ slug: string }>;
@@ -23,7 +24,7 @@ export default async function MatchPage(props: {
 
   const matchStatus = getMatchStatus(matchViewModel.targetDate);
 
-  // Extract additional match data for MatchFacts
+  // Extract additional match data
   const fields = match.fields;
   const stats = fields.stats as unknown as MatchStats | undefined;
   const homeTeam = fields.teamHome as unknown as Entry<TeamSkeleton>;
@@ -31,9 +32,12 @@ export default async function MatchPage(props: {
   const seasonTitle = season?.fields?.title as unknown as string | undefined;
   const venue = homeTeam?.fields?.stadiumName as unknown as string | undefined;
   const venueCity = homeTeam?.fields?.city as unknown as string | undefined;
-  const referee = fields.referee as unknown as string | undefined;
-  const attendance = fields.attendance as unknown as number | undefined;
-  const matchday = fields.matchday as unknown as string | undefined;
+  const referee = stats?.match_facts?.referee ?? (fields.referee as unknown as string | undefined);
+  const attendance = stats?.match_facts?.attendance ?? (fields.attendance as unknown as number | undefined);
+  const matchday = stats?.match_facts?.matchday ?? (fields.matchday as unknown as string | undefined);
+
+  // Build venue string
+  const fullVenue = venueCity ? `${venue}, ${venueCity}` : venue;
 
   // Use stadium photo for upcoming matches, hero banner for completed/live matches
   const heroImageUrl =
@@ -53,6 +57,25 @@ export default async function MatchPage(props: {
 
         {/* Content */}
         <div className="relative z-10 max-w-6xl mx-auto text-center px-4 md:px-8">
+          {/* Competition & Matchday */}
+          <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="text-red-400 font-semibold text-sm">
+              {matchViewModel.competition}
+            </span>
+            {matchday && (
+              <>
+                <span className="text-white/40">·</span>
+                <span className="text-white/70 text-sm">{matchday}</span>
+              </>
+            )}
+            {seasonTitle && (
+              <>
+                <span className="text-white/40">·</span>
+                <span className="text-white/70 text-sm">{seasonTitle}</span>
+              </>
+            )}
+          </div>
+
           {/* Match Status Badge */}
           <div className="mb-4">
             {matchStatus === 'pre-match' && (
@@ -72,11 +95,9 @@ export default async function MatchPage(props: {
             )}
           </div>
 
-          <p className="text-white/70 text-sm mb-2">
+          {/* Date & Time */}
+          <p className="text-white/80 text-sm mb-6">
             {matchViewModel.date} · {matchViewModel.kickoffTime}
-          </p>
-          <p className="text-white/60 text-sm italic mb-6">
-            {matchViewModel.competition} · {matchViewModel.location}
           </p>
 
           {/* Teams */}
@@ -123,6 +144,28 @@ export default async function MatchPage(props: {
             </div>
           </div>
 
+          {/* Match Facts Bar */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-white/70">
+            {fullVenue && (
+              <div className="flex items-center gap-1.5">
+                <FiMapPin className="w-4 h-4 text-white/50" />
+                <span>{fullVenue}</span>
+              </div>
+            )}
+            {referee && (
+              <div className="flex items-center gap-1.5">
+                <GiWhistle className="w-4 h-4 text-white/50" />
+                <span>{referee}</span>
+              </div>
+            )}
+            {attendance !== undefined && attendance > 0 && (
+              <div className="flex items-center gap-1.5">
+                <FiUsers className="w-4 h-4 text-white/50" />
+                <span>{attendance.toLocaleString()}</span>
+              </div>
+            )}
+          </div>
+
           {/* Ticket Link for Pre-Match */}
           {matchStatus === 'pre-match' && matchViewModel.ticketLink && (
             <div className="mt-8">
@@ -134,25 +177,6 @@ export default async function MatchPage(props: {
               </Link>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Match Facts - Show for all match states */}
-      <section className="bg-slate-900 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-4 md:px-8">
-          <MatchFacts
-            stats={stats}
-            fallbackData={{
-              competition: matchViewModel.competition,
-              season: seasonTitle,
-              matchday,
-              date: matchViewModel.targetDate,
-              venue,
-              venueCity,
-              referee,
-              attendance,
-            }}
-          />
         </div>
       </section>
 
