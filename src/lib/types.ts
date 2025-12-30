@@ -93,6 +93,10 @@ export type MatchEventFields = {
   teamAway: Entry<TeamSkeleton>;
   heroBanner: Asset;
   season?: Entry<SeasonSkeleton>;
+  stats?: MatchStats; // Optional JSON field for detailed match statistics
+  referee?: string;
+  attendance?: number;
+  matchday?: string;
 };
 
 export type LeagueTableEntry = {
@@ -143,3 +147,85 @@ export type DefaultSettingsFields = {
 };
 
 export type DefaultSettingsSkeleton = EntrySkeletonType<DefaultSettingsFields>;
+
+// Match Facts types for Issue #51
+export type MatchFacts = {
+  competition?: string;
+  season?: string;
+  matchday?: string;
+  kickoffTime?: string;
+  kickoffDate?: string;
+  venue?: string;
+  venueCity?: string;
+  referee?: string;
+  attendance?: number;
+};
+
+// Stats JSON schema for match events (Opta-ready structure)
+export type MatchStats = {
+  match_facts?: MatchFacts;
+  goals?: MatchGoal[];
+  cards?: MatchCard[];
+  substitutions?: MatchSubstitution[];
+  team_stats?: {
+    home?: TeamStatistics;
+    away?: TeamStatistics;
+  };
+  lineups?: {
+    home_formation?: string;
+    away_formation?: string;
+    home_starting_xi?: LineupPlayer[];
+    away_starting_xi?: LineupPlayer[];
+  };
+};
+
+export type MatchGoal = {
+  minute: number;
+  stoppage_time?: number;
+  player_name: string;
+  player_id?: string;
+  assist_player_name?: string;
+  assist_player_id?: string;
+  goal_type?: 'penalty' | 'header' | 'free_kick' | 'own_goal' | 'regular';
+  team: 'home' | 'away';
+};
+
+export type MatchCard = {
+  minute: number;
+  stoppage_time?: number;
+  player_name: string;
+  player_id?: string;
+  card_type: 'yellow' | 'second_yellow' | 'red';
+  team: 'home' | 'away';
+  reason?: string;
+};
+
+export type MatchSubstitution = {
+  minute: number;
+  stoppage_time?: number;
+  player_in_name: string;
+  player_in_id?: string;
+  player_out_name: string;
+  player_out_id?: string;
+  team: 'home' | 'away';
+  reason?: 'tactical' | 'injury' | 'performance';
+};
+
+export type TeamStatistics = {
+  possession?: number;
+  shots?: number;
+  shots_on_target?: number;
+  corners?: number;
+  offsides?: number;
+  fouls?: number;
+  yellow_cards?: number;
+  red_cards?: number;
+  pass_accuracy?: number;
+};
+
+export type LineupPlayer = {
+  player_name: string;
+  player_id?: string;
+  shirt_number?: number;
+  position?: 'GK' | 'DF' | 'MF' | 'FW';
+};

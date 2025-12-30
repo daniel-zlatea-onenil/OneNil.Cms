@@ -1,18 +1,39 @@
 import { notFound } from 'next/navigation';
-import { getMatchViewModel } from '@/lib/serverUtils';
+import { getMatchViewModel, getMatchBySlug } from '@/lib/serverUtils';
 import { getMatchStatus } from '@/lib/utils';
+import { MatchStats, TeamSkeleton, SeasonSkeleton } from '@/lib/types';
+import { Entry } from 'contentful';
 import Image from 'next/image';
 import PreMatchSection from '@/app/components/PreMatchSection';
+import MatchFacts from '@/app/components/MatchFacts';
 import Link from 'next/link';
 
 export default async function MatchPage(props: {
   params: Promise<{ slug: string }>;
 }) {
   const params = await props.params;
-  const matchViewModel = await getMatchViewModel(params.slug);
-  if (!matchViewModel) return notFound();
+
+  // Fetch both view model and full match data for stats
+  const [matchViewModel, { match }] = await Promise.all([
+    getMatchViewModel(params.slug),
+    getMatchBySlug(params.slug),
+  ]);
+
+  if (!matchViewModel || !match) return notFound();
 
   const matchStatus = getMatchStatus(matchViewModel.targetDate);
+
+  // Extract additional match data for MatchFacts
+  const fields = match.fields;
+  const stats = fields.stats as unknown as MatchStats | undefined;
+  const homeTeam = fields.teamHome as unknown as Entry<TeamSkeleton>;
+  const season = fields.season as unknown as Entry<SeasonSkeleton> | undefined;
+  const seasonTitle = season?.fields?.title as unknown as string | undefined;
+  const venue = homeTeam?.fields?.stadiumName as unknown as string | undefined;
+  const venueCity = homeTeam?.fields?.city as unknown as string | undefined;
+  const referee = fields.referee as unknown as string | undefined;
+  const attendance = fields.attendance as unknown as number | undefined;
+  const matchday = fields.matchday as unknown as string | undefined;
 
   // Use stadium photo for upcoming matches, hero banner for completed/live matches
   const heroImageUrl =
@@ -113,6 +134,25 @@ export default async function MatchPage(props: {
               </Link>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Match Facts - Show for all match states */}
+      <section className="bg-slate-900 py-8 md:py-12">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <MatchFacts
+            stats={stats}
+            fallbackData={{
+              competition: matchViewModel.competition,
+              season: seasonTitle,
+              matchday,
+              date: matchViewModel.targetDate,
+              venue,
+              venueCity,
+              referee,
+              attendance,
+            }}
+          />
         </div>
       </section>
 

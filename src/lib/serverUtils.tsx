@@ -408,3 +408,24 @@ export async function getAllTeamLogos(): Promise<
 
   return teamMap;
 }
+
+/**
+ * Gets a match entry by slug with full details including stats.
+ * Returns the raw Contentful entry for maximum flexibility.
+ *
+ * @param slug The match slug
+ */
+export async function getMatchBySlug(
+  slug: string
+): Promise<{ match: Entry<MatchEventSkeleton> | undefined; assets: Asset[] }> {
+  const query: ContentfulQuery = {
+    content_type: 'matchEvent',
+    'fields.slug': slug,
+    include: 2,
+    limit: 1,
+  };
+  const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
+  const assets = (entries.includes?.Asset as unknown as Asset[]) || [];
+
+  return { match: entries.items[0], assets };
+}
