@@ -4,6 +4,7 @@ import {
   MatchEventSkeleton,
   SeasonSkeleton,
   TeamSkeleton,
+  StatsJson,
 } from '@/lib/types';
 import { MatchViewModel } from '@/lib/viewModels';
 import { Asset, Entry } from 'contentful';
@@ -255,14 +256,53 @@ export async function getMatchViewModel(
     limit: 1,
   };
   const entries = await contentfulClient.getEntries<MatchEventSkeleton>(query);
-  const assets = entries.includes?.Asset as unknown as Asset[]; // if needed
+  const assets = entries.includes?.Asset as unknown as Asset[];
 
   const match = entries.items[0];
   if (!match) return undefined;
 
-  const { teamHome, teamAway, heroBanner, homeScore, awayScore, homeScorers, awayScorers, season } = match.fields;
+  const { teamHome, teamAway, heroBanner, season, stats } = match.fields;
   const homeTeam = teamHome as Entry<TeamSkeleton>;
   const awayTeam = teamAway as Entry<TeamSkeleton>;
+
+  // Parse stats JSON if available
+  const statsData = stats as unknown as StatsJson | undefined;
+
+  // Extract score from Stats JSON with fallback to direct fields
+  const homeScore = statsData?.match?.score?.home ?? match.fields.homeScore;
+  const awayScore = statsData?.match?.score?.away ?? match.fields.awayScore;
+
+  // Extract competition from Stats JSON with fallback
+  const competition = statsData?.match?.competition?.name ?? match.fields.competition;
+
+  // Extract scorers from Stats JSON goals array with fallback
+  let homeScorers: string | string[] | undefined;
+  let awayScorers: string | string[] | undefined;
+
+  if (statsData?.goals && statsData.goals.length > 0) {
+    const homeTeamName = homeTeam.fields.name as unknown as string;
+    const awayTeamName = awayTeam.fields.name as unknown as string;
+
+    // Group goals by team
+    const homeGoals = statsData.goals.filter(g => g.team === homeTeamName);
+    const awayGoals = statsData.goals.filter(g => g.team === awayTeamName);
+
+    // Format scorers with minute
+    homeScorers = homeGoals.map(g => {
+      const minute = g.minute ? `${g.minute}'` : '';
+      return g.scorer ? `${g.scorer} ${minute}`.trim() : '';
+    }).filter(Boolean);
+
+    awayScorers = awayGoals.map(g => {
+      const minute = g.minute ? `${g.minute}'` : '';
+      return g.scorer ? `${g.scorer} ${minute}`.trim() : '';
+    }).filter(Boolean);
+  } else {
+    // Fallback to direct fields
+    homeScorers = match.fields.homeScorers;
+    awayScorers = match.fields.awayScorers;
+  }
+
   let homeLogoUrl: string | undefined = undefined;
   let awayLogoUrl: string | undefined = undefined;
   let homeStadiumPhotoUrl: string | undefined = undefined;
@@ -272,10 +312,10 @@ export async function getMatchViewModel(
   const awayTeamLogo = awayTeam.fields.logo as unknown as Asset;
   const homeTeamStadiumPhoto = homeTeam.fields.stadiumPhoto as unknown as Asset;
   const homeTeamHeroImage = homeTeam.fields.heroImage as unknown as Asset;
-  const homeTeamName = homeTeam.fields.name! as unknown as string;
-  const homeTeamShortName = homeTeam.fields.name! as unknown as string;
-  const awayTeamName = awayTeam.fields.shortName! as unknown as string;
-  const awayTeamShortName = awayTeam.fields.shortName! as unknown as string;
+  const homeTeamDisplayName = homeTeam.fields.name! as unknown as string;
+  const homeTeamShortName = homeTeam.fields.shortName as unknown as string;
+  const awayTeamDisplayName = awayTeam.fields.name! as unknown as string;
+  const awayTeamShortName = awayTeam.fields.shortName as unknown as string;
 
   if (homeTeamLogo.sys?.id) {
     homeLogoUrl = resolveAsset(homeTeamLogo.sys?.id, assets);
@@ -297,8 +337,8 @@ export async function getMatchViewModel(
   const formattedDate = format(date, 'dd MMM yyyy');
   const formattedTime = format(date, 'HH:mm');
 
-  // Get venue from home team's stadiumName field
-  const venue = homeTeam.fields.stadiumName as unknown as string;
+  // Get venue from Stats JSON with fallback to home team's stadiumName
+  const venue = statsData?.match?.venue?.name ?? (homeTeam.fields.stadiumName as unknown as string);
 
   // Hero banner fallback logic:
   // 1. Match hero banner (if available)
@@ -340,7 +380,7 @@ export async function getMatchViewModel(
     location: match.fields.location,
     venue,
     kickoffTime: formattedTime,
-    competition: match.fields.competition,
+    competition,
     ticketLink: match.fields.ticketLink,
     heroBannerUrl,
     homeStadiumPhotoUrl,
@@ -350,12 +390,12 @@ export async function getMatchViewModel(
     awayScorers,
     season: seasonData,
     teamHome: {
-      name: homeTeamName,
+      name: homeTeamDisplayName,
       shortName: homeTeamShortName,
       logoUrl: homeLogoUrl!,
     },
     teamAway: {
-      name: awayTeamName,
+      name: awayTeamDisplayName,
       shortName: awayTeamShortName,
       logoUrl: awayLogoUrl!,
     },
