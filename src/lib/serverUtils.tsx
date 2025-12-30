@@ -401,6 +401,8 @@ export async function getMatchViewModel(
     awayScore,
     homeScorers,
     awayScorers,
+    attendance: statsData?.match?.attendance,
+    referee: statsData?.match?.referee,
     season: seasonData,
     teamHome: {
       name: homeTeamDisplayName,

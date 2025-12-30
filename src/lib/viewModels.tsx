@@ -14,6 +14,8 @@ export type MatchViewModel = {
   awayScore?: number;
   homeScorers?: string | string[];
   awayScorers?: string | string[];
+  attendance?: number;
+  referee?: string;
   season?: {
     title: string;
     logoUrl?: string;

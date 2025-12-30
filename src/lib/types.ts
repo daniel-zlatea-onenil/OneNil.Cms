@@ -162,6 +162,8 @@ export type StatsJson = {
       name?: string;
       city?: string;
     };
+    attendance?: number;
+    referee?: string;
   };
   goals?: StatsGoal[];
   cards?: StatsCard[];
