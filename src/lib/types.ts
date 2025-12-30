@@ -185,7 +185,8 @@ export type StatsGoal = {
   team?: string;
   scorer?: string;
   assist?: string;
-  type?: string; // "open play", "penalty", "own goal", etc.
+  play_type?: string; // "header", "penalty", "open play", etc.
+  notes?: string;
 };
 
 export type StatsCard = {
