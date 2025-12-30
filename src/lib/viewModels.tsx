@@ -10,6 +10,14 @@ export type MatchViewModel = {
   ticketLink?: string;
   heroBannerUrl?: string;
   homeStadiumPhotoUrl?: string;
+  homeScore?: number;
+  awayScore?: number;
+  homeScorers?: string | string[];
+  awayScorers?: string | string[];
+  season?: {
+    title: string;
+    logoUrl?: string;
+  };
   teamHome: {
     name: string;
     shortName?: string;

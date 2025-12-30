@@ -54,9 +54,22 @@ export default async function MatchPage(props: {
           <p className="text-white/70 text-sm mb-2">
             {matchViewModel.date} · {matchViewModel.kickoffTime}
           </p>
-          <p className="text-white/60 text-sm italic mb-6">
-            {matchViewModel.competition} · {matchViewModel.location}
-          </p>
+
+          {/* Competition and Season Logo */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            {matchStatus !== 'pre-match' && matchViewModel.season?.logoUrl && (
+              <Image
+                src={matchViewModel.season.logoUrl}
+                alt={matchViewModel.season.title || matchViewModel.competition}
+                width={60}
+                height={18}
+                className="h-4 md:h-5 w-auto object-contain opacity-90"
+              />
+            )}
+            <p className="text-white/60 text-sm italic">
+              {matchViewModel.competition} · {matchViewModel.location}
+            </p>
+          </div>
 
           {/* Teams */}
           <div className="flex justify-center items-center gap-6 md:gap-10">
@@ -81,7 +94,9 @@ export default async function MatchPage(props: {
                 <span className="text-3xl md:text-4xl font-bold text-white/80">vs</span>
               ) : (
                 <div className="text-4xl md:text-6xl font-black tabular-nums">
-                  0 - 0
+                  {typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number'
+                    ? `${matchViewModel.homeScore} - ${matchViewModel.awayScore}`
+                    : '0 - 0'}
                 </div>
               )}
             </div>
@@ -101,6 +116,60 @@ export default async function MatchPage(props: {
               </span>
             </div>
           </div>
+
+          {/* Scorers Section for Completed Matches */}
+          {matchStatus === 'post-match' && (() => {
+            const parseScorers = (scorers: string | string[] | undefined): string[] => {
+              if (!scorers) return [];
+              if (Array.isArray(scorers)) return scorers;
+              if (typeof scorers === 'string') return scorers.split(',').map((s) => s.trim());
+              return [];
+            };
+
+            const homeScorersList = parseScorers(matchViewModel.homeScorers);
+            const awayScorersList = parseScorers(matchViewModel.awayScorers);
+            const hasScore = typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number';
+            const isGoalless = hasScore && matchViewModel.homeScore === 0 && matchViewModel.awayScore === 0;
+            const hasScorers = homeScorersList.length > 0 || awayScorersList.length > 0;
+
+            return (
+              <div className="mt-8 pt-6 border-t border-white/10 max-w-3xl mx-auto">
+                {isGoalless ? (
+                  <p className="text-center text-white/50 text-sm italic">No goals</p>
+                ) : hasScorers ? (
+                  <div className="flex justify-between">
+                    {/* Home Scorers */}
+                    <div className="flex-1 text-right pr-4 md:pr-8">
+                      {homeScorersList.length > 0 && (
+                        <div className="text-sm md:text-base text-white/70 space-y-1">
+                          {homeScorersList.map((scorer, i) => (
+                            <p key={i} className="flex items-center justify-end gap-2">
+                              <span>{scorer}</span>
+                              <span className="text-base">⚽</span>
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Away Scorers */}
+                    <div className="flex-1 text-left pl-4 md:pl-8">
+                      {awayScorersList.length > 0 && (
+                        <div className="text-sm md:text-base text-white/70 space-y-1">
+                          {awayScorersList.map((scorer, i) => (
+                            <p key={i} className="flex items-center gap-2">
+                              <span className="text-base">⚽</span>
+                              <span>{scorer}</span>
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })()}
 
           {/* Ticket Link for Pre-Match */}
           {matchStatus === 'pre-match' && matchViewModel.ticketLink && (
