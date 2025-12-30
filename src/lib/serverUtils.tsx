@@ -280,12 +280,25 @@ export async function getMatchViewModel(
   let awayScorers: string | string[] | undefined;
 
   if (statsData?.goals && statsData.goals.length > 0) {
-    const homeTeamName = homeTeam.fields.name as unknown as string;
-    const awayTeamName = awayTeam.fields.name as unknown as string;
+    const homeTeamName = (homeTeam.fields.name as unknown as string)?.toLowerCase() || '';
+    const awayTeamName = (awayTeam.fields.name as unknown as string)?.toLowerCase() || '';
+
+    // Helper to match team names flexibly (handles "Real Madrid" vs "Real Madrid CF")
+    const isHomeTeam = (goalTeam: string | undefined): boolean => {
+      if (!goalTeam) return false;
+      const goalTeamLower = goalTeam.toLowerCase();
+      return homeTeamName.includes(goalTeamLower) || goalTeamLower.includes(homeTeamName.replace(' cf', '').replace(' fc', ''));
+    };
+
+    const isAwayTeam = (goalTeam: string | undefined): boolean => {
+      if (!goalTeam) return false;
+      const goalTeamLower = goalTeam.toLowerCase();
+      return awayTeamName.includes(goalTeamLower) || goalTeamLower.includes(awayTeamName.replace(' cf', '').replace(' fc', ''));
+    };
 
     // Group goals by team
-    const homeGoals = statsData.goals.filter(g => g.team === homeTeamName);
-    const awayGoals = statsData.goals.filter(g => g.team === awayTeamName);
+    const homeGoals = statsData.goals.filter(g => isHomeTeam(g.team));
+    const awayGoals = statsData.goals.filter(g => isAwayTeam(g.team));
 
     // Format scorers with minute
     homeScorers = homeGoals.map(g => {
