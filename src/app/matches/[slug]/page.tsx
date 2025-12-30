@@ -72,60 +72,42 @@ export default async function MatchPage(props: {
     ?? (homeTeam?.fields?.city as unknown as string);
   const fullVenue = venueCity ? `${venue}, ${venueCity}` : venue;
 
-  // Timeline events - build from Stats.goals sorted chronologically
-  type TimelineEvent = {
-    minute: number;
-    stoppageTime?: number;
-    playerName: string;
-    team: 'home' | 'away';
-    type: 'goal';
-    goalType?: 'penalty' | 'header' | 'free_kick' | 'own_goal' | 'regular';
+  // Scorers - try Stats.goals first, then fallback to fields
+  const parseScorers = (scorers: string | string[] | undefined): string[] => {
+    if (!scorers) return [];
+    if (Array.isArray(scorers)) return scorers;
+    if (typeof scorers === 'string') return scorers.split(',').map((s) => s.trim());
+    return [];
   };
 
-  let timelineEvents: TimelineEvent[] = [];
+  let homeScorersList: string[] = [];
+  let awayScorersList: string[] = [];
 
   if (stats?.goals && stats.goals.length > 0) {
-    timelineEvents = stats.goals
-      .map((g) => ({
-        minute: g.minute,
-        stoppageTime: g.stoppage_time,
-        playerName: g.player_name,
-        team: g.team,
-        type: 'goal' as const,
-        goalType: g.goal_type,
-      }))
-      .sort((a, b) => {
-        // Sort by minute, then by stoppage time
-        if (a.minute !== b.minute) return a.minute - b.minute;
-        return (a.stoppageTime || 0) - (b.stoppageTime || 0);
+    homeScorersList = stats.goals
+      .filter((g) => g.team === 'home')
+      .map((g) => {
+        let scorer = `${g.player_name} ${g.minute}'`;
+        if (g.stoppage_time) scorer = `${g.player_name} ${g.minute}+${g.stoppage_time}'`;
+        if (g.goal_type === 'penalty') scorer += ' P';
+        if (g.goal_type === 'own_goal') scorer += ' (OG)';
+        return scorer;
+      });
+    awayScorersList = stats.goals
+      .filter((g) => g.team === 'away')
+      .map((g) => {
+        let scorer = `${g.player_name} ${g.minute}'`;
+        if (g.stoppage_time) scorer = `${g.player_name} ${g.minute}+${g.stoppage_time}'`;
+        if (g.goal_type === 'penalty') scorer += ' P';
+        if (g.goal_type === 'own_goal') scorer += ' (OG)';
+        return scorer;
       });
   } else {
-    // Fallback: parse from string fields (limited info)
-    const parseScorers = (scorers: string | string[] | undefined, team: 'home' | 'away'): TimelineEvent[] => {
-      if (!scorers) return [];
-      const list = Array.isArray(scorers) ? scorers : scorers.split(',').map((s) => s.trim());
-      return list.map((s) => {
-        // Try to extract minute from string like "Player Name 30'" or "Player Name 30' P"
-        const match = s.match(/(.+?)\s*(\d+)'?\s*(P|OG)?/);
-        if (match) {
-          return {
-            minute: parseInt(match[2], 10),
-            playerName: match[1].trim(),
-            team,
-            type: 'goal' as const,
-            goalType: match[3] === 'P' ? 'penalty' as const : match[3] === 'OG' ? 'own_goal' as const : undefined,
-          };
-        }
-        return { minute: 0, playerName: s, team, type: 'goal' as const };
-      });
-    };
-
-    const homeEvents = parseScorers(fields.homeScorers, 'home');
-    const awayEvents = parseScorers(fields.awayScorers, 'away');
-    timelineEvents = [...homeEvents, ...awayEvents].sort((a, b) => a.minute - b.minute);
+    homeScorersList = parseScorers(fields.homeScorers);
+    awayScorersList = parseScorers(fields.awayScorers);
   }
 
-  const hasTimelineEvents = timelineEvents.length > 0;
+  const hasScorers = homeScorersList.length > 0 || awayScorersList.length > 0;
 
   // Match status label
   const getStatusLabel = () => {
@@ -221,60 +203,39 @@ export default async function MatchPage(props: {
             <span>{awayTeamName}</span>
           </div>
 
-          {/* Goals Timeline - Only show for completed matches */}
+          {/* Scorers Section - Only show for completed matches */}
           {matchStatus === 'post-match' && (
-            <div className="mt-8 max-w-3xl mx-auto">
+            <div className="mt-8 pt-6 border-t border-white/10 max-w-3xl mx-auto">
               {isGoalless ? (
-                <div className="pt-6 border-t border-white/10">
-                  <p className="text-center text-white/50 text-sm italic">No goals</p>
-                </div>
-              ) : hasTimelineEvents ? (
-                <div className="relative">
-                  {/* Center timeline bar */}
-                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/20 -translate-x-1/2" />
+                <p className="text-center text-white/50 text-sm italic">No goals</p>
+              ) : hasScorers ? (
+                <div className="flex justify-between">
+                  {/* Home Scorers */}
+                  <div className="flex-1 text-right pr-4 md:pr-8">
+                    {homeScorersList.length > 0 && (
+                      <div className="text-sm md:text-base text-white/70 space-y-1">
+                        {homeScorersList.map((scorer, i) => (
+                          <p key={i} className="flex items-center justify-end gap-2">
+                            <span>{scorer}</span>
+                            <span className="text-base">⚽</span>
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                  {/* Timeline events */}
-                  <div className="space-y-3 py-4">
-                    {timelineEvents.map((event, i) => {
-                      const minuteDisplay = event.stoppageTime
-                        ? `${event.minute}+${event.stoppageTime}'`
-                        : `${event.minute}'`;
-                      const typeLabel = event.goalType === 'penalty' ? 'P'
-                        : event.goalType === 'own_goal' ? 'OG'
-                        : '';
-
-                      return (
-                        <div
-                          key={i}
-                          className={`flex items-center ${event.team === 'home' ? 'flex-row' : 'flex-row-reverse'}`}
-                        >
-                          {/* Event content */}
-                          <div className={`flex-1 ${event.team === 'home' ? 'text-right pr-4' : 'text-left pl-4'}`}>
-                            <div className={`inline-flex items-center gap-2 ${event.team === 'home' ? 'flex-row' : 'flex-row-reverse'}`}>
-                              <span className="text-white/90 text-sm md:text-base font-medium">
-                                {event.playerName}
-                              </span>
-                              <span className="text-white/50 text-xs md:text-sm">
-                                {minuteDisplay}
-                              </span>
-                              {typeLabel && (
-                                <span className="text-xs bg-white/10 px-1.5 py-0.5 rounded text-white/60">
-                                  {typeLabel}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Center dot/icon */}
-                          <div className="relative z-10 flex-shrink-0 w-8 flex justify-center">
-                            <span className="text-lg">⚽</span>
-                          </div>
-
-                          {/* Empty spacer for opposite side */}
-                          <div className="flex-1" />
-                        </div>
-                      );
-                    })}
+                  {/* Away Scorers */}
+                  <div className="flex-1 text-left pl-4 md:pl-8">
+                    {awayScorersList.length > 0 && (
+                      <div className="text-sm md:text-base text-white/70 space-y-1">
+                        {awayScorersList.map((scorer, i) => (
+                          <p key={i} className="flex items-center gap-2">
+                            <span className="text-base">⚽</span>
+                            <span>{scorer}</span>
+                          </p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : null}
