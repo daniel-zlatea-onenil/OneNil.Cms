@@ -260,7 +260,7 @@ export async function getMatchViewModel(
   const match = entries.items[0];
   if (!match) return undefined;
 
-  const { teamHome, teamAway, heroBanner } = match.fields;
+  const { teamHome, teamAway, heroBanner, homeScore, awayScore, homeScorers, awayScorers, season } = match.fields;
   const homeTeam = teamHome as Entry<TeamSkeleton>;
   const awayTeam = teamAway as Entry<TeamSkeleton>;
   let homeLogoUrl: string | undefined = undefined;
@@ -316,6 +316,22 @@ export async function getMatchViewModel(
     heroBannerUrl = await getDefaultHeroBannerUrl();
   }
 
+  // Process season data
+  let seasonData: { title: string; logoUrl?: string } | undefined = undefined;
+  if (season) {
+    const seasonEntry = season as unknown as Entry<SeasonSkeleton>;
+    const seasonTitle = seasonEntry?.fields?.title as unknown as string;
+    const seasonLogoAsset = seasonEntry?.fields?.logo as unknown as Asset;
+    const seasonLogoUrl = seasonLogoAsset?.sys?.id
+      ? resolveAsset(seasonLogoAsset.sys.id, assets)
+      : undefined;
+
+    seasonData = {
+      title: seasonTitle,
+      logoUrl: seasonLogoUrl,
+    };
+  }
+
   return {
     title: match.fields.title,
     slug: match.fields.slug,
@@ -328,6 +344,11 @@ export async function getMatchViewModel(
     ticketLink: match.fields.ticketLink,
     heroBannerUrl,
     homeStadiumPhotoUrl,
+    homeScore,
+    awayScore,
+    homeScorers,
+    awayScorers,
+    season: seasonData,
     teamHome: {
       name: homeTeamName,
       shortName: homeTeamShortName,
