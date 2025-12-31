@@ -99,11 +99,16 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
           </div>
 
           {/* Action Button */}
-          <div className="flex justify-center items-center">
-            <button className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]">
-              Highlights
-            </button>
-          </div>
+          {match.ticketLink && (
+            <div className="flex justify-center items-center">
+              <Link
+                href={match.ticketLink}
+                className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]"
+              >
+                Buy Tickets
+              </Link>
+            </div>
+          )}
         </div>
       </section>
     );
