@@ -42,53 +42,47 @@ export default function Countdown({ targetDate }: { targetDate: Date }) {
   }, [targetDate]);
 
   const timeUnits = [
-    { value: timeLeft.days, label: 'Days' },
-    { value: timeLeft.hours, label: 'Hours' },
-    { value: timeLeft.minutes, label: 'Mins' },
-    { value: timeLeft.seconds, label: 'Secs' },
+    { value: timeLeft.days, label: 'DAYS' },
+    { value: timeLeft.hours, label: 'HOURS' },
+    { value: timeLeft.minutes, label: 'MINS' },
+    { value: timeLeft.seconds, label: 'SECS' },
   ];
 
   return (
-    <div className="flex flex-col items-center gap-3 sm:gap-4 w-full px-2 sm:px-4">
+    <div className="flex flex-col items-center gap-2 sm:gap-3 w-full">
       {/* Kick-off label */}
-      <p className="text-white/60 text-xs sm:text-sm font-medium uppercase tracking-widest">
-        Kick-off in
+      <p className="text-white/60 text-[10px] sm:text-xs font-medium uppercase tracking-widest">
+        KICK-OFF IN
       </p>
 
       {/* Countdown boxes */}
-      <div className="flex items-center gap-1 sm:gap-2 md:gap-4 justify-center w-full">
+      <div className="flex items-center justify-center gap-1 sm:gap-2">
         {timeUnits.map((unit, index) => (
-          <div key={unit.label} className="flex items-center gap-1 sm:gap-2 md:gap-4">
+          <div key={unit.label} className="flex items-center">
             {/* Time unit box */}
             <div className="flex flex-col items-center">
-              <div className="relative">
-                {/* Background glow */}
-                <div className="absolute inset-0 bg-red-500/20 rounded-lg sm:rounded-xl blur-lg sm:blur-xl" />
-
-                {/* Main box */}
-                <div className="relative bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg sm:rounded-xl px-2 py-2 sm:px-3 sm:py-3 md:px-5 md:py-4 min-w-[48px] sm:min-w-[60px] md:min-w-[80px]">
-                  <span
-                    className={`block text-xl sm:text-2xl md:text-4xl font-bold text-white tabular-nums text-center ${
-                      mounted ? 'transition-all duration-300' : ''
-                    }`}
-                  >
-                    {unit.value.toString().padStart(2, '0')}
-                  </span>
-                </div>
+              {/* Main box - muted brownish/gray style */}
+              <div className="bg-stone-800/80 backdrop-blur-sm rounded px-3 py-2 sm:px-4 sm:py-3 md:px-5 md:py-3 min-w-[50px] sm:min-w-[65px] md:min-w-[75px]">
+                <span
+                  className={`block text-xl sm:text-2xl md:text-3xl font-bold text-white tabular-nums text-center ${
+                    mounted ? 'transition-all duration-300' : ''
+                  }`}
+                >
+                  {unit.value.toString().padStart(2, '0')}
+                </span>
               </div>
 
               {/* Label */}
-              <span className="mt-1.5 sm:mt-2 text-[10px] sm:text-xs md:text-sm text-white/50 font-medium uppercase tracking-wider">
+              <span className="mt-1 sm:mt-1.5 text-[9px] sm:text-[10px] md:text-xs text-white/50 font-medium tracking-wider">
                 {unit.label}
               </span>
             </div>
 
-            {/* Separator (not after last item) */}
+            {/* Colon separator (not after last item) */}
             {index < timeUnits.length - 1 && (
-              <div className="flex flex-col gap-1 sm:gap-1.5 pb-4 sm:pb-6">
-                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
-                <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full bg-white/40" />
-              </div>
+              <span className="text-white/50 text-lg sm:text-xl md:text-2xl font-bold mx-0.5 sm:mx-1 pb-4 sm:pb-5">
+                :
+              </span>
             )}
           </div>
         ))}
