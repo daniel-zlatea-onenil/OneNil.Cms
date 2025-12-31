@@ -38,22 +38,22 @@ export default async function NextMatchBlock() {
 
       <div className="relative max-w-4xl mx-auto px-4 text-center">
         {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-white italic mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-white italic mb-2">
           Next Match
         </h2>
 
         {/* Competition and Season Context */}
-        <div className="flex items-center justify-center gap-3 mb-6">
+        <div className="flex items-center justify-center gap-3 mb-8">
           {matchViewModel.season?.logoUrl && (
             <Image
               src={matchViewModel.season.logoUrl}
               alt={matchViewModel.season.title || matchViewModel.competition}
-              width={80}
-              height={24}
-              className="h-6 w-auto object-contain opacity-90"
+              width={120}
+              height={36}
+              className="h-8 md:h-10 w-auto object-contain"
             />
           )}
-          <span className="text-white/70 text-sm">
+          <span className="text-white/80 text-base md:text-lg font-medium">
             {matchViewModel.competition} {matchViewModel.season?.title && `• ${matchViewModel.season.title}`}
           </span>
         </div>

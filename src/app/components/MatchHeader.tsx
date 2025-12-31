@@ -46,17 +46,17 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           {/* Competition and Season Context */}
-          <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="flex items-center justify-center gap-3 mb-8">
             {match.season?.logoUrl && (
               <Image
                 src={match.season.logoUrl}
                 alt={match.season.title || match.competition}
-                width={80}
-                height={24}
-                className="h-6 w-auto object-contain opacity-90"
+                width={120}
+                height={36}
+                className="h-8 md:h-10 w-auto object-contain"
               />
             )}
-            <span className="text-white/70 text-sm">
+            <span className="text-white/80 text-base md:text-lg font-medium">
               {match.competition} {match.season?.title && `• ${match.season.title}`}
             </span>
           </div>
