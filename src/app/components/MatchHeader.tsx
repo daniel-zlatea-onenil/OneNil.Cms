@@ -130,6 +130,118 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
     );
   }
 
+  // Upcoming variant - same style as post-match but for next match
+  if (variant === 'upcoming') {
+    return (
+      <section className="py-16 md:py-20 text-white relative overflow-hidden bg-gradient-to-b from-black via-slate-900 to-black">
+        {/* Subtle decorative gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-slate-600 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-slate-800 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4">
+          {/* Title */}
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2 italic">
+            Next Match
+          </h2>
+
+          {/* Competition and Season Context */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            {match.season?.logoUrl && (
+              <Image
+                src={match.season.logoUrl}
+                alt={match.season.title || match.competition}
+                width={80}
+                height={24}
+                className="h-6 w-auto object-contain opacity-90"
+              />
+            )}
+            <span className="text-white/70 text-sm">
+              {match.competition} {match.season?.title && `• ${match.season.title}`}
+            </span>
+          </div>
+
+          {/* Date, Time and Venue */}
+          <div className="text-center mb-8">
+            <p className="text-white/60 text-sm tracking-wide">
+              {match.date} • {match.kickoffTime}
+            </p>
+            {match.venue && (
+              <p className="text-white/40 text-xs mt-1">{match.venue}</p>
+            )}
+          </div>
+
+          {/* Teams Row */}
+          <div className="flex items-center justify-center max-w-3xl mx-auto mb-8">
+            {/* Home Team */}
+            <div className="flex items-center flex-1 justify-end">
+              <span className="text-lg md:text-2xl font-bold mr-4 text-right hidden sm:block">
+                {match.teamHome.name}
+              </span>
+              <Image
+                src={match.teamHome.logoUrl}
+                alt={match.teamHome.name}
+                width={80}
+                height={80}
+                className="h-14 w-14 md:h-20 md:w-20 object-contain"
+              />
+            </div>
+
+            {/* VS */}
+            <div className="mx-4 md:mx-10 text-center">
+              <div className="text-2xl md:text-3xl font-bold text-white/70">
+                vs
+              </div>
+            </div>
+
+            {/* Away Team */}
+            <div className="flex items-center flex-1">
+              <Image
+                src={match.teamAway.logoUrl}
+                alt={match.teamAway.name}
+                width={80}
+                height={80}
+                className="h-14 w-14 md:h-20 md:w-20 object-contain"
+              />
+              <span className="text-lg md:text-2xl font-bold ml-4 hidden sm:block">
+                {match.teamAway.name}
+              </span>
+            </div>
+          </div>
+
+          {/* Mobile team names */}
+          <div className="flex justify-between mb-8 sm:hidden text-sm font-medium max-w-3xl mx-auto px-4">
+            <span>{match.teamHome.name}</span>
+            <span>{match.teamAway.name}</span>
+          </div>
+
+          {/* Countdown */}
+          <div className="mb-10">
+            <Countdown targetDate={match.targetDate} />
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href={`/matches/${match.slug}`}
+              className="inline-block bg-white text-slate-900 px-8 py-3 rounded-full font-semibold hover:bg-white/90 hover:scale-105 transition-all duration-300 shadow-lg"
+            >
+              Match Center
+            </Link>
+            <Link
+              href={`/tickets/${match.slug}`}
+              className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-600 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105"
+            >
+              Buy Tickets
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   // Post-match variants (latestResult, fullTime)
   const isPostMatch = variant === 'latestResult' || variant === 'fullTime';
 
