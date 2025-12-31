@@ -3,8 +3,7 @@ import { getMatchViewModel } from '@/lib/serverUtils';
 import { getMatchStatus } from '@/lib/utils';
 import Image from 'next/image';
 import PreMatchSection from '@/app/components/PreMatchSection';
-import MatchResultHeader from '@/app/components/MatchResultHeader';
-import Link from 'next/link';
+import MatchHeader from '@/app/components/MatchHeader';
 
 export default async function MatchPage(props: {
   params: Promise<{ slug: string }>;
@@ -23,15 +22,22 @@ export default async function MatchPage(props: {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Post-Match: Use unified MatchResultHeader component */}
+      {/* Post-Match: Use unified MatchHeader component */}
       {matchStatus === 'post-match' && (
         <div className="pt-16 md:pt-20">
-          <MatchResultHeader match={matchViewModel} variant="matchDetail" />
+          <MatchHeader match={matchViewModel} variant="fullTime" />
         </div>
       )}
 
-      {/* Pre-Match and Live: Use hero section with background image */}
-      {matchStatus !== 'post-match' && (
+      {/* Pre-Match: Use unified MatchHeader component with nextGame variant */}
+      {matchStatus === 'pre-match' && (
+        <div className="pt-16 md:pt-20">
+          <MatchHeader match={matchViewModel} variant="nextGame" />
+        </div>
+      )}
+
+      {/* Live: Use hero section with live status */}
+      {matchStatus === 'live' && (
         <section
           className="relative w-full bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-hidden bg-slate-900"
           style={heroImageUrl ? { backgroundImage: `url('${heroImageUrl}')` } : undefined}
@@ -43,16 +49,9 @@ export default async function MatchPage(props: {
           <div className="relative z-10 max-w-6xl mx-auto text-center px-4 md:px-8">
             {/* Match Status Badge */}
             <div className="mb-4">
-              {matchStatus === 'pre-match' && (
-                <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-                  Upcoming
-                </span>
-              )}
-              {matchStatus === 'live' && (
-                <span className="inline-block bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
-                  Live
-                </span>
-              )}
+              <span className="inline-block bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                Live
+              </span>
             </div>
 
             <p className="text-white/70 text-sm mb-2">
@@ -83,17 +82,13 @@ export default async function MatchPage(props: {
                 </span>
               </div>
 
-              {/* Score or VS */}
+              {/* Score */}
               <div className="flex-shrink-0">
-                {matchStatus === 'pre-match' ? (
-                  <span className="text-3xl md:text-4xl font-bold text-white/80">vs</span>
-                ) : (
-                  <div className="text-4xl md:text-6xl font-black tabular-nums">
-                    {typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number'
-                      ? `${matchViewModel.homeScore} - ${matchViewModel.awayScore}`
-                      : '0 - 0'}
-                  </div>
-                )}
+                <div className="text-4xl md:text-6xl font-black tabular-nums">
+                  {typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number'
+                    ? `${matchViewModel.homeScore} - ${matchViewModel.awayScore}`
+                    : '0 - 0'}
+                </div>
               </div>
 
               {/* Away Team */}
@@ -111,18 +106,6 @@ export default async function MatchPage(props: {
                 </span>
               </div>
             </div>
-
-            {/* Ticket Link for Pre-Match */}
-            {matchStatus === 'pre-match' && matchViewModel.ticketLink && (
-              <div className="mt-8">
-                <Link
-                  href={matchViewModel.ticketLink}
-                  className="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 transition-all duration-300"
-                >
-                  Buy Tickets
-                </Link>
-              </div>
-            )}
           </div>
         </section>
       )}

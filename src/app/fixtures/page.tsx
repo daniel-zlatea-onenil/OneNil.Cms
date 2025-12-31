@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { MatchEventSkeleton, TeamSkeleton } from '@/lib/types';
-import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
+import Countdown from '@/app/components/CountdownComponent';
 import { format } from 'date-fns';
 import { Asset, Entry } from 'contentful';
 import {
@@ -21,7 +21,92 @@ export default async function FixturesPage() {
   return (
     <>
       {nextEventViewModel && (
-        <NextMatchBannerWrapper viewModel={nextEventViewModel} />
+        <section
+          className="relative bg-cover bg-center bg-no-repeat text-white py-12 md:py-20 overflow-hidden"
+          style={{
+            backgroundImage: nextEventViewModel.heroBannerUrl
+              ? `url(${nextEventViewModel.heroBannerUrl})`
+              : undefined,
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/60" />
+
+          <div className="relative max-w-4xl mx-auto px-4 text-center">
+            {/* Title */}
+            <h2 className="text-2xl md:text-3xl font-bold text-white italic mb-6">
+              Next Match
+            </h2>
+
+            {/* Teams Display - Horizontal inline layout */}
+            <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
+              {/* Home Team */}
+              <div className="flex items-center gap-2 sm:gap-3">
+                {nextEventViewModel.teamHome.logoUrl && (
+                  <Image
+                    src={nextEventViewModel.teamHome.logoUrl}
+                    alt={nextEventViewModel.teamHome.name}
+                    width={80}
+                    height={80}
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
+                  />
+                )}
+                <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
+                  {nextEventViewModel.teamHome.name}
+                </span>
+              </div>
+
+              {/* VS */}
+              <span className="text-white/70 text-sm sm:text-base md:text-lg px-1 sm:px-2">
+                vs
+              </span>
+
+              {/* Away Team */}
+              <div className="flex items-center gap-2 sm:gap-3">
+                {nextEventViewModel.teamAway.logoUrl && (
+                  <Image
+                    src={nextEventViewModel.teamAway.logoUrl}
+                    alt={nextEventViewModel.teamAway.name}
+                    width={80}
+                    height={80}
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
+                  />
+                )}
+                <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
+                  {nextEventViewModel.teamAway.name}
+                </span>
+              </div>
+            </div>
+
+            {/* Match Info */}
+            <p className="text-white/70 text-xs sm:text-sm mb-1">
+              {nextEventViewModel.venue || nextEventViewModel.location} · {nextEventViewModel.kickoffTime} · {nextEventViewModel.competition}
+            </p>
+            <p className="text-white/70 text-xs sm:text-sm mb-8">
+              {nextEventViewModel.date}
+            </p>
+
+            {/* Countdown */}
+            <div className="mb-8">
+              <Countdown targetDate={nextEventViewModel.targetDate} />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+              <Link href={`/matches/${nextEventViewModel.slug}`}>
+                <button className="px-6 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-md hover:bg-white hover:text-slate-900 transition-all duration-300 hover:scale-105 min-w-[140px]">
+                  Match Center
+                </button>
+              </Link>
+
+              <Link href={`/tickets/${nextEventViewModel.slug}`}>
+                <button className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]">
+                  Buy Tickets
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
       )}
       <div className="max-w-7xl mx-auto px-4 py-10">
         <h1 className="text-4xl font-bold text-red-700 mb-8">

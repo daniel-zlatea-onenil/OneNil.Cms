@@ -1,7 +1,6 @@
 'use client';
 
 import { FiUsers, FiTrendingUp, FiStar } from 'react-icons/fi';
-import Countdown from './CountdownComponent';
 import Image from 'next/image';
 
 type TeamInfo = {
@@ -50,25 +49,12 @@ const keyPlayers = {
 };
 
 export default function PreMatchSection({
-  targetDate,
   teamHome,
   teamAway,
-  competition,
-  location,
 }: PreMatchSectionProps) {
   return (
     <div className="bg-slate-50 py-12 md:py-16">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
-        {/* Countdown Section */}
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 md:p-10 mb-8">
-          <Countdown targetDate={targetDate} />
-          <div className="text-center mt-6">
-            <p className="text-white/60 text-sm">
-              {competition} · {location}
-            </p>
-          </div>
-        </div>
-
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Head to Head */}

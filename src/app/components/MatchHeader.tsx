@@ -1,13 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { MatchViewModel } from '@/lib/viewModels';
+import Countdown from './CountdownComponent';
 
-type MatchResultHeaderProps = {
+type MatchHeaderVariant = 'latestResult' | 'fullTime' | 'nextGame' | 'upcoming';
+
+type MatchHeaderProps = {
   match: MatchViewModel;
-  variant: 'latestResult' | 'matchDetail';
+  variant: MatchHeaderVariant;
 };
 
-export default function MatchResultHeader({ match, variant }: MatchResultHeaderProps) {
+export default function MatchHeader({ match, variant }: MatchHeaderProps) {
   const hasScore = typeof match.homeScore === 'number' && typeof match.awayScore === 'number';
   const scoreLabel = hasScore ? `${match.homeScore} - ${match.awayScore}` : 'TBD';
   const isGoalless = hasScore && match.homeScore === 0 && match.awayScore === 0;
@@ -24,24 +27,122 @@ export default function MatchResultHeader({ match, variant }: MatchResultHeaderP
   const awayScorersList = parseScorers(match.awayScorers);
   const hasScorers = homeScorersList.length > 0 || awayScorersList.length > 0;
 
-  const isLatestResult = variant === 'latestResult';
+  // Use stadium photo for nextGame variant
+  const stadiumBackgroundUrl = match.homeStadiumPhotoUrl || match.heroBannerUrl;
+
+  // nextGame variant uses the same layout as NextMatchBlock
+  if (variant === 'nextGame') {
+    return (
+      <section
+        className="relative bg-cover bg-center bg-no-repeat text-white py-12 md:py-20 overflow-hidden"
+        style={{
+          backgroundImage: stadiumBackgroundUrl
+            ? `url(${stadiumBackgroundUrl})`
+            : undefined,
+        }}
+      >
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/60" />
+
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          {/* Teams Display - Horizontal inline layout */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
+            {/* Home Team */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {match.teamHome.logoUrl && (
+                <Image
+                  src={match.teamHome.logoUrl}
+                  alt={match.teamHome.name}
+                  width={80}
+                  height={80}
+                  className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
+                />
+              )}
+              <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
+                {match.teamHome.name}
+              </span>
+            </div>
+
+            {/* VS */}
+            <span className="text-white/70 text-sm sm:text-base md:text-lg px-1 sm:px-2">
+              vs
+            </span>
+
+            {/* Away Team */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {match.teamAway.logoUrl && (
+                <Image
+                  src={match.teamAway.logoUrl}
+                  alt={match.teamAway.name}
+                  width={80}
+                  height={80}
+                  className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
+                />
+              )}
+              <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
+                {match.teamAway.name}
+              </span>
+            </div>
+          </div>
+
+          {/* Match Info */}
+          <p className="text-white/70 text-xs sm:text-sm mb-1">
+            {match.venue || match.location} · {match.kickoffTime} · {match.competition}
+          </p>
+          <p className="text-white/70 text-xs sm:text-sm mb-8">
+            {match.date}
+          </p>
+
+          {/* Countdown */}
+          <div className="mb-8">
+            <Countdown targetDate={match.targetDate} />
+          </div>
+
+          {/* Action Button */}
+          {match.ticketLink && (
+            <div className="flex justify-center items-center">
+              <Link
+                href={match.ticketLink}
+                className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]"
+              >
+                Buy Tickets
+              </Link>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // Post-match variants (latestResult, fullTime)
+  const isPostMatch = variant === 'latestResult' || variant === 'fullTime';
+
+  // Get title based on variant
+  const getTitle = () => {
+    if (variant === 'latestResult') return 'Latest Result';
+    return null;
+  };
+
+  // Get status label based on variant
+  const getStatusLabel = () => {
+    if (variant === 'fullTime' || variant === 'latestResult') return 'Full Time';
+    return null;
+  };
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-black via-slate-900 to-black text-white relative overflow-hidden">
+    <section className="py-16 md:py-20 text-white relative overflow-hidden bg-gradient-to-b from-black via-slate-900 to-black">
       {/* Subtle decorative gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-
-      {/* Subtle decorative blur elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-slate-600 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-slate-800 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4">
-        {/* Latest Result Title - only for latestResult variant */}
-        {isLatestResult && (
+        {/* Title - only for latestResult variant */}
+        {variant === 'latestResult' && (
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
-            Latest Result
+            {getTitle()}
           </h2>
         )}
 
@@ -72,7 +173,7 @@ export default function MatchResultHeader({ match, variant }: MatchResultHeaderP
         </div>
 
         {/* Attendance and Referee */}
-        {(match.attendance || match.referee) && (
+        {isPostMatch && (match.attendance || match.referee) && (
           <div className="flex items-center justify-center gap-4 mb-8 text-white/50 text-xs">
             {match.attendance && (
               <span>Attendance: {match.attendance.toLocaleString()}</span>
@@ -107,9 +208,11 @@ export default function MatchResultHeader({ match, variant }: MatchResultHeaderP
             <div className="text-5xl md:text-7xl font-black tabular-nums tracking-tight">
               {scoreLabel}
             </div>
-            <p className="text-xs text-white/50 mt-1 uppercase tracking-wider">
-              Full Time
-            </p>
+            {getStatusLabel() && (
+              <p className="text-xs text-white/50 mt-1 uppercase tracking-wider">
+                {getStatusLabel()}
+              </p>
+            )}
           </div>
 
           {/* Away Team */}
@@ -134,44 +237,46 @@ export default function MatchResultHeader({ match, variant }: MatchResultHeaderP
         </div>
 
         {/* Scorers Section */}
-        <div className="mt-8 pt-6 border-t border-white/10 max-w-3xl mx-auto">
-          {isGoalless ? (
-            <p className="text-center text-white/50 text-sm italic">No goals</p>
-          ) : hasScorers ? (
-            <div className="flex justify-between">
-              {/* Home Scorers */}
-              <div className="flex-1 text-right pr-4 md:pr-8">
-                {homeScorersList.length > 0 && (
-                  <div className="text-sm md:text-base text-white/70 space-y-1">
-                    {homeScorersList.map((scorer, i) => (
-                      <p key={i} className="flex items-center justify-end gap-2">
-                        <span>{scorer}</span>
-                        <span className="text-base">⚽</span>
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
+        {isPostMatch && (
+          <div className="mt-8 pt-6 border-t border-white/10 max-w-3xl mx-auto">
+            {isGoalless ? (
+              <p className="text-center text-white/50 text-sm italic">No goals</p>
+            ) : hasScorers ? (
+              <div className="flex justify-between">
+                {/* Home Scorers */}
+                <div className="flex-1 text-right pr-4 md:pr-8">
+                  {homeScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/70 space-y-1">
+                      {homeScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center justify-end gap-2">
+                          <span>{scorer}</span>
+                          <span className="text-base">⚽</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-              {/* Away Scorers */}
-              <div className="flex-1 text-left pl-4 md:pl-8">
-                {awayScorersList.length > 0 && (
-                  <div className="text-sm md:text-base text-white/70 space-y-1">
-                    {awayScorersList.map((scorer, i) => (
-                      <p key={i} className="flex items-center gap-2">
-                        <span className="text-base">⚽</span>
-                        <span>{scorer}</span>
-                      </p>
-                    ))}
-                  </div>
-                )}
+                {/* Away Scorers */}
+                <div className="flex-1 text-left pl-4 md:pl-8">
+                  {awayScorersList.length > 0 && (
+                    <div className="text-sm md:text-base text-white/70 space-y-1">
+                      {awayScorersList.map((scorer, i) => (
+                        <p key={i} className="flex items-center gap-2">
+                          <span className="text-base">⚽</span>
+                          <span>{scorer}</span>
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : null}
-        </div>
+            ) : null}
+          </div>
+        )}
 
         {/* CTA Buttons - only for latestResult variant */}
-        {isLatestResult && (
+        {variant === 'latestResult' && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <Link
               href={`/matches/${match.slug}`}
@@ -179,8 +284,6 @@ export default function MatchResultHeader({ match, variant }: MatchResultHeaderP
             >
               Match Report
             </Link>
-
-            {/* Highlights Button */}
             <button
               className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-3 rounded-full font-semibold border border-white/20 hover:bg-white/20 hover:scale-105 transition-all duration-300"
             >
