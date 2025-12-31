@@ -1,5 +1,5 @@
 import { getLatestResult, getMatchViewModel } from '@/lib/serverUtils';
-import MatchResultHeader from './MatchResultHeader';
+import MatchHeader from './MatchHeader';
 
 export default async function LatestResultBlock() {
   const { match } = await getLatestResult();
@@ -14,5 +14,5 @@ export default async function LatestResultBlock() {
     return null;
   }
 
-  return <MatchResultHeader match={matchViewModel} variant="latestResult" />;
+  return <MatchHeader match={matchViewModel} variant="latestResult" />;
 }

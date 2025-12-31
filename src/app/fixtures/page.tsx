@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { MatchEventSkeleton, TeamSkeleton } from '@/lib/types';
-import NextMatchBannerWrapper from '@/app/components/NextMatchBannerWrapper';
+import MatchHeader from '@/app/components/MatchHeader';
 import { format } from 'date-fns';
 import { Asset, Entry } from 'contentful';
 import {
@@ -21,7 +21,7 @@ export default async function FixturesPage() {
   return (
     <>
       {nextEventViewModel && (
-        <NextMatchBannerWrapper viewModel={nextEventViewModel} />
+        <MatchHeader match={nextEventViewModel} variant="upcoming" />
       )}
       <div className="max-w-7xl mx-auto px-4 py-10">
         <h1 className="text-4xl font-bold text-red-700 mb-8">
