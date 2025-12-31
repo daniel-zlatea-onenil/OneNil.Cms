@@ -375,9 +375,16 @@ export async function getMatchViewModel(
     const seasonEntry = season as unknown as Entry<SeasonSkeleton>;
     const seasonTitle = seasonEntry?.fields?.title as unknown as string;
     const seasonLogoAsset = seasonEntry?.fields?.logo as unknown as Asset;
-    const seasonLogoUrl = seasonLogoAsset?.sys?.id
-      ? resolveAsset(seasonLogoAsset.sys.id, assets)
-      : undefined;
+
+    // Try to get logo URL - first check if already resolved inline, then try assets array
+    let seasonLogoUrl: string | undefined = undefined;
+    if (seasonLogoAsset?.fields?.file?.url) {
+      // Asset is already resolved inline
+      seasonLogoUrl = `https:${seasonLogoAsset.fields.file.url}`;
+    } else if (seasonLogoAsset?.sys?.id) {
+      // Try to resolve from assets array
+      seasonLogoUrl = resolveAsset(seasonLogoAsset.sys.id, assets);
+    }
 
     seasonData = {
       title: seasonTitle,
