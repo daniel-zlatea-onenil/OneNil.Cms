@@ -42,6 +42,22 @@ export default async function NextMatchBlock() {
           Next Match
         </h2>
 
+        {/* Competition and Season Context */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          {matchViewModel.season?.logoUrl && (
+            <Image
+              src={matchViewModel.season.logoUrl}
+              alt={matchViewModel.season.title || matchViewModel.competition}
+              width={80}
+              height={24}
+              className="h-6 w-auto object-contain opacity-90"
+            />
+          )}
+          <span className="text-white/70 text-sm">
+            {matchViewModel.competition} {matchViewModel.season?.title && `• ${matchViewModel.season.title}`}
+          </span>
+        </div>
+
         {/* Teams Display - Horizontal inline layout */}
         <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
           {/* Home Team */}
@@ -84,7 +100,7 @@ export default async function NextMatchBlock() {
 
         {/* Match Info */}
         <p className="text-white/70 text-xs sm:text-sm mb-1">
-          {matchViewModel.venue || matchViewModel.location} · {matchViewModel.kickoffTime} · {matchViewModel.competition}
+          {matchViewModel.venue || matchViewModel.location} · {matchViewModel.kickoffTime}
         </p>
         <p className="text-white/70 text-xs sm:text-sm mb-8">
           {matchViewModel.date}

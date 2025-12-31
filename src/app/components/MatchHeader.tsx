@@ -45,6 +45,22 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
         <div className="absolute inset-0 bg-black/60" />
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
+          {/* Competition and Season Context */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            {match.season?.logoUrl && (
+              <Image
+                src={match.season.logoUrl}
+                alt={match.season.title || match.competition}
+                width={80}
+                height={24}
+                className="h-6 w-auto object-contain opacity-90"
+              />
+            )}
+            <span className="text-white/70 text-sm">
+              {match.competition} {match.season?.title && `• ${match.season.title}`}
+            </span>
+          </div>
+
           {/* Teams Display - Horizontal inline layout */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
             {/* Home Team */}
@@ -87,7 +103,7 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
 
           {/* Match Info */}
           <p className="text-white/70 text-xs sm:text-sm mb-1">
-            {match.venue || match.location} · {match.kickoffTime} · {match.competition}
+            {match.venue || match.location} · {match.kickoffTime}
           </p>
           <p className="text-white/70 text-xs sm:text-sm mb-8">
             {match.date}
