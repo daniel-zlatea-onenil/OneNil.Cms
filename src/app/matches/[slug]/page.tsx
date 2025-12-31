@@ -3,6 +3,7 @@ import { getMatchViewModel } from '@/lib/serverUtils';
 import { getMatchStatus } from '@/lib/utils';
 import Image from 'next/image';
 import PreMatchSection from '@/app/components/PreMatchSection';
+import MatchResultHeader from '@/app/components/MatchResultHeader';
 import Link from 'next/link';
 
 export default async function MatchPage(props: {
@@ -22,185 +23,109 @@ export default async function MatchPage(props: {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Hero Section */}
-      <section
-        className="relative w-full bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-hidden bg-slate-900"
-        style={heroImageUrl ? { backgroundImage: `url('${heroImageUrl}')` } : undefined}
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
-
-        {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto text-center px-4 md:px-8">
-          {/* Match Status Badge */}
-          <div className="mb-4">
-            {matchStatus === 'pre-match' && (
-              <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-                Upcoming
-              </span>
-            )}
-            {matchStatus === 'live' && (
-              <span className="inline-block bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
-                Live
-              </span>
-            )}
-            {matchStatus === 'post-match' && (
-              <span className="inline-block bg-slate-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-                Full Time
-              </span>
-            )}
-          </div>
-
-          <p className="text-white/70 text-sm mb-2">
-            {matchViewModel.date} · {matchViewModel.kickoffTime}
-          </p>
-
-          {/* Competition and Season Logo */}
-          <div className="flex items-center justify-center gap-2 mb-2">
-            {matchStatus !== 'pre-match' && matchViewModel.season?.logoUrl && (
-              <Image
-                src={matchViewModel.season.logoUrl}
-                alt={matchViewModel.season.title || matchViewModel.competition}
-                width={60}
-                height={18}
-                className="h-4 md:h-5 w-auto object-contain opacity-90"
-              />
-            )}
-            <p className="text-white/60 text-sm italic">
-              {matchViewModel.competition} · {matchViewModel.location}
-            </p>
-          </div>
-
-          {/* Attendance and Referee */}
-          {matchStatus === 'post-match' && (matchViewModel.attendance || matchViewModel.referee) && (
-            <div className="flex items-center justify-center gap-4 mb-6 text-white/50 text-xs">
-              {matchViewModel.attendance && (
-                <span>Attendance: {matchViewModel.attendance.toLocaleString()}</span>
-              )}
-              {matchViewModel.attendance && matchViewModel.referee && (
-                <span>·</span>
-              )}
-              {matchViewModel.referee && (
-                <span>Referee: {matchViewModel.referee}</span>
-              )}
-            </div>
-          )}
-
-          {matchStatus !== 'post-match' && <div className="mb-4" />}
-
-          {/* Teams */}
-          <div className="flex justify-center items-center gap-6 md:gap-10">
-            {/* Home Team */}
-            <div className="flex flex-col items-center flex-1 max-w-[150px]">
-              <div className="w-20 h-20 md:w-24 md:h-24 relative">
-                <Image
-                  src={matchViewModel.teamHome.logoUrl}
-                  alt={matchViewModel.teamHome.name}
-                  fill
-                  className="object-contain drop-shadow-lg"
-                />
-              </div>
-              <span className="mt-3 font-semibold text-sm md:text-base text-center">
-                {matchViewModel.teamHome.name}
-              </span>
-            </div>
-
-            {/* Score or VS */}
-            <div className="flex-shrink-0">
-              {matchStatus === 'pre-match' ? (
-                <span className="text-3xl md:text-4xl font-bold text-white/80">vs</span>
-              ) : (
-                <div className="text-4xl md:text-6xl font-black tabular-nums">
-                  {typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number'
-                    ? `${matchViewModel.homeScore} - ${matchViewModel.awayScore}`
-                    : '0 - 0'}
-                </div>
-              )}
-            </div>
-
-            {/* Away Team */}
-            <div className="flex flex-col items-center flex-1 max-w-[150px]">
-              <div className="w-20 h-20 md:w-24 md:h-24 relative">
-                <Image
-                  src={matchViewModel.teamAway.logoUrl}
-                  alt={matchViewModel.teamAway.name}
-                  fill
-                  className="object-contain drop-shadow-lg"
-                />
-              </div>
-              <span className="mt-3 font-semibold text-sm md:text-base text-center">
-                {matchViewModel.teamAway.name}
-              </span>
-            </div>
-          </div>
-
-          {/* Scorers Section for Completed Matches */}
-          {matchStatus === 'post-match' && (() => {
-            const parseScorers = (scorers: string | string[] | undefined): string[] => {
-              if (!scorers) return [];
-              if (Array.isArray(scorers)) return scorers;
-              if (typeof scorers === 'string') return scorers.split(',').map((s) => s.trim());
-              return [];
-            };
-
-            const homeScorersList = parseScorers(matchViewModel.homeScorers);
-            const awayScorersList = parseScorers(matchViewModel.awayScorers);
-            const hasScore = typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number';
-            const isGoalless = hasScore && matchViewModel.homeScore === 0 && matchViewModel.awayScore === 0;
-            const hasScorers = homeScorersList.length > 0 || awayScorersList.length > 0;
-
-            return (
-              <div className="mt-8 pt-6 border-t border-white/10 max-w-3xl mx-auto">
-                {isGoalless ? (
-                  <p className="text-center text-white/50 text-sm italic">No goals</p>
-                ) : hasScorers ? (
-                  <div className="flex justify-between">
-                    {/* Home Scorers */}
-                    <div className="flex-1 text-right pr-4 md:pr-8">
-                      {homeScorersList.length > 0 && (
-                        <div className="text-sm md:text-base text-white/70 space-y-1">
-                          {homeScorersList.map((scorer, i) => (
-                            <p key={i} className="flex items-center justify-end gap-2">
-                              <span>{scorer}</span>
-                              <span className="text-base">⚽</span>
-                            </p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Away Scorers */}
-                    <div className="flex-1 text-left pl-4 md:pl-8">
-                      {awayScorersList.length > 0 && (
-                        <div className="text-sm md:text-base text-white/70 space-y-1">
-                          {awayScorersList.map((scorer, i) => (
-                            <p key={i} className="flex items-center gap-2">
-                              <span className="text-base">⚽</span>
-                              <span>{scorer}</span>
-                            </p>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            );
-          })()}
-
-          {/* Ticket Link for Pre-Match */}
-          {matchStatus === 'pre-match' && matchViewModel.ticketLink && (
-            <div className="mt-8">
-              <Link
-                href={matchViewModel.ticketLink}
-                className="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 transition-all duration-300"
-              >
-                Buy Tickets
-              </Link>
-            </div>
-          )}
+      {/* Post-Match: Use unified MatchResultHeader component */}
+      {matchStatus === 'post-match' && (
+        <div className="pt-16 md:pt-20">
+          <MatchResultHeader match={matchViewModel} variant="matchDetail" />
         </div>
-      </section>
+      )}
+
+      {/* Pre-Match and Live: Use hero section with background image */}
+      {matchStatus !== 'post-match' && (
+        <section
+          className="relative w-full bg-cover bg-center bg-no-repeat text-white pt-24 md:pt-28 pb-12 md:pb-16 overflow-hidden bg-slate-900"
+          style={heroImageUrl ? { backgroundImage: `url('${heroImageUrl}')` } : undefined}
+        >
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50" />
+
+          {/* Content */}
+          <div className="relative z-10 max-w-6xl mx-auto text-center px-4 md:px-8">
+            {/* Match Status Badge */}
+            <div className="mb-4">
+              {matchStatus === 'pre-match' && (
+                <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                  Upcoming
+                </span>
+              )}
+              {matchStatus === 'live' && (
+                <span className="inline-block bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                  Live
+                </span>
+              )}
+            </div>
+
+            <p className="text-white/70 text-sm mb-2">
+              {matchViewModel.date} · {matchViewModel.kickoffTime}
+            </p>
+
+            {/* Competition */}
+            <div className="flex items-center justify-center gap-2 mb-6">
+              <p className="text-white/60 text-sm italic">
+                {matchViewModel.competition} · {matchViewModel.location}
+              </p>
+            </div>
+
+            {/* Teams */}
+            <div className="flex justify-center items-center gap-6 md:gap-10">
+              {/* Home Team */}
+              <div className="flex flex-col items-center flex-1 max-w-[150px]">
+                <div className="w-20 h-20 md:w-24 md:h-24 relative">
+                  <Image
+                    src={matchViewModel.teamHome.logoUrl}
+                    alt={matchViewModel.teamHome.name}
+                    fill
+                    className="object-contain drop-shadow-lg"
+                  />
+                </div>
+                <span className="mt-3 font-semibold text-sm md:text-base text-center">
+                  {matchViewModel.teamHome.name}
+                </span>
+              </div>
+
+              {/* Score or VS */}
+              <div className="flex-shrink-0">
+                {matchStatus === 'pre-match' ? (
+                  <span className="text-3xl md:text-4xl font-bold text-white/80">vs</span>
+                ) : (
+                  <div className="text-4xl md:text-6xl font-black tabular-nums">
+                    {typeof matchViewModel.homeScore === 'number' && typeof matchViewModel.awayScore === 'number'
+                      ? `${matchViewModel.homeScore} - ${matchViewModel.awayScore}`
+                      : '0 - 0'}
+                  </div>
+                )}
+              </div>
+
+              {/* Away Team */}
+              <div className="flex flex-col items-center flex-1 max-w-[150px]">
+                <div className="w-20 h-20 md:w-24 md:h-24 relative">
+                  <Image
+                    src={matchViewModel.teamAway.logoUrl}
+                    alt={matchViewModel.teamAway.name}
+                    fill
+                    className="object-contain drop-shadow-lg"
+                  />
+                </div>
+                <span className="mt-3 font-semibold text-sm md:text-base text-center">
+                  {matchViewModel.teamAway.name}
+                </span>
+              </div>
+            </div>
+
+            {/* Ticket Link for Pre-Match */}
+            {matchStatus === 'pre-match' && matchViewModel.ticketLink && (
+              <div className="mt-8">
+                <Link
+                  href={matchViewModel.ticketLink}
+                  className="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 transition-all duration-300"
+                >
+                  Buy Tickets
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Pre-Match Content */}
       {matchStatus === 'pre-match' && (
