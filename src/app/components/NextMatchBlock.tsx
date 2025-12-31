@@ -98,14 +98,16 @@ export default async function NextMatchBlock() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
           <Link href={`/matches/${matchViewModel.slug}`}>
-            <button className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]">
+            <button className="px-6 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-md hover:bg-white hover:text-slate-900 transition-all duration-300 hover:scale-105 min-w-[140px]">
               Match Center
             </button>
           </Link>
 
-          <button className="px-6 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-md hover:bg-white/20 transition-all duration-300 hover:scale-105 min-w-[140px]">
-            Highlights
-          </button>
+          <Link href={`/tickets/${matchViewModel.slug}`}>
+            <button className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition-all duration-300 hover:scale-105 min-w-[140px]">
+              Buy Tickets
+            </button>
+          </Link>
         </div>
       </div>
     </section>
