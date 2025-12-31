@@ -41,14 +41,14 @@ export default async function FixturesPage() {
             {/* Teams Display - Horizontal inline layout */}
             <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
               {/* Home Team */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {nextEventViewModel.teamHome.logoUrl && (
                   <Image
                     src={nextEventViewModel.teamHome.logoUrl}
                     alt={nextEventViewModel.teamHome.name}
-                    width={40}
-                    height={40}
-                    className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 object-contain"
+                    width={80}
+                    height={80}
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
                   />
                 )}
                 <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
@@ -57,19 +57,19 @@ export default async function FixturesPage() {
               </div>
 
               {/* VS */}
-              <span className="text-white/70 text-sm sm:text-base md:text-lg px-1">
+              <span className="text-white/70 text-sm sm:text-base md:text-lg px-1 sm:px-2">
                 vs
               </span>
 
               {/* Away Team */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {nextEventViewModel.teamAway.logoUrl && (
                   <Image
                     src={nextEventViewModel.teamAway.logoUrl}
                     alt={nextEventViewModel.teamAway.name}
-                    width={40}
-                    height={40}
-                    className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 object-contain"
+                    width={80}
+                    height={80}
+                    className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain"
                   />
                 )}
                 <span className="font-semibold text-sm sm:text-base md:text-lg text-white">
