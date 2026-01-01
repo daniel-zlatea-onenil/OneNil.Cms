@@ -45,6 +45,19 @@ export default function MatchHeader({ match, variant }: MatchHeaderProps) {
         <div className="absolute inset-0 bg-black/60" />
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
+          {/* Competition Logo */}
+          {match.season?.logoUrl && (
+            <div className="flex justify-center mb-4">
+              <Image
+                src={match.season.logoUrl}
+                alt={match.season.title || match.competition}
+                width={120}
+                height={40}
+                className="h-8 sm:h-10 w-auto object-contain"
+              />
+            </div>
+          )}
+
           {/* Teams Display - Horizontal inline layout */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-4">
             {/* Home Team */}
