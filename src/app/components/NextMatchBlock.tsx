@@ -37,6 +37,19 @@ export default async function NextMatchBlock() {
       <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative max-w-4xl mx-auto px-4 text-center">
+        {/* Competition Logo */}
+        {matchViewModel.season?.logoUrl && (
+          <div className="flex justify-center mb-4">
+            <Image
+              src={matchViewModel.season.logoUrl}
+              alt={matchViewModel.season.title || matchViewModel.competition}
+              width={120}
+              height={40}
+              className="h-8 sm:h-10 w-auto object-contain"
+            />
+          </div>
+        )}
+
         {/* Title */}
         <h2 className="text-2xl md:text-3xl font-bold text-white italic mb-6">
           Next Match
