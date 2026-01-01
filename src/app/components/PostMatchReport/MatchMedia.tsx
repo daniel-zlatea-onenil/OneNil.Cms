@@ -15,62 +15,71 @@ type Video = {
   embedUrl?: string;
 };
 
+// YouTube video thumbnail
+const YOUTUBE_THUMBNAIL = 'https://img.youtube.com/vi/4LQYwQTAtJY/maxresdefault.jpg';
+const YOUTUBE_EMBED = 'https://www.youtube.com/embed/4LQYwQTAtJY';
+
 // Dummy data - will be replaced with real data from Contentful
 const dummyVideos: Video[] = [
   {
     id: '1',
     title: 'Full Match Highlights',
     description: 'Watch all the goals and key moments from Sevilla vs Granada',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '10:24',
     views: '125K',
     type: 'highlights',
-    embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    embedUrl: YOUTUBE_EMBED,
   },
   {
     id: '2',
     title: 'En-Nesyri\'s Brace - All Angles',
     description: 'Every angle of Youssef En-Nesyri\'s two goals',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '3:45',
     views: '89K',
     type: 'goal',
+    embedUrl: YOUTUBE_EMBED,
   },
   {
     id: '3',
     title: 'Rakitic Stunner - Goal of the Week Contender',
     description: 'Ivan Rakitic\'s spectacular long-range strike',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '2:18',
     views: '156K',
     type: 'goal',
+    embedUrl: YOUTUBE_EMBED,
   },
   {
     id: '4',
     title: 'Post-Match: Diego Alonso Reaction',
     description: 'Manager\'s thoughts on the victory and team performance',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '5:12',
     views: '34K',
     type: 'interview',
+    embedUrl: YOUTUBE_EMBED,
   },
   {
     id: '5',
     title: 'Tactical Analysis: How Sevilla Dominated',
     description: 'Breaking down Sevilla\'s tactical approach and key plays',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '8:56',
     views: '45K',
     type: 'analysis',
+    embedUrl: YOUTUBE_EMBED,
   },
   {
     id: '6',
     title: 'Player of the Match: Ivan Rakitic Interview',
     description: 'Exclusive interview with the MOTM after his stunning performance',
-    thumbnail: 'https://images.ctfassets.net/600e09scr76p/5VywJl9HvAiCmLZ0pCGUBm/3d5fa22a38a9df94e49a3f0cf2c73f85/sevilla-fc-stadium.webp',
+    thumbnail: YOUTUBE_THUMBNAIL,
     duration: '4:30',
     views: '67K',
     type: 'interview',
+    embedUrl: YOUTUBE_EMBED,
   },
 ];
 
@@ -119,7 +128,7 @@ export default function MatchMedia() {
                 fill
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                 <button
                   onClick={() => setSelectedVideo(selectedVideo || featuredVideo)}
                   className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -127,7 +136,7 @@ export default function MatchMedia() {
                   <FiPlay className="w-8 h-8 text-white ml-1" />
                 </button>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
                 <span className={`inline-block px-2 py-1 text-xs font-medium text-white rounded mb-2 ${typeColors[(selectedVideo || featuredVideo).type]}`}>
                   {typeLabels[(selectedVideo || featuredVideo).type]}
                 </span>
