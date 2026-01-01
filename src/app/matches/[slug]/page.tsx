@@ -4,6 +4,7 @@ import { getMatchStatus } from '@/lib/utils';
 import Image from 'next/image';
 import PreMatchSection from '@/app/components/PreMatchSection';
 import MatchHeader from '@/app/components/MatchHeader';
+import PostMatchReport from '@/app/components/PostMatchReport';
 
 export default async function MatchPage(props: {
   params: Promise<{ slug: string }>;
@@ -123,16 +124,7 @@ export default async function MatchPage(props: {
 
       {/* Post-Match Content */}
       {matchStatus === 'post-match' && (
-        <section className="py-12 md:py-16">
-          <div className="max-w-4xl mx-auto px-4 md:px-8">
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm text-center">
-              <h2 className="text-xl font-bold text-slate-900 mb-4">Match Report</h2>
-              <p className="text-slate-600">
-                Match report content will be available soon.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PostMatchReport match={matchViewModel} />
       )}
 
       {/* Live Content */}
