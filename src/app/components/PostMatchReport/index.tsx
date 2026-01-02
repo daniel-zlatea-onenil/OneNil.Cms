@@ -13,7 +13,7 @@ type PostMatchReportProps = {
 
 const tabs = [
   { id: 'analysis', label: 'Analysis', icon: <FiFileText className="w-4 h-4" /> },
-  { id: 'events', label: 'Match Events', icon: <FiClock className="w-4 h-4" /> },
+  { id: 'events', label: 'Minute by Minute', icon: <FiClock className="w-4 h-4" /> },
   { id: 'stats', label: 'Statistics', icon: <FiBarChart2 className="w-4 h-4" /> },
   { id: 'media', label: 'Media', icon: <FiVideo className="w-4 h-4" /> },
 ];
@@ -30,21 +30,11 @@ export default function PostMatchReport({ match }: PostMatchReportProps) {
             heroBannerUrl={match.heroBannerUrl}
           />
 
-          {/* Tab 2: Match Events (Timeline) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="lg:col-span-1">
-              <MatchTimeline
-                homeTeam={match.teamHome.name}
-                awayTeam={match.teamAway.name}
-              />
-            </div>
-            <div className="lg:col-span-1">
-              <MatchLineups
-                homeTeam={match.teamHome}
-                awayTeam={match.teamAway}
-              />
-            </div>
-          </div>
+          {/* Tab 2: Minute by Minute */}
+          <MatchTimeline
+            homeTeam={match.teamHome.name}
+            awayTeam={match.teamAway.name}
+          />
 
           {/* Tab 3: Statistics */}
           <div className="grid grid-cols-1 gap-6">
