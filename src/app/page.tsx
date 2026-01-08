@@ -1,139 +1,154 @@
-import HeroCarousel from '@/app/components/HeroComponent';
-import NewsComponent from '@/app/components/NewsComponent';
-import Image from 'next/image';
-import Link from 'next/link';
-import { FiPlay } from 'react-icons/fi';
+'use client';
 
-import { getLatestArticles, getPlayer } from '@/lib/contentHelper';
-import NextMatchBlock from '@/app/components/NextMatchBlock';
-import PlayerComponent from '@/app/components/PlayerComponent';
-import ShortLeagueTable from '@/app/components/ShortLeagueTable';
-import LatestResultBlock from '@/app/components/LatestResultBlock';
-import TeamStatsLeaders from '@/app/components/TeamStatsLeaders';
-import FanPollComponent from '@/app/components/FanPollComponent';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default async function HomePage() {
-  const articlesHero = await getLatestArticles(3);
-  const articles = await getLatestArticles(18);
-  const player = await getPlayer();
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      // TODO: Implement actual authentication
+      if (email && password) {
+        // Simulate login
+        localStorage.setItem('adminToken', 'temp-token');
+        router.push('/dashboard');
+      } else {
+        setError('Please enter both email and password');
+      }
+    } catch {
+      setError('Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans">
-      {/* Hero Section */}
-      <HeroCarousel articles={articlesHero} />
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
 
-      {/* Spacer between Hero and Next Match */}
-      <div className="h-8 md:h-12 bg-gradient-to-b from-black/80 to-transparent" />
-
-      {/* Upcoming Match */}
-      <NextMatchBlock />
-
-      {/* News Section */}
-      <NewsComponent articles={articles} />
-
-      {/* Featured Player */}
-      <PlayerComponent player={player} />
-
-      {/* Latest Result */}
-      <LatestResultBlock />
-
-      {/* League Table Snippet */}
-      <ShortLeagueTable />
-
-      {/* Team Stats Leaders */}
-      <TeamStatsLeaders />
-
-      {/* Social Media Feed */}
-      <section className="py-16 md:py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-slate-900">
-            Social Wall
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {['Tweet 1', 'Instagram Post 1', 'Tweet 2'].map((content, i) => (
-              <div
-                key={i}
-                className="bg-white p-6 rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
-              >
-                <p className="text-slate-600">{content}</p>
-              </div>
-            ))}
+      <div className="w-full max-w-md relative z-10">
+        {/* Header with logo area */}
+        <div className="text-center mb-10">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            </svg>
           </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent mb-1">OneNil CMS</h1>
+          <p className="text-slate-400 text-sm">Admin Control Panel</p>
         </div>
-      </section>
 
-      {/* Video Gallery */}
-      <section className="py-16 md:py-20 bg-gradient-to-b from-slate-900 to-black text-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Video Highlights
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((num) => (
-              <div
-                key={num}
-                className="relative aspect-video rounded-2xl overflow-hidden cursor-pointer group"
-              >
-                <Image
-                  src={`/images/video${num}.jpg`}
-                  alt={`Video ${num}`}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 group-hover:bg-red-600 transition-all duration-300">
-                    <FiPlay className="w-8 h-8 text-white ml-1" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Fan Poll */}
-      <FanPollComponent />
-
-      {/* Club Shop Promotion */}
-      <section className="py-16 md:py-20 bg-gradient-to-br from-slate-900 to-black">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="glass-dark rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                Official Club Shop
-              </h2>
-              <p className="text-white/70">
-                Get the latest kits, training wear, and merchandise.
-              </p>
+        {/* Login Card */}
+        <form onSubmit={handleSubmit} className="bg-slate-800/80 backdrop-blur-xl rounded-2xl p-8 space-y-6 border border-slate-700/50 shadow-2xl">
+          {/* Email Field */}
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-semibold text-slate-200">
+              Email Address
+            </label>
+            <div className="relative">
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                disabled={isLoading}
+              />
+              <svg className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
             </div>
-            <Link
-              href="/shop"
-              className="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-semibold hover:shadow-glow-red transition-all duration-300 hover:scale-105 whitespace-nowrap"
-            >
-              Shop Now
-            </Link>
           </div>
-        </div>
-      </section>
 
-      {/* Membership/Socio Information */}
-      <section className="py-16 md:py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-            Become a Member
-          </h2>
-          <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-            Join the OneNil FC family and get exclusive benefits.
-          </p>
-          <Link
-            href="/membership"
-            className="inline-block bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-3 rounded-full font-semibold hover:shadow-glow-red transition-all duration-300 hover:scale-105"
+          {/* Password Field */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-200">
+                Password
+              </label>
+              <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                Forgot?
+              </a>
+            </div>
+            <div className="relative">
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                disabled={isLoading}
+              />
+              <svg className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-300 text-sm flex items-start gap-3 animate-fadeIn">
+              <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-blue-800 disabled:to-indigo-800 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:hover:scale-100 shadow-lg"
           >
-            Learn More
-          </Link>
-        </div>
-      </section>
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Signing in...
+              </span>
+            ) : (
+              'Sign In'
+            )}
+          </button>
+
+          {/* Divider */}
+          <div className="relative py-2">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-600"></div>
+            </div>
+            <div className="relative flex justify-center text-xs">
+              <span className="px-2 bg-slate-800/80 text-slate-500">Demo Mode</span>
+            </div>
+          </div>
+
+          {/* Demo credentials info */}
+          <div className="bg-slate-700/30 rounded-lg p-4 space-y-1 text-xs text-slate-400">
+            <p><span className="font-semibold text-slate-300">Email:</span> admin@onenil.com</p>
+            <p><span className="font-semibold text-slate-300">Password:</span> Any password</p>
+            <p className="pt-2 text-slate-500 italic">This will be replaced with real authentication</p>
+          </div>
+        </form>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-slate-500 mt-6">
+          © 2026 OneNil FC. All rights reserved.
+        </p>
+      </div>
     </div>
   );
 }
